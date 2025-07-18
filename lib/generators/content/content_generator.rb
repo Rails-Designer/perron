@@ -1,0 +1,45 @@
+require "rails/generators/base"
+
+class ContentGenerator < Rails::Generators::NamedBase
+  source_root File.expand_path("templates", __dir__)
+
+  argument :actions, type: :array, default: %w[index show], desc: "Specify which actions to generate (index/show)"
+
+  def create_model
+    template "model.rb.tt", File.join("app/models/content", "#{file_name}.rb")
+  end
+
+  def create_controller
+    template "controller.rb.tt", File.join("app/controllers/content", "#{plural_file_name}_controller.rb")
+  end
+
+  def create_views
+    empty_directory view_directory
+
+    actions.each do |action|
+      template "#{action}.html.erb.tt", File.join(view_directory, "#{action}.html.erb")
+    end
+  end
+
+  def create_content_directory = FileUtils.mkdir_p(content_directory)
+
+  def create_pages_root
+    return unless pages_controller?
+
+    template "root.erb.tt", File.join(content_directory, "root.erb")
+  end
+
+  def add_content_route
+    route "resources :#{plural_file_name}, module: :content, only: %w[#{actions.join(" ")}]"
+  end
+
+  private
+
+  def view_directory = Rails.root.join("app", "views", "content", plural_file_name)
+
+  def content_directory = Rails.root.join("app", "content", plural_file_name)
+
+  def plural_class_name = plural_name.camelize
+
+  def pages_controller? = plural_file_name == "pages"
+end

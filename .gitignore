@@ -1,0 +1,69 @@
+# Bundler config
+/.bundle
+
+# Ignore the built gem files
+/pkg
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp
+
+# Ignore pidfiles, session data, and other temp directories
+/tmp/pids
+/tmp/sessions
+/tmp/cache
+
+# Ignore secrets (if applicable)
+/config/master.key
+/.env
+.env.*
+
+# Byebug command history
+.byebug_history
+
+# Ignore system files
+.DS_Store
+
+# Ignore editor directories and files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore RuboCop cache
+.rubocop_cache
+
+# Ignore coverage reports
+coverage/
+
+# Ignore test and spec reports
+/test/reports/
+/spec/reports/
+
+# Ignore generated documentation
+/doc/
+/yardoc/
+/.yardoc
+
+# Ignore temporary files created by editors
+*~
+*.swp
+*.swo
+*.swn
+
+# Ignore environment managers
+.rvm/
+.rbenv/
+.terraform/
+
+# Ignore Docker files (if using Docker)
+docker-compose.override.yml
+
+# Ignore generated files
+*.gem
+*.rbc
+
+# Ignore logs and debug files
+debug.log
+
+pkg/

@@ -1,0 +1,2 @@
+class Content::<%= class_name %> < Perron::Resource
+end

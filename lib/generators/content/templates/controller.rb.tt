@@ -1,0 +1,17 @@
+class Content::<%= plural_class_name %>Controller < ApplicationController
+<%- if pages_controller? -%>
+  include Perron::Root
+<%- end -%>
+
+<%- if actions.include?("index") -%>
+  def index
+    @resources = Content::<%= class_name %>.all
+  end
+
+<%- end -%>
+<%- if actions.include?("show") -%>
+  def show
+    @resource = Content::<%= class_name %>.find(params[:id])
+  end
+<%- end -%>
+end

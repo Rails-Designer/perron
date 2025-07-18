@@ -1,0 +1,11 @@
+<h1>
+  <%= plural_class_name %>
+</h1>
+
+<ul>
+  <%% @resources.each do |resource| %>
+    <li>
+      <%%= link_to resource.filename, resource %>
+    </li>
+  <%% end %>
+</ul>
