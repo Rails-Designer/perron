@@ -180,7 +180,7 @@ Sites that use Perron.
 - [AppRefresher](https://apprefresher.com)
 
 ### Integrated (part of a Rails app)
-- [AppRefresher](https://railsdesigners.com)
+- [Rails Designers (private community for Rails UI engineers](https://railsdesigners.com)
 
 ## Contributing
 
