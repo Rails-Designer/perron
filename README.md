@@ -172,6 +172,16 @@ RAILS_ENV=production rails perron:build
 This will create your static site in the configured output directory (`output` by default).
 
 
+## Sites using Perron
+
+Sites that use Perron.
+
+### Standalone (as a SSG)
+- [AppRefresher](https://apprefresher.com)
+
+### Integrated (part of a Rails app)
+- [AppRefresher](https://railsdesigners.com)
+
 ## Contributing
 
 This project uses [Standard](https://github.com/testdouble/standard) for formatting Ruby code. Please run `be standardrb` before submitting pull requests. Run tests with `rails test`.
