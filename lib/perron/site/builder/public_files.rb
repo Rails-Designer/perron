@@ -30,7 +30,7 @@ module Perron
         private
 
         def paths
-          @paths ||= Dir.glob("#{@public_dir}/*", File::FNM_DOTMATCH).reject do |path|
+          @paths ||= Dir.glob(File.join(@public_dir, "*")).reject do |path|
             Set.new(Perron.configuration.exclude_from_public + %w[. ..]).include?(File.basename(path))
           end
         end
