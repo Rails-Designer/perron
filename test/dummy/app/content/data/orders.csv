@@ -1,0 +1,3 @@
+order_id,customer_email,amount
+101,alice@example.com,75.20
+102,bob@example.com,1225.50

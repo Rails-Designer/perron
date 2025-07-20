@@ -1,0 +1,4 @@
+- name: Cam
+  role: administrator
+- name: Kendall
+  role: moderator
