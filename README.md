@@ -26,10 +26,6 @@ This creates an initializer:
 ```ruby
 Perron.configure do |config|
   config.site_name = "AppRefresher"
-
-  # Override the defaults (meta) title suffix
-  # Default: `— Perron.configuration.site_name`
-  # config.title_suffix = nil
 end
 ```
 

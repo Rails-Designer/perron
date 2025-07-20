@@ -7,7 +7,7 @@ require "perron/site/resource"
 class MetatagsTest < ActiveSupport::TestCase
   setup do
     Perron.configure do |config|
-      config.site_name = "AppRefresher"
+      config.metadata.title_suffix = "AppRefresher"
     end
   end
 
@@ -18,7 +18,19 @@ class MetatagsTest < ActiveSupport::TestCase
     assert_match "<title>Sample Post — AppRefresher</title>", metatags
   end
 
-  test "renders title using site_name when resource has no title" do
+  test "renders only the page title when the page title is the same as the suffix" do
+    Perron.configuration.metadata.title_suffix = nil
+
+    resource = Perron::Resource.new("test/dummy/app/content/pages/about.md")
+    html = Perron::Metatags.new(resource).render
+
+    assert_match "<title>About</title>", html
+    assert_no_match "—", html
+  end
+
+  test "renders title using Rails application name when resource has no title" do
+    Perron.configuration.metadata.title_suffix = nil
+
     resource = Perron::Resource.new("test/dummy/app/content/pages/root.md")
     html = Perron::Metatags.new(resource).render
 
