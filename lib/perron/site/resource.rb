@@ -4,7 +4,6 @@ require "perron/site/resource/core"
 require "perron/site/resource/class_methods"
 require "perron/site/resource/publishable"
 require "perron/site/resource/slug"
-require "perron/site/resource/context"
 require "perron/site/resource/separator"
 
 module Perron
@@ -31,11 +30,14 @@ module Perron
     alias_method :to_param, :slug
 
     def content
-      if processable?
-        ERB.new(Perron::Resource::Separator.new(raw_content).content).result(context.binding)
-      else
-        Perron::Resource::Separator.new(raw_content).content
-      end
+      return Perron::Resource::Separator.new(raw_content).content unless processable?
+
+      ::ApplicationController
+        .renderer
+        .render(
+          inline: Perron::Resource::Separator.new(raw_content).content,
+          assigns: {resource: self}
+        )
     end
 
     def metadata = Perron::Resource::Separator.new(raw_content).metadata
@@ -56,7 +58,5 @@ module Perron
         @file_path.delete_prefix(Perron.configuration.input).parameterize
       ).first(ID_LENGTH)
     end
-
-    def context = Perron::Resource::Context.new(self)
   end
 end
