@@ -16,6 +16,7 @@ module Perron
         resource_class.new(file_path)
       end.select(&:published?)
     end
+    alias_method :resources, :all
 
     def find(slug, resource_class = Resource)
       resource = all(resource_class).find { it.slug == slug }
