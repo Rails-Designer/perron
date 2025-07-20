@@ -27,8 +27,10 @@ module Perron
         .map { Collection.new(it) }
     end
 
-    def collection(name)
-      Collection.new(name)
+    def collection(name) = Collection.new(name)
+
+    def data(name)
+      Perron::Data.new(name)
     end
   end
 end
