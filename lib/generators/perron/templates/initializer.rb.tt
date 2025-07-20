@@ -11,12 +11,12 @@ Perron.configure do |config|
 
   # config.default_url_options = {host: "apprefresher.com", protocol: "https", trailing_slash: true}
 
-  # Override the defaults (meta) title suffix
-  # Default: `— Perron.configuration.site_name`
-  # config.title_suffix = nil
-
   # Set default meta values
   # Examples:
   # - `config.metadata.description = "AI-powered tool to keep your knowledge base articles images/screenshots and content up-to-date"`
   # - `config.metadata.author = "Rails Designer"`
+
+  # Set meta title suffix
+  # config.metadata.title_suffix = nil
+  # config.metadata.title_separator = " — "
 end

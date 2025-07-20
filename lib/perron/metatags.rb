@@ -29,7 +29,7 @@ module Perron
         frontmatter = @resource&.metadata&.stringify_keys || {}
         defaults = @config.metadata
 
-        title = frontmatter["title"] || defaults["title"] || @config.site_name
+        title = frontmatter["title"] || defaults["title"] || @config.site_name || Rails.application.name.underscore.camelize
         description = frontmatter["description"] || defaults["description"]
         author = frontmatter["author"] || defaults["author"]
         image = frontmatter["image"] || defaults["image"]
@@ -59,9 +59,12 @@ module Perron
     end
 
     def title_tag(content)
-      tag.title(
-        content.then { (it == @config.site_name) ? it : "#{it} #{@config.title_suffix || "— #{@config.site_name}"}" }
-      )
+      resource_title = content.to_s.strip
+      title_suffix = Perron.configuration.metadata.title_suffix&.strip
+
+      suffix = (title_suffix if title_suffix.present? && resource_title != title_suffix)
+
+      tag.title([resource_title, suffix].compact.join(Perron.configuration.metadata.title_separator))
     end
 
     def meta_tag(attributes)

@@ -23,7 +23,6 @@ module Perron
       @config.include_root = false
 
       @config.site_name = nil
-      @config.title_suffix = nil
 
       @config.allowed_extensions = [".erb", ".md"]
       @config.exclude_from_public = %w[assets storage]
@@ -36,6 +35,7 @@ module Perron
       }
 
       @config.metadata = ActiveSupport::OrderedOptions.new
+      @config.metadata.title_separator = " — "
     end
 
     def input = "app/content"

@@ -10,7 +10,7 @@ Bundler.require(*Rails.groups)
 
 require "perron"
 
-module Dummy
+module AppRefresher
   class Application < Rails::Application
     config.load_defaults Rails::VERSION::STRING.to_f
 
