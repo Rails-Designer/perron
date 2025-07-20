@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    perron (0.5.0)
+    perron (0.6.0)
       csv
       json
       psych
