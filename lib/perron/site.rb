@@ -3,6 +3,7 @@
 require "perron/site/builder"
 require "perron/site/collection"
 require "perron/site/resource"
+require "perron/site/data"
 
 module Perron
   module Site
