@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = "Rails-based static site generator"
   spec.description = "Perron is a Rails-based static site generator that follows Rails conventions. It allows you to create content collections with markdown or ERB, configure SEO metadata, and build production-ready static sites while leveraging your existing Rails knowledge with familiar patterns and minimal configuration."
-  spec.homepage = "https://github.com/Rails-Designer/perron"
+  spec.homepage = "https://railsdesigner.com/perron/"
   spec.license = "MIT"
 
   spec.metadata["homepage_uri"] = spec.homepage
