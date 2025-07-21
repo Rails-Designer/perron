@@ -20,6 +20,7 @@ module Perron
     private
 
     FRONTMATTER_KEY_MAP = {
+      "locale" => %w[og:locale],
       "image" => %w[og:image twitter:image],
       "author" => %w[og:author]
     }.freeze
@@ -30,30 +31,35 @@ module Perron
         defaults = @config.metadata
 
         title = frontmatter["title"] || defaults["title"] || @config.site_name || Rails.application.name.underscore.camelize
+        type = frontmatter["type"] || defaults["type"]
         description = frontmatter["description"] || defaults["description"]
+        logo = frontmatter["logo"] || defaults["logo"]
         author = frontmatter["author"] || defaults["author"]
         image = frontmatter["image"] || defaults["image"]
+        locale = frontmatter["locale"] || defaults["locale"]
         og_image = frontmatter["og:image"] || image
         twitter_image = frontmatter["twitter:image"] || og_image
 
         {
           title: title_tag(title),
           description: meta_tag(name: "description", content: description),
+          article_published: meta_tag(property: "article:published_time", content: @resource&.published_at),
 
-          og_type: meta_tag(property: "og:type", content: frontmatter["og:type"] || "article"),
           og_title: meta_tag(property: "og:title", content: frontmatter["og:title"] || title),
+          og_type: meta_tag(property: "og:type", content: frontmatter["og:type"] || type),
+          og_url: meta_tag(property: "og:url", content: canonical_url),
+          og_image: meta_tag(property: "og:image", content: og_image),
+
           og_description: meta_tag(property: "og:description", content: frontmatter["og:description"] || description),
           og_site_name: meta_tag(property: "og:site_name", content: @config.site_name),
-          og_image: meta_tag(property: "og:image", content: og_image),
+          og_logo: meta_tag(property: "og:logo", content: frontmatter["og:logo"] || logo),
           og_author: meta_tag(property: "og:author", content: frontmatter["og:author"] || author),
+          og_locale: meta_tag(property: "og:locale", content: frontmatter["og:locale"] || locale),
 
           twitter_card: meta_tag(name: "twitter:card", content: frontmatter["twitter:card"] || "summary_large_image"),
           twitter_title: meta_tag(name: "twitter:title", content: frontmatter["twitter:title"] || title),
           twitter_description: meta_tag(name: "twitter:description", content: frontmatter["twitter:description"] || description),
-          twitter_image: meta_tag(name: "twitter:image", content: twitter_image),
-          article_published: meta_tag(property: "article:published_time", content: @resource&.published_at),
-
-          og_url: meta_tag(property: "og:url", content: canonical_url)
+          twitter_image: meta_tag(name: "twitter:image", content: twitter_image)
         }
       end
     end
