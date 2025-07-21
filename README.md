@@ -17,10 +17,16 @@ A Rails-based static site generator.
 
 ### Installation
 
-Start by generating the configuration file:
+Start by adding Perron:
+```bash
+bundle add perron
+```
+
+Then generate the initializer:
 ```bash
 rails generate perron:install
 ```
+
 
 This creates an initializer:
 ```ruby
