@@ -8,11 +8,11 @@ This is useful for populating features, team members, or any other repeated data
 
 To use a data file, instantiate `Perron::Data` with the basename of the file and iterate over the result.
 ```erb
-<% Perron::Data.new("features").each do |feature| %>
-  <h4><%= feature.name %></h4>
+<%% Perron::Data.new("features").each do |feature| %>
+  <h4><%%= feature.name %></h4>
 
-  <p><%= feature.description %></p>
-<% end %>
+  <p><%%= feature.description %></p>
+<%% end %>
 ```
 
 ## File Location and Formats
