@@ -24,6 +24,7 @@ module Perron
     def collections
       @collections ||= Dir.children(Perron.configuration.input)
         .select { File.directory?(File.join(Perron.configuration.input, it)) }
+        .reject { it == "data" }
         .map { Collection.new(it) }
     end
 
