@@ -98,7 +98,7 @@ Perron can post-process the HTML generated from your Markdown content.
 
 ### Usage
 
-Apply transformations by passng an array of processor names or classes to the `markdownify` helper via the `process` option.
+Apply transformations by passing an array of processor names or classes to the `markdownify` helper via the `process` option.
 ```erb
 <%= markdownify @resource.content, process: %w[target_blank lazy_load_images] %>
 ```
