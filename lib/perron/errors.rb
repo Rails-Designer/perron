@@ -9,5 +9,9 @@ module Perron
     class UnsupportedDataFormatError < StandardError; end
 
     class DataParseError < StandardError; end
+
+    class ProcessorNotFoundError < StandardError; end
+
+    class InvalidProcessorError < StandardError; end
   end
 end
