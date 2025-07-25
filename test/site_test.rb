@@ -3,6 +3,8 @@ require "test_helper"
 require "fileutils"
 
 class SiteTest < ActiveSupport::TestCase
+  include ConfigurationHelper
+
   setup do
     Perron.configure do |config|
       config.site_name = "Test Site"
