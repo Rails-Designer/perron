@@ -9,10 +9,6 @@ module Perron
     yield(configuration)
   end
 
-  def self.reset_configuration!
-    @configuration = Configuration.new
-  end
-
   class Configuration
     def initialize
       @config = ActiveSupport::OrderedOptions.new
