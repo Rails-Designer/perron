@@ -4,6 +4,7 @@ require "perron/site/builder"
 require "perron/site/collection"
 require "perron/site/resource"
 require "perron/site/data"
+require "perron/site/data/proxy"
 
 module Perron
   module Site
@@ -29,8 +30,8 @@ module Perron
 
     def collection(name) = Collection.new(name)
 
-    def data(name)
-      Perron::Data.new(name)
+    def data(name = nil)
+      (name && Perron::Data.new(name)) || Perron::Data::Proxy.new
     end
   end
 end

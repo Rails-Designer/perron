@@ -98,9 +98,9 @@ This is useful for populating features, team members, or any other repeated data
 
 ### Usage
 
-To use a data file, instantiate `Perron::Data` with the basename of the file and iterate over the result.
+To use a data file, instantiate `Perron::Site.data` with the basename of the file and iterate over the result.
 ```erb
-<% Perron::Data.new("features").each do |feature| %>
+<% Perron::Site.data.features.each do |feature| %>
   <h4><%= feature.name %></h4>
   <p><%= feature.description %></p>
 <% end %>
@@ -109,7 +109,7 @@ To use a data file, instantiate `Perron::Data` with the basename of the file and
 ### File Location and Formats
 
 By default, Perron looks up `app/content/data/` for files with a `.yml`, `.json`, or `.csv` extension.
-For a `new("features")` call, it would find `features.yml`, `features.json`, or `features.csv`. You can also provide a full, absolute path to any data file.
+For a `features` call, it would find `features.yml`, `features.json`, or `features.csv`. You can also provide a path to any data file, via `Perron::Data.new("path/to/data.json")`.
 
 ### Accessing Data
 
@@ -123,7 +123,6 @@ feature[:name]
 ## Metatags
 
 The `meta_tags` helper automatically generates SEO and social sharing meta tags for your pages.
-
 
 ### Usage
 
