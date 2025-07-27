@@ -6,9 +6,13 @@ module Perron
 
     def initialize(name)
       @name = name
-      @collection_path = File.join(Rails.root, Perron.configuration.input, name)
+      @collection_path = File.join(Perron.configuration.input, name)
 
       raise Errors::CollectionNotFoundError, "No such collection: #{name}" unless File.exist?(@collection_path) && File.directory?(@collection_path)
+    end
+
+    def configuration(resource_class = "Content::#{name.classify}".safe_constantize)
+      resource_class.configuration
     end
 
     def all(resource_class = "Content::#{name.classify}".safe_constantize)

@@ -57,7 +57,7 @@ module Perron
 
     def generate_id
       Digest::SHA1.hexdigest(
-        @file_path.delete_prefix(Perron.configuration.input).parameterize
+        @file_path.delete_prefix(Perron.configuration.input.to_s).parameterize
       ).first(ID_LENGTH)
     end
   end

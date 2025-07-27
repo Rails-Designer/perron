@@ -30,11 +30,16 @@ module Perron
         trailing_slash: ENV.fetch("PERRON_TRAILING_SLASH", "true") == "true"
       }
 
+      @config.sitemap = ActiveSupport::OrderedOptions.new
+      @config.sitemap.enabled = false
+      @config.sitemap.priority = 0.5
+      @config.sitemap.change_frequency = :monthly
+
       @config.metadata = ActiveSupport::OrderedOptions.new
       @config.metadata.title_separator = " — "
     end
 
-    def input = "app/content"
+    def input = Rails.root.join("app", "content")
 
     def output
       mode.integrated? ? "public" : @config.output

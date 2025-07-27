@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "perron/site/builder/assets"
+require "perron/site/builder/sitemap"
 require "perron/site/builder/public_files"
 require "perron/site/builder/paths"
 require "perron/site/builder/page"
@@ -15,6 +16,7 @@ module Perron
       def build
         if Perron.configuration.mode.standalone?
           puts "🧹 Cleaning previous build…"
+
           FileUtils.rm_rf(Dir.glob("#{@output_path}/*"))
 
           Perron::Site::Builder::Assets.new.prepare
@@ -25,6 +27,8 @@ module Perron
         puts "-" * 15
 
         paths.each { render_page(it) }
+
+        Perron::Site::Builder::Sitemap.new(@output_path).generate
 
         puts "-" * 15
         puts "✅ Build complete"
