@@ -5,6 +5,8 @@ require "perron/metatags"
 require "perron/site/resource"
 
 class MetatagsTest < ActiveSupport::TestCase
+  include ConfigurationHelper
+
   setup do
     Perron.configure do |config|
       config.metadata.title_suffix = "AppRefresher"
