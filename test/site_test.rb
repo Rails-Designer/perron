@@ -1,7 +1,5 @@
 require "test_helper"
 
-require "fileutils"
-
 class SiteTest < ActiveSupport::TestCase
   setup do
     Perron.configure do |config|

@@ -91,6 +91,46 @@ bundle add {commonmarker,kramdown,redcarpet}
 ```
 
 
+## HTML Transformations
+
+Perron can post-process the HTML generated from your Markdown content.
+
+
+### Usage
+
+Apply transformations by passing an array of processor names or classes to the `markdownify` helper via the `process` option.
+```erb
+<%= markdownify @resource.content, process: %w[target_blank lazy_load_images] %>
+```
+
+
+### Available Processors
+
+The following processors are built-in and can be activated by passing their string name:
+
+- `target_blank`: Adds `target="_blank"` to all external links;
+- `lazy_load_images`: Adds `loading="lazy"` to all `<img>` tags.
+
+
+### Creating Your Own
+
+You can create your own processor by defining a class that inherits from `Perron::HtmlProcessor::Base` and implements a `process` method.
+Then, pass the class constant directly in the `process` array.
+
+```ruby
+# app/processors/add_nofollow_processor.rb
+class AddNofollowProcessor < Perron::HtmlProcessor::Base
+  def process
+    @html.css("a[target=_blank]").each { it["rel"] = "nofollow" }
+  end
+end
+```
+
+```erb
+<%= markdownify @resource.content, process: ["target_blank", AddNofollowProcessor] %>
+```
+
+
 ## Data Files
 
 Perron can consume structured data from YML, JSON, or CSV files, making them available within your templates.
@@ -211,6 +251,7 @@ Sites that use Perron.
 
 ### Integrated (part of a Rails app)
 - [Rails Designers (private community for Rails UI engineers](https://railsdesigners.com)
+
 
 ## Contributing
 

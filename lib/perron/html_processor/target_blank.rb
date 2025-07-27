@@ -1,21 +1,17 @@
 # frozen_string_literal: true
 
+require "perron/html_processor/base"
+
 module Perron
   class HtmlProcessor
-    class TargetBlank
-      def initialize(html)
-        @html = html
-      end
-
+    class TargetBlank < HtmlProcessor::Base
       def process
         @html.css("a").each do |link|
           href = link["href"]
 
-          next unless href
-          next if href.start_with?("/", "#", "mailto:")
+          next if href.blank? || href.start_with?("/", "#", "mailto:")
 
           link["target"] = "_blank"
-          link["rel"] = "noopener"
         end
       end
     end
