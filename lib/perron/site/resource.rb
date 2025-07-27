@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "perron/site/resource/configuration"
 require "perron/site/resource/core"
 require "perron/site/resource/class_methods"
 require "perron/site/resource/publishable"
@@ -10,6 +11,7 @@ module Perron
   class Resource
     ID_LENGTH = 8
 
+    include Perron::Resource::Configuration
     include Perron::Resource::Core
     include Perron::Resource::ClassMethods
     include Perron::Resource::Publishable
@@ -55,7 +57,7 @@ module Perron
 
     def generate_id
       Digest::SHA1.hexdigest(
-        @file_path.delete_prefix(Perron.configuration.input).parameterize
+        @file_path.delete_prefix(Perron.configuration.input.to_s).parameterize
       ).first(ID_LENGTH)
     end
   end
