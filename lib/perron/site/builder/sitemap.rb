@@ -11,8 +11,6 @@ module Perron
         def generate
           return if !Perron.configuration.sitemap.enabled
 
-          puts "Generating sitemap.xml…"
-
           xml = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |builder|
             builder.urlset(xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9") do
               Perron::Site.collections.each do |collection|
@@ -22,8 +20,6 @@ module Perron
           end.to_xml
 
           File.write(@output_path.join("sitemap.xml"), xml)
-
-          puts "Sitemap generated at `#{@output_path.join("sitemap.xml")}`"
         end
 
         private
