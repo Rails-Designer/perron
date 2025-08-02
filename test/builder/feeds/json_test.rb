@@ -9,7 +9,7 @@ module Perron
 
           setup do
             @collection = Perron::Site.collection("posts")
-            @builder = Json.new(collection: @collection, config: @collection.configuration.feeds.json)
+            @builder = Json.new(collection: @collection)
           end
 
           test "generates correct JSON Feed string with items sorted by date" do

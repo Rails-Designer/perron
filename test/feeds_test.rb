@@ -1,82 +1,47 @@
 require "test_helper"
 
-module Perron
-  module Site
-    class Builder
-      class FeedsTest < ActiveSupport::TestCase
-        include ConfigurationHelper
+class Perron::FeedsTest < ActionDispatch::IntegrationTest
+  setup do
+    Content::Post.configure { |it| it.feeds.rss.enabled = true }
+    Content::Page.configure { |it| it.feeds.rss.enabled = true }
+  end
 
-        setup do
-          @output_path = Rails.root.join("output")
+  teardown do
+    Content::Post.configure { |it| it.feeds.rss.enabled = false }
+    Content::Page.configure { |it| it.feeds.rss.enabled = false }
+  end
 
-          FileUtils.rm_rf(@output_path)
-          FileUtils.mkdir_p(@output_path)
-        end
+  test "renders all enabled feeds by default" do
+    document = rendered_document
 
-        teardown do
-          FileUtils.rm_rf(@output_path)
-        end
+    assert_select document, 'link[rel="alternate"][type="application/rss+xml"][title="Posts RSS Feed"][href*="feeds/posts.xml"]', count: 1
+    assert_select document, 'link[rel="alternate"][href*="feeds/pages.xml"]', count: 1, message: "Could not find feed link for 'pages'. Ensure it is configured with an enabled feed in the dummy app."
+    assert_select document, 'link[href*="posts.json"]', count: 0
+  end
 
-        test "does not instantiate any builders if feeds are disabled" do
-          Content::Post.configure { |it| it.feeds.rss.enabled = false; it.feeds.json.enabled = false }
+  test "renders only specified collections using :only option" do
+    document = rendered_document(only: [:posts])
 
-          rss_never_called = -> { flunk "Rss.new should not have been called" }
-          json_never_called = -> { flunk "Json.new should not have been called" }
+    assert_select document, 'link[href*="feeds/posts.xml"]', count: 1
+    assert_select document, 'link[href*="feeds/pages.xml"]', count: 0, message: "Pages feed should be excluded"
+  end
 
-          Feeds::Rss.stub :new, rss_never_called do
-            Feeds::Json.stub :new, json_never_called do
-              Feeds.new(@output_path).generate
-            end
-          end
+  test "renders all but specified collections using :except option" do
+    document = rendered_document(except: [:posts])
 
-          assert_empty Dir.glob("#{@output_path}/**/*")
-        end
+    assert_select document, 'link[href*="feeds/pages.xml"]', count: 1
+    assert_select document, 'link[href*="feeds/posts.xml"]', count: 0, message: "Posts feed should be excluded"
+  end
 
-        test "writes content from Rss to the default path" do
-          Content::Post.configure do |config|
-            config.feeds.rss.enabled = true
-            config.feeds.json.enabled = false
-            config.feeds.rss.path = nil
-          end
+  test "returns an empty document if no matching feeds are found" do
+    document = rendered_document(only: [:nonexistent_collection])
 
-          rss_builder_stub = Minitest::Mock.new
-          rss_builder_stub.expect :generate, "rss content from stub"
+    assert_select document, 'link', count: 0
+  end
 
-          Feeds::Rss.stub :new, rss_builder_stub do
-            Feeds.new(@output_path).generate
-          end
+  private
 
-          expected_file = @output_path.join("feeds/posts.xml")
-
-          assert File.exist?(expected_file), "Expected file '#{expected_file}' to exist."
-          assert_equal "rss content from stub", File.read(expected_file)
-
-          rss_builder_stub.verify
-        end
-
-        test "writes content from Json to a custom path" do
-          Content::Post.configure do |config|
-            config.feeds.rss.enabled = false
-            config.feeds.json.enabled = true
-            config.feeds.json.path = "api/articles.json"
-          end
-
-          json_builder_stub = Minitest::Mock.new
-
-          json_builder_stub.expect :generate, "json content from stub"
-
-          Feeds::Json.stub :new, json_builder_stub do
-            Feeds.new(@output_path).generate
-          end
-
-          expected_file = @output_path.join("api/articles.json")
-
-          assert File.exist?(expected_file), "Expected file '#{expected_file}' to exist."
-          assert_equal "json content from stub", File.read(expected_file)
-
-          json_builder_stub.verify
-        end
-      end
-    end
+  def rendered_document(options = {})
+    Nokogiri::HTML::DocumentFragment.parse(Perron::Feeds.new(Perron::Site.collections).render(options))
   end
 end

@@ -9,7 +9,7 @@ module Perron
 
           setup do
             @collection = Perron::Site.collection("posts")
-            @builder = Rss.new(collection: @collection, config: @collection.configuration.feeds.rss)
+            @builder = Rss.new(collection: @collection)
           end
 
           test "generates correct RSS string with items sorted by date" do

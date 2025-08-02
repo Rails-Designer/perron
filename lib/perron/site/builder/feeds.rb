@@ -14,34 +14,22 @@ module Perron
         def generate
           Perron::Site.collections.each do |collection|
             config = collection.configuration.feeds
-            collection_slug = collection.name.demodulize.underscore.parameterize
 
             if config.rss.enabled
-              path = config.rss.path || "feeds/#{collection_slug}.xml"
-
-              if (content = builder[:rss].new(collection: collection, config: config.rss).generate)
-                create_file(at: path, with: content)
+              if (xml = Rss.new(collection: collection).generate)
+                create_file at: config.rss.path, with: xml
               end
             end
 
             if config.json.enabled
-              path = config.json.path || "feeds/#{collection_slug}.json"
-
-              if (content = builder[:json].new(collection: collection, config: config.json).generate)
-                create_file(at: path, with: content)
+              if (json = Json.new(collection: collection).generate)
+                create_file at: config.json.path, with: json
               end
             end
           end
         end
 
         private
-
-        def builder
-          {
-            rss: Rss,
-            json: Json
-          }
-        end
 
         def create_file(at:, with:)
           path = @output_path.join(at)

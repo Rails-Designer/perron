@@ -7,10 +7,9 @@ module Perron
     class Builder
       class Feeds
         class Rss
-          def initialize(collection:, config:)
+          def initialize(collection:)
             @collection = collection
-            @config = config
-            @site_config = Perron.configuration
+            @configuration = Perron.configuration
           end
 
           def generate
@@ -19,18 +18,19 @@ module Perron
             Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
               xml.rss(:version => "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom") do
                 xml.channel do
-                  xml.title @site_config.site_name
-                  xml.description @site_config.site_description
-                  xml.link @site_config.url
+                  xml.title @configuration.site_name
+                  xml.description @configuration.site_description
+                  xml.link @configuration.url
+                  xml.generator "Perron (#{Perron::VERSION})"
 
-                  Rails.application.routes.url_helpers.with_options(@site_config.default_url_options) do |url|
+                  Rails.application.routes.url_helpers.with_options(@configuration.default_url_options) do |url|
                     resources.each do |resource|
                       xml.item do
-                        xml.guid url.polymorphic_url(resource), isPermaLink: "true"
-                        xml.link url.polymorphic_url(resource)
+                        xml.guid resource.id
+                        xml.link url.polymorphic_url(resource), isPermaLink: true
                         xml.pubDate((resource.metadata.published_at || resource.metadata.updated_at)&.rfc822)
                         xml.title resource.metadata.title
-                        xml.description { xml.cdata(resource.content) }
+                        xml.description { xml.cdata(Perron::Markdown.render(resource.content)) }
                       end
                     end
                   end
@@ -46,7 +46,7 @@ module Perron
               .reject { it.metadata.feed == false }
               .sort_by { it.metadata.published_at || it.metadata.updated_at || Time.current }
               .reverse
-              .take(@config.max_items)
+              .take(@collection.configuration.feeds.rss.max_items)
           end
         end
       end
