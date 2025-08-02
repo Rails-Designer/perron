@@ -160,6 +160,51 @@ feature[:name]
 ```
 
 
+## Feeds
+
+The `feeds` helper automatically generates HTML `<link>` tags for your site's RSS and JSON feeds.
+
+
+### Usage
+
+In your layout (e.g., `app/views/layouts/application.html.erb`), add the helper to the `<head>` section:
+```erb
+<head>
+  …
+  <%= feeds %>
+  …
+</head>
+```
+
+To render feeds for specific collections, such as `posts`:
+```erb
+<%= feeds only: %w[posts] %>
+```
+
+Similarly, you can exclude collections:
+```erb
+<%= feeds except: %w[pages] %>
+```
+
+
+### Configuration
+
+Feeds are configured within the `Resource` class corresponding to a collection:
+```ruby
+# app/models/content/post.rb
+class Content::Post < Perron::Resource
+  configure do |config|
+    config.feeds.rss.enabled = true
+    # config.feeds.rss.path = "path-to-feed.xml"
+    # config.feeds.rss.max_items = 25
+    config.feeds.json.enabled = true
+    # config.feeds.json.max_items = 15
+    # config.feeds.json.path = "path-to-feed.json"
+  end
+end
+```
+
+
 ## Metatags
 
 The `meta_tags` helper automatically generates SEO and social sharing meta tags for your pages.
