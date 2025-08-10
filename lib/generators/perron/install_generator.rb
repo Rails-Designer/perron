@@ -7,7 +7,7 @@ module Perron
     end
 
     def create_data_directory
-      data_directory = Rails.root.join("app", "views", "content", "data")
+      data_directory = Rails.root.join("app", "content", "data")
       empty_directory data_directory
 
       template "README.md.tt", File.join(data_directory, "README.md")
