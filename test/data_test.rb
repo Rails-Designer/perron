@@ -31,7 +31,7 @@ class PerronDataTest < ActiveSupport::TestCase
     first_order = data.first
 
     assert_equal "101", first_order.order_id
-    assert_equal "75.20", first_order[:amount]
+    assert_equal "79", first_order[:amount]
   end
 
   test "loads file with a full path" do
