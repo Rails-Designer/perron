@@ -42,6 +42,6 @@ class Perron::FeedsTest < ActionDispatch::IntegrationTest
   private
 
   def rendered_document(options = {})
-    Nokogiri::HTML::DocumentFragment.parse(Perron::Feeds.new(Perron::Site.collections).render(options))
+    Nokogiri::HTML::DocumentFragment.parse(Perron::Feeds.new.render(options))
   end
 end

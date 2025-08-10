@@ -16,15 +16,11 @@ module Perron
             config = collection.configuration.feeds
 
             if config.rss.enabled
-              if (xml = Rss.new(collection: collection).generate)
-                create_file at: config.rss.path, with: xml
-              end
+              create_file at: config.rss.path, with: Rss.new(collection: collection).generate
             end
 
             if config.json.enabled
-              if (json = Json.new(collection: collection).generate)
-                create_file at: config.json.path, with: json
-              end
+              create_file at: config.json.path, with: Json.new(collection: collection).generate
             end
           end
         end
@@ -32,6 +28,8 @@ module Perron
         private
 
         def create_file(at:, with:)
+          return if with.blank?
+
           path = @output_path.join(at)
 
           FileUtils.mkdir_p(File.dirname(path))
