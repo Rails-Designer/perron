@@ -14,7 +14,7 @@ class MetatagsTest < ActiveSupport::TestCase
   end
 
   test "renders title with suffix when title is different from site name" do
-    resource = Perron::Resource.new("test/dummy/app/content/posts/2023-05-15-sample-post.md")
+    resource = Content::Post.new("test/dummy/app/content/posts/2023-05-15-sample-post.md")
     metatags = Perron::Metatags.new(resource).render
 
     assert_match "<title>Sample Post — AppRefresher</title>", metatags
@@ -23,7 +23,7 @@ class MetatagsTest < ActiveSupport::TestCase
   test "renders only the page title when the page title is the same as the suffix" do
     Perron.configuration.metadata.title_suffix = nil
 
-    resource = Perron::Resource.new("test/dummy/app/content/pages/about.md")
+    resource = Content::Post.new("test/dummy/app/content/pages/about.md")
     html = Perron::Metatags.new(resource).render
 
     assert_match "<title>About</title>", html
@@ -33,7 +33,7 @@ class MetatagsTest < ActiveSupport::TestCase
   test "renders title using Rails application name when resource has no title" do
     Perron.configuration.metadata.title_suffix = nil
 
-    resource = Perron::Resource.new("test/dummy/app/content/pages/root.md")
+    resource = Content::Post.new("test/dummy/app/content/pages/root.md")
     html = Perron::Metatags.new(resource).render
 
     assert_match "<title>Dummy App</title>", html
@@ -41,7 +41,7 @@ class MetatagsTest < ActiveSupport::TestCase
   end
 
   test "renders og:url using default_url_options and resource path" do
-    resource = Perron::Resource.new("test/dummy/app/content/posts/2023-05-15-sample-post.md")
+    resource = Content::Post.new("test/dummy/app/content/posts/2023-05-15-sample-post.md")
     html = Perron::Metatags.new(resource).render
 
     assert_match "<meta name=\"description\" content=\"Describing sample post\">", html
