@@ -2,6 +2,7 @@
 
 require "perron/site/builder/assets"
 require "perron/site/builder/sitemap"
+require "perron/site/builder/feeds"
 require "perron/site/builder/public_files"
 require "perron/site/builder/paths"
 require "perron/site/builder/page"
@@ -29,6 +30,7 @@ module Perron
         paths.each { render_page(it) }
 
         Perron::Site::Builder::Sitemap.new(@output_path).generate
+        Perron::Site::Builder::Feeds.new(@output_path).generate
 
         puts "-" * 15
         puts "✅ Build complete"

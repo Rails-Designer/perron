@@ -36,7 +36,7 @@ class MetatagsTest < ActiveSupport::TestCase
     resource = Perron::Resource.new("test/dummy/app/content/pages/root.md")
     html = Perron::Metatags.new(resource).render
 
-    assert_match "<title>AppRefresher</title>", html
+    assert_match "<title>Dummy App</title>", html
     assert_no_match "— AppRefresher</title>", html
   end
 

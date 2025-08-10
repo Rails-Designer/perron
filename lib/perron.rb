@@ -6,6 +6,7 @@ require "perron/errors"
 require "perron/root"
 require "perron/site"
 require "perron/markdown"
+require "perron/feeds"
 require "perron/metatags"
 require "perron/engine"
 

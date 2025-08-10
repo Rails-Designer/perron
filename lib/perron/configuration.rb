@@ -19,6 +19,7 @@ module Perron
       @config.include_root = false
 
       @config.site_name = nil
+      @config.site_description = nil
 
       @config.allowed_extensions = [".erb", ".md"]
       @config.exclude_from_public = %w[assets storage]
@@ -48,6 +49,13 @@ module Perron
     def mode = @config.mode.to_s.inquiry
 
     def exclude_root? = !@config.include_root
+
+    def url
+      options = Perron.configuration.default_url_options
+      path = options[:trailing_slash] ? "/" : ""
+
+      URI.join("#{options[:protocol]}://#{options[:host]}", path).to_s
+    end
 
     def method_missing(method_name, ...)
       if @config.respond_to?(method_name)
