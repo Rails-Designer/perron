@@ -277,6 +277,43 @@ end
 ```
 
 
+## XML Sitemap
+
+A sitemap is an XML file that lists all the pages of a website to help search engines discover and index content more efficiently, typically containing URLs, last modification dates, change frequency, and priority values.
+
+Enable it with the following line in the Perron configuration:
+```ruby
+Perron.configure do |config|
+  # …
+  config.sitemap.enabled = true
+  # config.sitemap.priority = 0.8
+  # config.sitemap.change_frequency = :monthly
+  # …
+end
+```
+
+Values can be overridden per collection…
+```ruby
+# app/models/content/post.rb
+class Content::Post < Perron::Resource
+  configure do |config|
+    config.sitemap.enabled = false
+    config.sitemap.priority = 0.5
+    config.sitemap.change_frequency = :weekly
+  end
+end
+```
+
+…or on a resource basis:
+```ruby
+# app/content/posts/my-first-post.md
+---
+sitemap_priority: 0.25
+sitemap_change_frequency: :daily
+---
+```
+
+
 ## Building Your Static Site
 
 When in `standalone` mode and you're ready to generate your static site, run:
@@ -293,9 +330,10 @@ Sites that use Perron.
 
 ### Standalone (as a SSG)
 - [AppRefresher](https://apprefresher.com)
+- [Helptail](https://helptail.com)
 
 ### Integrated (part of a Rails app)
-- [Rails Designers (private community for Rails UI engineers](https://railsdesigners.com)
+- [Rails Designers (private community for Rails UI engineers)](https://railsdesigners.com)
 
 
 ## Contributing
