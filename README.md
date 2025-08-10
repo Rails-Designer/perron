@@ -264,7 +264,19 @@ author: Kendall
 Your content here…
 ```
 
-#### 3. Default Values
+#### 3. Collection configuration
+
+Set site-wide defaults in the initializer:
+```ruby
+class Content::Post < Perron::Resource
+  # …
+
+  config.metadata.description = "AI-powered tool to keep your knowledge base articles images/screenshots and content up-to-date"
+  config.metadata.author = "Rails Designer"
+end
+```
+
+#### 4. Default Values
 
 Set site-wide defaults in the initializer:
 ```ruby
