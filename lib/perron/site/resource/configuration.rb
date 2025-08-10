@@ -8,6 +8,8 @@ module Perron
       class_methods do
         def configuration
           @configuration ||= Options.new.tap do |config|
+            config.metadata = Options.new
+
             config.feeds = Options.new
 
             config.feeds.rss = ActiveSupport::OrderedOptions.new

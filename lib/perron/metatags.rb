@@ -28,17 +28,19 @@ module Perron
     def tags
       @tags ||= begin
         frontmatter = @resource&.metadata&.stringify_keys || {}
-        defaults = @config.metadata
+        collection_config = @resource.collection.configuration.metadata
+        site_config = @config.metadata
 
-        title = frontmatter["title"] || defaults["title"] || @config.site_name || Rails.application.name.underscore.camelize
-        type = frontmatter["type"] || defaults["type"]
-        description = frontmatter["description"] || defaults["description"]
-        logo = frontmatter["logo"] || defaults["logo"]
-        author = frontmatter["author"] || defaults["author"]
-        image = frontmatter["image"] || defaults["image"]
-        locale = frontmatter["locale"] || defaults["locale"]
-        og_image = frontmatter["og:image"] || image
-        twitter_image = frontmatter["twitter:image"] || og_image
+        title = frontmatter["title"] || collection_config["title"] || site_config["title"] || @config.site_name || Rails.application.name.underscore.camelize
+        type = frontmatter["type"] || collection_config["type"] || site_config["type"]
+        description = frontmatter["description"] || collection_config["description"] || site_config["description"]
+        logo = frontmatter["logo"] || collection_config["logo"] || site_config["logo"]
+        author = frontmatter["author"] || collection_config["author"] || site_config["author"]
+        locale = frontmatter["locale"] || collection_config["locale"] || site_config["locale"]
+
+        image = frontmatter["image"] || collection_config["image"] || site_config["image"]
+        og_image = frontmatter["og:image"] || collection_config["og:image"] || site_config["og:image"] || image
+        twitter_image = frontmatter["twitter:image"] || collection_config["twitter:image"] || site_config["twitter:image"] || og_image
 
         {
           title: title_tag(title),
