@@ -51,6 +51,7 @@ module Perron
     def collection = Collection.new(self.class.model_name.collection)
 
     def related_resources(limit: 5) = Perron::Site::Resource::Related.new(self).find(limit:)
+    alias_method :related, :related_resources
 
     private
 

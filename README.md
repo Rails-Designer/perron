@@ -294,6 +294,7 @@ end
 The `related_resources` method allows to find and display a list of similar resources
 from the same collection. Similarity is calculated using the **TF-IDF** algorithm on the content of each resource.
 
+
 ### Basic Usage
 
 To get a list of the 5 most similar resources, call the method on any resource instance.
