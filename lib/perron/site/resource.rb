@@ -4,6 +4,7 @@ require "perron/site/resource/configuration"
 require "perron/site/resource/core"
 require "perron/site/resource/class_methods"
 require "perron/site/resource/publishable"
+require "perron/site/resource/related"
 require "perron/site/resource/slug"
 require "perron/site/resource/separator"
 
@@ -48,6 +49,9 @@ module Perron
     alias_method :raw, :raw_content
 
     def collection = Collection.new(self.class.model_name.collection)
+
+    def related_resources(limit: 5) = Perron::Site::Resource::Related.new(self).find(limit:)
+    alias_method :related, :related_resources
 
     private
 

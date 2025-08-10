@@ -289,6 +289,24 @@ end
 ```
 
 
+## Related Resources
+
+The `related_resources` method allows to find and display a list of similar resources
+from the same collection. Similarity is calculated using the **TF-IDF** algorithm on the content of each resource.
+
+
+### Basic Usage
+
+To get a list of the 5 most similar resources, call the method on any resource instance.
+```ruby
+# app/views/content/posts/show.html.erb
+@resource.related_resources
+
+# Just the 3 most similar resources
+@resource.related_resources(limit: 3)
+```
+
+
 ## XML Sitemap
 
 A sitemap is an XML file that lists all the pages of a website to help search engines discover and index content more efficiently, typically containing URLs, last modification dates, change frequency, and priority values.
