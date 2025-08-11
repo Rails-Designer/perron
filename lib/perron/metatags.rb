@@ -28,7 +28,7 @@ module Perron
     def tags
       @tags ||= begin
         frontmatter = @resource&.metadata&.stringify_keys || {}
-        collection_config = @resource.collection.configuration.metadata
+        collection_config = @resource&.collection&.configuration&.metadata || {}
         site_config = @config.metadata
 
         title = frontmatter["title"] || collection_config["title"] || site_config["title"] || @config.site_name || Rails.application.name.underscore.camelize
