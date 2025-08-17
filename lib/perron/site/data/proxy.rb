@@ -9,9 +9,7 @@ module Perron
         Perron::Data.new(method_name.to_s)
       end
 
-      def respond_to_missing?(method_name, include_private = false)
-        true
-      end
+      def respond_to_missing?(method_name, include_private = false) = true
     end
   end
 end

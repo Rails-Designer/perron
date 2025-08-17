@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "erb"
-require "singleton"
-
 require "csv"
 
 module Perron
@@ -36,7 +33,7 @@ module Perron
       data = parsed_from(content, @file_path)
 
       unless data.is_a?(Array)
-        raise Errors::DataParseError, "Data in '#{@file_path}' must be an array of objects."
+        raise Errors::DataParseError, "Data in `#{@file_path}` must be an array of objects."
       end
 
       data.map { Item.new(it) }
@@ -81,6 +78,7 @@ module Perron
       def initialize
         self.class.include ActionView::Helpers::AssetUrlHelper
         self.class.include ActionView::Helpers::DateHelper
+        self.class.include ActionView::Helpers::UrlHelper
         self.class.include Rails.application.routes.url_helpers
       end
 

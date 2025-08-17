@@ -10,6 +10,7 @@ class PerronDataTest < ActiveSupport::TestCase
 
     assert_equal "Cam", first_user.name
     assert_equal "administrator", first_user[:role]
+    assert_equal "<a href=\"https:\/\/example\.com\">Homepage</a>", first_user[:site]
   end
 
   test "loads json file by basename" do
