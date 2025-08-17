@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class FeedsHelperTest < Minitest::Test
+class Perron::FeedsHelperTest < Minitest::Test
   include FeedsHelper
 
   def test_feeds_calls_feeds_correctly

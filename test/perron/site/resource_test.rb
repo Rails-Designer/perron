@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ResourceTest < ActiveSupport::TestCase
+class Perron::Site::ResourceTest < ActiveSupport::TestCase
   setup do
     @page_path = "test/dummy/app/content/pages/about.md"
     @post_path = "test/dummy/app/content/posts/2023-05-15-sample-post.md"

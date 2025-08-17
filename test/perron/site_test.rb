@@ -1,6 +1,6 @@
 require "test_helper"
 
-class SiteTest < ActiveSupport::TestCase
+class Perron::SiteTest < ActiveSupport::TestCase
   include ConfigurationHelper
 
   setup do

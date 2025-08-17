@@ -1,6 +1,6 @@
 require "test_helper"
 
-class SlugTest < ActiveSupport::TestCase
+class Perron::Site::Resource::SlugTest < ActiveSupport::TestCase
   def setup
     @dated_file = "test/dummy/app/content/posts/2023-05-15-sample-post.md"
     @normal_file = "test/dummy/app/content/pages/about.md"
