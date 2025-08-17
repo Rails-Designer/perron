@@ -1,5 +1,4 @@
 - name: Cam
   role: administrator
-  site: <%= link_to("Homepage", "https://example.com") %>
 - name: Kendall
   role: moderator
