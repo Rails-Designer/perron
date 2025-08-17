@@ -5,6 +5,7 @@ require "perron/site/resource/core"
 require "perron/site/resource/class_methods"
 require "perron/site/resource/publishable"
 require "perron/site/resource/related"
+require "perron/site/resource/renderer"
 require "perron/site/resource/slug"
 require "perron/site/resource/separator"
 
@@ -33,14 +34,11 @@ module Perron
     alias_method :to_param, :slug
 
     def content
-      return Perron::Resource::Separator.new(raw_content).content unless processable?
+      page_content = Perron::Resource::Separator.new(raw_content).content
 
-      ::ApplicationController
-        .renderer
-        .render(
-          inline: Perron::Resource::Separator.new(raw_content).content,
-          assigns: {resource: self}
-        )
+      return page_content unless erb_processing?
+
+      Perron::Resource::Renderer.erb(page_content, {resource: self})
     end
 
     def metadata = Perron::Resource::Separator.new(raw_content).metadata
@@ -55,7 +53,7 @@ module Perron
 
     private
 
-    def processable?
+    def erb_processing?
       @file_path.ends_with?(".erb") || metadata.erb == true
     end
 
