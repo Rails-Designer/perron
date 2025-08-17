@@ -24,16 +24,14 @@ module Perron
           Perron::Site::Builder::PublicFiles.new.copy
         end
 
-        puts "🚀 Starting site build…"
-        puts "-" * 15
+        puts "\n📝 Generating collections…"
 
         paths.each { render_page(it) }
 
         Perron::Site::Builder::Sitemap.new(@output_path).generate
         Perron::Site::Builder::Feeds.new(@output_path).generate
 
-        puts "-" * 15
-        puts "✅ Build complete"
+        puts "\n✅ Build complete"
       end
 
       private
