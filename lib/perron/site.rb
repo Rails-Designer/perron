@@ -12,16 +12,6 @@ module Perron
 
     def build = Perron::Site::Builder.new.build
 
-    def name = Perron.configuration.site_name
-
-    def email = Perron.configuration.site_email
-
-    def url
-      options = Perron.configuration.default_url_options
-
-      "#{options[:protocol]}://#{options[:host]}"
-    end
-
     def collections
       @collections ||= Dir.children(Perron.configuration.input)
         .select { File.directory?(File.join(Perron.configuration.input, it)) }

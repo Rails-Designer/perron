@@ -31,7 +31,7 @@ rails generate perron:install
 This creates an initializer:
 ```ruby
 Perron.configure do |config|
-  config.site_name = "AppRefresher"
+  config.site_name = "Helptail"
 end
 ```
 
@@ -271,8 +271,8 @@ Set site-wide defaults in the initializer:
 class Content::Post < Perron::Resource
   # …
 
-  config.metadata.description = "AI-powered tool to keep your knowledge base articles images/screenshots and content up-to-date"
-  config.metadata.author = "Rails Designer"
+  config.metadata.description = "Put your routine tasks on autopilot"
+  config.metadata.author = "Helptail team"
 end
 ```
 
@@ -283,8 +283,8 @@ Set site-wide defaults in the initializer:
 Perron.configure do |config|
   # …
 
-  config.metadata.description = "AI-powered tool to keep your knowledge base articles images/screenshots and content up-to-date"
-  config.metadata.author = "Rails Designer"
+  config.metadata.description = "Put your routine tasks on autopilot"
+  config.metadata.author = "Helptail team"
 end
 ```
 

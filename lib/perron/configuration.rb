@@ -13,13 +13,15 @@ module Perron
     def initialize
       @config = ActiveSupport::OrderedOptions.new
 
+      @config.site_name = nil
+      @config.site_description = nil
+
+      @config.site_email = nil
+
       @config.output = "output"
 
       @config.mode = :standalone
       @config.include_root = false
-
-      @config.site_name = nil
-      @config.site_description = nil
 
       @config.allowed_extensions = [".erb", ".md"]
       @config.exclude_from_public = %w[assets storage]

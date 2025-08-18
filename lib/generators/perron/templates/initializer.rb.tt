@@ -1,7 +1,7 @@
 Perron.configure do |config|
   # config.output = "output"
 
-  # config.site_name = "AppRefresher"
+  # config.site_name = "Helptail"
 
   # The build mode for Perron. Can be :standalone or :integrated.
   # config.mode = :standalone
@@ -9,12 +9,12 @@ Perron.configure do |config|
   # In `integrated` mode, the root is skipped by default. Set to `true` to enable.
   # config.include_root = false
 
-  # config.default_url_options = {host: "apprefresher.com", protocol: "https", trailing_slash: true}
+  # config.default_url_options = {host: "helptail.com", protocol: "https", trailing_slash: true}
 
   # Set default meta values
   # Examples:
-  # - `config.metadata.description = "AI-powered tool to keep your knowledge base articles images/screenshots and content up-to-date"`
-  # - `config.metadata.author = "Rails Designer"`
+  # - `config.metadata.description = "Put your routine tasks on autopilot"`
+  # - `config.metadata.author = "Helptail Team"`
 
   # Set meta title suffix
   # config.metadata.title_suffix = nil
