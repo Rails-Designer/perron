@@ -21,7 +21,7 @@ module Perron
       @config.site_name = nil
       @config.site_description = nil
 
-      @config.allowed_extensions = [".erb", ".md"]
+      @config.allowed_extensions = %w[erb md]
       @config.exclude_from_public = %w[assets storage]
       @config.excluded_assets = %w[action_cable actioncable actiontext activestorage rails-ujs trix turbo]
 
