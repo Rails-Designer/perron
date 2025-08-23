@@ -4,7 +4,7 @@ require "test_helper"
 require "perron/html_processor/target_blank"
 require "perron/html_processor/base"
 
-class TargetBlankTest < ActionView::TestCase
+class Perron::HtmlProcessor::TargetBlankTest < ActionView::TestCase
   def process_html(html)
     document = Nokogiri::HTML::DocumentFragment.parse(html)
 

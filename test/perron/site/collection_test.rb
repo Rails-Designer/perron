@@ -1,6 +1,6 @@
 require "test_helper"
 
-class CollectionTest < ActiveSupport::TestCase
+class Perron::Site::CollectionTest < ActiveSupport::TestCase
   setup do
     @posts = Perron::Collection.new("posts")
     @pages = Perron::Collection.new("pages")

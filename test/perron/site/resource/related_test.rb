@@ -1,6 +1,6 @@
 require "test_helper"
 
-class RelatedTest < ActiveSupport::TestCase
+class Perron::Site::Resource::RelatedTest < ActiveSupport::TestCase
   setup do
     @main_product = Perron::Site.collection("products").resources.find { it.filename == "main-product.md" }
   end

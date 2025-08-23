@@ -1,6 +1,6 @@
 require "test_helper"
 
-class SeparatorTest < ActiveSupport::TestCase
+class Perron::Site::Resource::SeparatorTest < ActiveSupport::TestCase
   def test_parses_frontmatter_and_content
     content = <<~CONTENT
       ---

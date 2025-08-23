@@ -3,7 +3,7 @@
 require "test_helper"
 require "perron/html_processor/lazy_load_images"
 
-class LazyLoadImagesTest < ActionView::TestCase
+class Perron::HtmlProcessor::LazyLoadImagesTest < ActionView::TestCase
   def process_html(html)
     document = Nokogiri::HTML::DocumentFragment.parse(html)
 

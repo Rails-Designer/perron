@@ -4,8 +4,7 @@ require "test_helper"
 require "perron/html_processor"
 require "perron/errors"
 
-# Changed ActiveSupport::TestCase to ActionView::TestCase to access DOM assertions.
-class HtmlProcessorTest < ActionView::TestCase
+class Perron::HtmlProcessorTest < ActionView::TestCase
   test "applies a custom processor specified by a string" do
     html_input = "<p>Some text.</p>"
     processed_html = Perron::HtmlProcessor.new(html_input, processors: ["dummy_processor"]).process

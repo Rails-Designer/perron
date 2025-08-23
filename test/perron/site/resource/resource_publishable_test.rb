@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ResourcePublishableTest < ActiveSupport::TestCase
+class Perron::Site::Resource::PublishableTest < ActiveSupport::TestCase
   include ActiveSupport::Testing::TimeHelpers
 
   setup do

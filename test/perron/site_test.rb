@@ -1,6 +1,6 @@
 require "test_helper"
 
-class SiteTest < ActiveSupport::TestCase
+class Perron::SiteTest < ActiveSupport::TestCase
   teardown { Perron::Site.instance_variable_set(:@collections, nil) }
 
   test "collection(name) returns a Perron::Site::Collection instance" do

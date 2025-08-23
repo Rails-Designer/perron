@@ -1,6 +1,6 @@
 require "test_helper"
 
-class PerronDataTest < ActiveSupport::TestCase
+class Perron::Site::DataTest < ActiveSupport::TestCase
   test "loads yaml file by basename" do
     data = Perron::Data.new("users")
 
