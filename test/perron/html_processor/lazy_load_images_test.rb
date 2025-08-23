@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "perron/html_processor/lazy_load_images"
 
 class Perron::HtmlProcessor::LazyLoadImagesTest < ActionView::TestCase
   def process_html(html)
