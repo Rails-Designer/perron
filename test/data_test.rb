@@ -12,6 +12,18 @@ class PerronDataTest < ActiveSupport::TestCase
     assert_equal "administrator", first_user[:role]
   end
 
+  test "loads nested yaml file by nested basename" do
+    data = Perron::Data.new("users/admins")
+
+    assert_equal 1, data.count
+
+    first_user = data.first
+
+    assert_equal "Cam", first_user.name
+    assert_equal "all", first_user[:access]
+  end
+
+
   test "loads json file by basename" do
     data = Perron::Data.new("products")
 
@@ -32,6 +44,18 @@ class PerronDataTest < ActiveSupport::TestCase
 
     assert_equal "101", first_order.order_id
     assert_equal "79", first_order[:amount]
+  end
+
+  test "loads file via Data::Proxy" do
+    data = Perron::Site.data.users
+
+    assert_equal "Cam", data.first.name
+  end
+
+  test "loads nested file via Data::Proxy" do
+    data = Perron::Site.data.users.admins
+
+    assert_equal "Cam", data.first.name
   end
 
   test "loads file with a full path" do
