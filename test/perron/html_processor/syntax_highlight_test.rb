@@ -3,10 +3,6 @@
 require "test_helper"
 
 class Perron::HtmlProcessor::SyntaxHighlightTest < ActionView::TestCase
-  def process_html(html)
-    Nokogiri::HTML::DocumentFragment.parse(html).tap { Perron::HtmlProcessor::SyntaxHighlight.new(it).process }
-  end
-
   test "highlights a code block with a specified language" do
     html = '<pre><code class="language-ruby">def hello; "world"; end</code></pre>'
     processed_doc = process_html(html)
@@ -50,5 +46,11 @@ class Perron::HtmlProcessor::SyntaxHighlightTest < ActionView::TestCase
       assert_select "span.nx", text: "a"
       assert_select "span.mi", text: "1"
     end
+  end
+
+  private
+
+  def process_html(html)
+    Nokogiri::HTML::DocumentFragment.parse(html).tap { Perron::HtmlProcessor::SyntaxHighlight.new(it).process }
   end
 end
