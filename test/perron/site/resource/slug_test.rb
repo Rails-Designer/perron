@@ -9,21 +9,24 @@ class Perron::Site::Resource::SlugTest < ActiveSupport::TestCase
 
   def test_create_with_dated_file
     resource = Perron::Resource.new(@dated_file)
-    slug = Perron::Resource::Slug.new(resource)
+    frontmatter = Perron::Resource::Separator.new(resource.raw_content).frontmatter
+    slug = Perron::Resource::Slug.new(resource, frontmatter)
 
     assert_equal "sample-post", slug.create
   end
 
   def test_create_with_normal_file
     resource = Perron::Resource.new(@normal_file)
-    slug = Perron::Resource::Slug.new(resource)
+    frontmatter = Perron::Resource::Separator.new(resource.raw_content).frontmatter
+    slug = Perron::Resource::Slug.new(resource, frontmatter)
 
     assert_equal "about", slug.create
   end
 
   def test_create_with_custom_slug
     resource = Perron::Resource.new(@custom_file)
-    slug = Perron::Resource::Slug.new(resource)
+    frontmatter = Perron::Resource::Separator.new(resource.raw_content).frontmatter
+    slug = Perron::Resource::Slug.new(resource, frontmatter)
 
     assert_equal "custom-set-slug", slug.create
   end

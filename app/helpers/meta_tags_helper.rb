@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module MetaTagsHelper
-  def meta_tags(options = {}) = Perron::Metatags.new(resource).render(options)
+  def meta_tags(options = {}) = Perron::Metatags.new(resource.metadata).render(options)
 
   private
 

@@ -9,8 +9,8 @@ module Perron
         def published?
           return true if Rails.env.development?
 
-          return false if metadata.draft == true
-          return false if metadata.published == false
+          return false if frontmatter.draft == true
+          return false if frontmatter.published == false
           return false if publication_date&.after?(Time.current)
 
           true
@@ -20,8 +20,8 @@ module Perron
 
         def publication_date
           @publication_date ||= begin
-            from_meta = metadata.published_at.present? ? begin
-              Time.zone.parse(metadata.published_at.to_s)
+            from_meta = frontmatter.published_at.present? ? begin
+              Time.zone.parse(frontmatter.published_at.to_s)
             rescue
               nil
             end : nil

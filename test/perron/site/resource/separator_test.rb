@@ -12,8 +12,8 @@ class Perron::Site::Resource::SeparatorTest < ActiveSupport::TestCase
     separator = Perron::Resource::Separator.new(content)
 
     assert_equal "This is the actual content.", separator.content
-    assert_equal "Test Title", separator.metadata.title
-    assert_equal Date.new(2023, 5, 15), separator.metadata.date
+    assert_equal "Test Title", separator.frontmatter.title
+    assert_equal Date.new(2023, 5, 15), separator.frontmatter.date
   end
 
   def test_handles_content_without_frontmatter
@@ -21,7 +21,7 @@ class Perron::Site::Resource::SeparatorTest < ActiveSupport::TestCase
     separator = Perron::Resource::Separator.new(content)
 
     assert_equal content, separator.content
-    assert_empty separator.metadata.to_h
+    assert_empty separator.frontmatter.to_h
   end
 
   def test_handles_empty_frontmatter
@@ -33,6 +33,6 @@ class Perron::Site::Resource::SeparatorTest < ActiveSupport::TestCase
     separator = Perron::Resource::Separator.new(content)
 
     assert_equal "Content with empty frontmatter", separator.content
-    assert_empty separator.metadata.to_h
+    assert_empty separator.frontmatter.to_h
   end
 end
