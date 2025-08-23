@@ -23,7 +23,8 @@ module Perron
       @config.mode = :standalone
       @config.include_root = false
 
-      @config.allowed_extensions = [".erb", ".md"]
+      @config.allowed_extensions = %w[erb md]
+
       @config.exclude_from_public = %w[assets storage]
       @config.excluded_assets = %w[action_cable actioncable actiontext activestorage rails-ujs trix turbo]
 

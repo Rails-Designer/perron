@@ -13,8 +13,12 @@ module Perron
       end
 
       def create
-        @metadata.slug.presence || @resource.filename.sub(/^[\d-]+-/, "").delete_suffixes(Perron.configuration.allowed_extensions)
+        @metadata.slug.presence || @resource.filename.sub(/^[\d-]+-/, "").delete_suffixes(dot_prepended_allowed_extensions)
       end
+
+      private
+
+      def dot_prepended_allowed_extensions = Perron.configuration.allowed_extensions.map { ".#{it}" }
     end
   end
 end
