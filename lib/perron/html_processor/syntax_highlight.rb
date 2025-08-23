@@ -8,22 +8,22 @@ module Perron
     class SyntaxHighlight < HtmlProcessor::Base
       def process
         @html.css('pre > code[class*="language-"]').each do |code_block|
-          language = code_block[:class].match(/language-(\w+)/)&.captures&.first
+          language = code_block[:class][/(?<=language-)\S+/]
 
-          next unless language
+          next if language.blank?
 
           code_block.parent.replace(
-            highlighted(code_block.text, with: language)
+            highlight(code_block.text, with: language)
           )
         end
       end
 
       private
 
-      def highlighted(source, with:)
+      def highlight(code_block, with:)
         lexer = Rouge::Lexer.find(with) || Rouge::Lexers::PlainText.new
 
-        Rouge::Formatters::HTMLPygments.new(::Rouge::Formatters::HTML.new).format(lexer.lex(source))
+        Rouge::Formatters::HTMLPygments.new(::Rouge::Formatters::HTML.new).format(lexer.lex(code_block))
       end
     end
   end
