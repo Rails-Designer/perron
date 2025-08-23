@@ -23,7 +23,7 @@ module Perron
           paths.each do |path|
             FileUtils.cp_r(path, @output_path)
 
-            puts "   ✅ Copied: #{File.basename(path)}"
+            print "\e[32m.\e[0m"
           end
         end
 

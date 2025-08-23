@@ -1,17 +1,34 @@
 # frozen_string_literal: true
 
-require "erb"
-require "singleton"
-
 require "csv"
 
 module Perron
   class Data < SimpleDelegator
     def initialize(identifier)
-      @file_path = path_for(identifier)
+      @file_path = self.class.path_for!(identifier)
       @records = records
 
       super(records)
+    end
+
+    class << self
+      def path_for(identifier)
+        path = Pathname.new(identifier)
+
+        return path.to_s if path.file? && path.absolute?
+
+        base_path = Rails.root.join("app", "content", "data")
+
+        SUPPORTED_EXTENSIONS.lazy.map { base_path.join("#{identifier}#{it}") }.find(&:exist?)&.to_s
+      end
+
+      def path_for!(identifier)
+        path_for(identifier).tap do |path|
+          raise Errors::FileNotFoundError, "No data file found for `#{identifier}`" unless path
+        end
+      end
+
+      def directory?(identifier) = Dir.exist?(Rails.root.join("app", "content", "data", identifier))
     end
 
     private
@@ -22,21 +39,12 @@ module Perron
     }.freeze
     SUPPORTED_EXTENSIONS = PARSER_METHODS.keys
 
-    def path_for(identifier)
-      path = Pathname.new(identifier)
-
-      return path.to_s if path.file? && path.absolute?
-
-      path = SUPPORTED_EXTENSIONS.lazy.map { Rails.root.join("app", "content", "data").join("#{identifier}#{it}") }.find(&:exist?)
-      path&.to_s or raise Errors::FileNotFoundError, "No data file found for '#{identifier}'"
-    end
-
     def records
       content = rendered_from(@file_path)
       data = parsed_from(content, @file_path)
 
       unless data.is_a?(Array)
-        raise Errors::DataParseError, "Data in '#{@file_path}' must be an array of objects."
+        raise Errors::DataParseError, "Data in `#{@file_path}` must be an array of objects."
       end
 
       data.map { Item.new(it) }

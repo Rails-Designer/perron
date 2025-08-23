@@ -31,7 +31,7 @@ rails generate perron:install
 This creates an initializer:
 ```ruby
 Perron.configure do |config|
-  config.site_name = "AppRefresher"
+  config.site_name = "Helptail"
 end
 ```
 
@@ -128,6 +128,71 @@ end
 
 ```erb
 <%= markdownify @resource.content, process: ["target_blank", AddNofollowProcessor] %>
+```
+
+
+### Embed Ruby
+
+Perron provides flexible options for embedding dynamic Ruby code in your content using ERB.
+
+
+#### 1. File extension
+
+Any content file with a `.erb` extension (e.g., `about.erb`) will automatically have its content processed as ERB.
+
+
+#### 2. Frontmatter
+
+You can enable ERB processing on a per-file basis, even for standard `.md` files, by adding `erb: true` to the file's frontmatter.
+```markdown
+---
+title: Dynamic Page
+erb: true
+---
+
+This entire page will be processed by ERB.
+The current time is: <%= Time.current.to_fs(:long_ordinal) %>.
+```
+
+
+#### 3. `erbify` helper
+
+For the most granular control, the `erbify` helper allows to process specific sections of a file as ERB.
+This is ideal for generating dynamic content like lists or tables from your resource's metadata, without needing to enable ERB for the entire file. The `erbify` helper can be used with a string or, more commonly, a block.
+
+**Example:** Generating a list from frontmatter data in a standard `.md` file.
+```markdown
+---
+title: Features
+features:
+  - Rails based
+  - SEO friendly
+  - Markdown first
+  - ERB support
+---
+
+Check out our amazing features:
+
+<%= erbify do %>
+  <ul>
+    <% @resource.metadata.features.each do |feature| %>
+      <li>
+        <%= feature %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+```
+
+**Result:**
+```html
+<p>Check out our amazing features:</p>
+<ul>
+  <li>Rails based</li>
+  <li>SEO friendly</li>
+  <li>Markdown first</li>
+  <li>ERB support</li>
+</ul>
 ```
 
 
@@ -271,8 +336,8 @@ Set site-wide defaults in the initializer:
 class Content::Post < Perron::Resource
   # …
 
-  config.metadata.description = "AI-powered tool to keep your knowledge base articles images/screenshots and content up-to-date"
-  config.metadata.author = "Rails Designer"
+  config.metadata.description = "Put your routine tasks on autopilot"
+  config.metadata.author = "Helptail team"
 end
 ```
 
@@ -283,8 +348,8 @@ Set site-wide defaults in the initializer:
 Perron.configure do |config|
   # …
 
-  config.metadata.description = "AI-powered tool to keep your knowledge base articles images/screenshots and content up-to-date"
-  config.metadata.author = "Rails Designer"
+  config.metadata.description = "Put your routine tasks on autopilot"
+  config.metadata.author = "Helptail team"
 end
 ```
 

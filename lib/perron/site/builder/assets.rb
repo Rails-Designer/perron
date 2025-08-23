@@ -31,7 +31,7 @@ module Perron
           FileUtils.mkdir_p(destination)
           FileUtils.cp_r(Dir.glob("#{source}/*"), destination)
 
-          puts "   ✅ Copied assets to `#{destination.relative_path_from(Rails.root)}`"
+          puts "   Copied assets to `#{destination.relative_path_from(Rails.root)}`"
 
           prune_excluded_assets from: destination
         end
@@ -41,7 +41,7 @@ module Perron
         def prune_excluded_assets(from:)
           return if exclusions.empty?
 
-          puts "Pruning excluded assets…"
+          puts "   Pruning excluded assets…"
 
           pattern = /^(#{exclusions.join("|")})(\.esm|\.min)?-[a-f0-9]{8,}/
 
