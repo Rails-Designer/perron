@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails/generators/base"
 
 class ContentGenerator < Rails::Generators::NamedBase

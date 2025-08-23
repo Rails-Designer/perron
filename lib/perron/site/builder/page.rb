@@ -35,7 +35,7 @@ module Perron
           FileUtils.mkdir_p(directory_path)
           File.write(file_path, html)
 
-          puts "✅ Generated: #{@path} -> #{file_path.relative_path_from(@output_path)}"
+          print "\e[32m.\e[0m"
         end
 
         def route_info

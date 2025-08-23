@@ -1,25 +1,21 @@
 require "test_helper"
 
 class Perron::SiteTest < ActiveSupport::TestCase
-  include ConfigurationHelper
+  teardown { Perron::Site.instance_variable_set(:@collections, nil) }
 
-  setup do
-    Perron.configure do |config|
-      config.site_name = "Test Site"
-      config.site_email = "test@example.com"
-      config.default_url_options = { protocol: "https", host: "example.com" }
-    end
+  test "collection(name) returns a Perron::Site::Collection instance" do
+    assert_instance_of Perron::Collection, Perron::Site.collection("posts")
   end
 
-  test ".name returns the name from the configuration" do
-    assert_equal "Test Site", Perron::Site.name
+  test "collections returns all collections as Perron::Site::Collection instances" do
+    assert Perron::Site.collections.all? { it.is_a?(Perron::Collection) }
   end
 
-  test ".email returns the email from the configuration" do
-    assert_equal "test@example.com", Perron::Site.email
+  test "data(name) returns a Perron::Data instance" do
+    assert_instance_of Perron::Data, Perron::Site.data("users")
   end
 
-  test ".url builds the URL from the configuration" do
-    assert_equal "https://example.com", Perron::Site.url
+  test "data returns a Perron::Data::Proxy instance" do
+    assert_instance_of Perron::Data::Proxy, Perron::Site.data
   end
 end
