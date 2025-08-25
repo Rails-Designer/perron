@@ -28,6 +28,8 @@ module Perron
       @config.exclude_from_public = %w[assets storage]
       @config.excluded_assets = %w[action_cable actioncable actiontext activestorage rails-ujs trix turbo]
 
+      @config.view_unpublished = Rails.env.development?
+
       @config.default_url_options = {
         host: ENV.fetch("PERRON_HOST", "localhost:3000"),
         protocol: ENV.fetch("PERRON_PROTOCOL", "http"),

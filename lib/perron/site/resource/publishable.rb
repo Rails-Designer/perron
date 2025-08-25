@@ -7,7 +7,7 @@ module Perron
 
       included do
         def published?
-          return true if Rails.env.development?
+          return true if Perron.configuration.view_unpublished
 
           return false if metadata.draft == true
           return false if metadata.published == false
