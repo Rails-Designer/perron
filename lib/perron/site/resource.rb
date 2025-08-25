@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "perron/site/resource/associations"
 require "perron/site/resource/configuration"
 require "perron/site/resource/core"
 require "perron/site/resource/class_methods"
@@ -13,6 +14,7 @@ module Perron
   class Resource
     ID_LENGTH = 8
 
+    include Perron::Resource::Associations
     include Perron::Resource::Configuration
     include Perron::Resource::Core
     include Perron::Resource::ClassMethods
