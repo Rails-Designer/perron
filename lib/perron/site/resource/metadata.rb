@@ -13,14 +13,12 @@ module Perron
       def data
         @data ||= ActiveSupport::OrderedOptions
           .new
-          .merge(
-              apply_fallbacks_and_defaults(to: site_and_collection_data)
-            )
+          .merge(apply_fallbacks_and_defaults(to: merged_site_collection_resource_frontmatter))
       end
 
       private
 
-      def site_and_collection_data = site_data.merge(collection_data).merge(@frontmatter)
+      def merged_site_collection_resource_frontmatter = site_data.merge(collection_data).merge(@frontmatter)
 
       def apply_fallbacks_and_defaults(to:)
         to[:title] ||= @config.site_name || Rails.application.name.underscore.camelize
@@ -49,9 +47,9 @@ module Perron
         url_options = @config.default_url_options
         base_url = "#{url_options[:protocol]}://#{url_options[:host]}"
         url = URI.join(base_url, @resource.path).to_s
-        has_extension = URI(url).path.split("/").last&.include?(".")
+        without_extension = URI(url).path.split("/").last&.exclude?(".")
 
-        url.then { (url_options[:trailing_slash] && !it.end_with?("/") && !has_extension) ? "#{it}/" : it }
+        url.then { (url_options[:trailing_slash] && !it.end_with?("/") && without_extension) ? "#{it}/" : it }
       end
 
       def site_data
