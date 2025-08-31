@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "perron/site/resource/related/stop_words"
+require "perron/resource/related/stop_words"
 
 module Perron
   module Site
