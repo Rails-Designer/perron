@@ -13,7 +13,7 @@ A Rails-based static site generator.
 </a>
 
 
-## Getting Started
+## Getting started
 
 ### Installation
 
@@ -47,14 +47,14 @@ Perron can operate in two modes, configured via `config.mode`. This allows you t
 | **Asset Handling** | Via Perron | Via Asset Pipeline |
 
 
-## Creating Content
+## Collections
 
-Perron is, just like Rails, designed with convention over configuration in mind. Content is stored in `app/content/*/*.{erb,md}`. Content is backed by a class, located in `app/models/content/` that inherits from `Perron::Resource`.
+Perron is, just like Rails, designed with convention over configuration in mind. Content is stored in `app/content/*/*.{erb,md,*}` and backed by a class, located in `app/models/content/` that inherits from `Perron::Resource`.
 
 The controllers are located in `app/controllers/content/`. To make them available, create a route: `resources :posts, module: :content, only: %w[index show]`.
 
 
-### Collections
+### Create content
 
 ```bash
 bin/rails generate content Post
@@ -69,14 +69,12 @@ This will create the following files:
 * Adds route: `resources :posts, module: :content, only: %w[index show]`
 
 
-### Setting a Root Page
+### Setting a root page
 
-To set a root page, include `Perron::Root` in your `Content::PagesController` and add a `app/content/pages/root.[md,erb]` file (make sure to set `slug: "/"` in its frontmatter).
-
-This is automatically added when you create a `Page` collection.
+To set a root page, include `Perron::Root` in your `Content::PagesController` and add a `app/content/pages/root.{md,erb,*}` file (make sure to set `slug: "/"` in its frontmatter). This is automatically added for you when you create a `Page` collection.
 
 
-## Markdown Support
+## Markdown support
 
 Perron supports markdown with the `markdownify` helper.
 
@@ -91,7 +89,7 @@ bundle add {commonmarker,kramdown,redcarpet}
 ```
 
 
-## HTML Transformations
+## HTML transformations
 
 Perron can post-process the HTML generated from your Markdown content.
 
@@ -104,7 +102,7 @@ Apply transformations by passing an array of processor names or classes to the `
 ```
 
 
-### Available Processors
+### Available processors
 
 The following processors are built-in and can be activated by passing their string name:
 
@@ -113,7 +111,7 @@ The following processors are built-in and can be activated by passing their stri
 - `syntax_highlight`: Applies syntax highlighting to fenced code blocks (e.g., \`\`\`ruby). This requires adding the `rouge` gem to your Gemfile (`bundle add rouge`). You will also need to include a Rouge CSS theme for colors to appear.
 
 
-### Creating Your Own
+### Creating your own processors
 
 You can create your own processor by defining a class that inherits from `Perron::HtmlProcessor::Base` and implements a `process` method.
 Then, pass the class constant directly in the `process` array.
@@ -186,7 +184,7 @@ Check out our amazing features:
 ```
 
 
-## Data Files
+## Data files
 
 Perron can consume structured data from YML, JSON, or CSV files, making them available within your templates.
 This is useful for populating features, team members, or any other repeated data structure.
@@ -201,12 +199,12 @@ To use a data file, instantiate `Perron::Site.data` with the basename of the fil
 <% end %>
 ```
 
-### File Location and Formats
+### File location and formats
 
 By default, Perron looks up `app/content/data/` for files with a `.yml`, `.json`, or `.csv` extension.
 For a `features` call, it would find `features.yml`, `features.json`, or `features.csv`. You can also provide a path to any data file, via `Perron::Data.new("path/to/data.json")`.
 
-### Accessing Data
+### Accessing data
 
 The wrapper object provides flexible, read-only access to each record's attributes. Both dot notation and hash-like key access are supported.
 ```ruby
@@ -289,7 +287,7 @@ Or exclude certain tags:
 
 Values are determined with the following precedence, from highest to lowest:
 
-#### 1. Controller Action
+#### 1. Controller action
 
 Define a `@metadata` instance variable in your controller:
 ```ruby
@@ -304,10 +302,9 @@ class Content::PostsController < ApplicationController
 end
 ```
 
-#### 2. Page Frontmatter
+#### 2. Page frontmatter
 
 Add values to the YAML frontmatter in content files:
-
 ```yaml
 ---
 title: My Awesome Post
@@ -321,7 +318,7 @@ Your content here…
 
 #### 3. Collection configuration
 
-Set site-wide defaults in the initializer:
+Set collection defaults in the resource model:
 ```ruby
 class Content::Post < Perron::Resource
   # …
@@ -331,7 +328,7 @@ class Content::Post < Perron::Resource
 end
 ```
 
-#### 4. Default Values
+#### 4. Default values
 
 Set site-wide defaults in the initializer:
 ```ruby
@@ -344,13 +341,13 @@ end
 ```
 
 
-## Related Resources
+## Related resources
 
 The `related_resources` method allows to find and display a list of similar resources
-from the same collection. Similarity is calculated using the **TF-IDF** algorithm on the content of each resource.
+from the sme collection. Similarity is calculated using the **[TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf)** algorithm on the content of each resource.
 
 
-### Basic Usage
+### Basic usage
 
 To get a list of the 5 most similar resources, call the method on any resource instance.
 ```ruby
@@ -362,9 +359,9 @@ To get a list of the 5 most similar resources, call the method on any resource i
 ```
 
 
-## XML Sitemap
+## XML sitemap
 
-A sitemap is an XML file that lists all the pages of a website to help search engines discover and index content more efficiently, typically containing URLs, last modification dates, change frequency, and priority values.
+A sitemap is a XML file that lists all the pages of a website to help search engines discover and index content more efficiently, typically containing URLs, last modification dates, change frequency, and priority values.
 
 Enable it with the following line in the Perron configuration:
 ```ruby
@@ -399,7 +396,7 @@ sitemap_change_frequency: :daily
 ```
 
 
-## Building Your Static Site
+## Building your static site
 
 When in `standalone` mode and you're ready to generate your static site, run:
 ```bash
