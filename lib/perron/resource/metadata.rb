@@ -23,6 +23,8 @@ module Perron
       def apply_fallbacks_and_defaults(to:)
         to[:title] ||= @config.site_name || Rails.application.name.underscore.camelize
 
+        to[:canonical_url] ||= canonical_url
+
         to[:og_image] ||= to[:image]
         to[:twitter_image] ||= to[:og_image]
 
@@ -44,10 +46,11 @@ module Perron
       end
 
       def canonical_url
-        Rails.application.routes.url_helpers.polymorphic_url(
-          @resource,
-          **Perron.configuration.default_url_options
-        )
+        @frontmatter[:canonical_url] ||
+          Rails.application.routes.url_helpers.polymorphic_url(
+            @resource,
+            **Perron.configuration.default_url_options
+          )
       end
 
       def site_data
