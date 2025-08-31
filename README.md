@@ -100,7 +100,7 @@ Perron can post-process the HTML generated from your Markdown content.
 
 Apply transformations by passing an array of processor names or classes to the `markdownify` helper via the `process` option.
 ```erb
-<%= markdownify @resource.content, process: %w[target_blank lazy_load_images] %>
+<%= markdownify @resource.content, process: %w[lazy_load_images syntax_highlight target_blank] %>
 ```
 
 
@@ -110,6 +110,7 @@ The following processors are built-in and can be activated by passing their stri
 
 - `target_blank`: Adds `target="_blank"` to all external links;
 - `lazy_load_images`: Adds `loading="lazy"` to all `<img>` tags.
+- `syntax_highlight`: Applies syntax highlighting to fenced code blocks (e.g., \`\`\`ruby). This requires adding the `rouge` gem to your Gemfile (`bundle add rouge`). You will also need to include a Rouge CSS theme for colors to appear.
 
 
 ### Creating Your Own
@@ -182,17 +183,6 @@ Check out our amazing features:
     <% end %>
   </ul>
 <% end %>
-```
-
-**Result:**
-```html
-<p>Check out our amazing features:</p>
-<ul>
-  <li>Rails based</li>
-  <li>SEO friendly</li>
-  <li>Markdown first</li>
-  <li>ERB support</li>
-</ul>
 ```
 
 

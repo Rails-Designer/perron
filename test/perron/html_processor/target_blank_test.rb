@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "perron/html_processor/target_blank"
-require "perron/html_processor/base"
 
 class Perron::HtmlProcessor::TargetBlankTest < ActionView::TestCase
   def process_html(html)
