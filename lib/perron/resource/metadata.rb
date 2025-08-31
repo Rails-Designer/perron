@@ -44,12 +44,10 @@ module Perron
       end
 
       def canonical_url
-        url_options = @config.default_url_options
-        base_url = "#{url_options[:protocol]}://#{url_options[:host]}"
-        url = URI.join(base_url, @resource.path).to_s
-        without_extension = URI(url).path.split("/").last&.exclude?(".")
-
-        url.then { (url_options[:trailing_slash] && !it.end_with?("/") && without_extension) ? "#{it}/" : it }
+        Rails.application.routes.url_helpers.polymorphic_url(
+          @resource,
+          **Perron.configuration.default_url_options
+        )
       end
 
       def site_data

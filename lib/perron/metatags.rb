@@ -21,6 +21,7 @@ module Perron
     def tags
       @tags ||= {
         title: title_tag(@data[:title]),
+
         description: meta_tag(name: "description", content: @data[:description]),
         article_published: meta_tag(property: "article:published_time", content: @data[:article_published_time]),
 

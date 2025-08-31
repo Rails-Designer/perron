@@ -45,6 +45,6 @@ class Perron::MetatagsTest < ActiveSupport::TestCase
     html = Perron::Metatags.new(resource.metadata).render
 
     assert_match "<meta name=\"description\" content=\"Describing sample post\">", html
-    assert_match "<meta property=\"og:url\" content=\"http://localhost:3000/sample-post/\">", html
+    assert_match "<meta property=\"og:url\" content=\"http://localhost:3000/blog/sample-post/\">", html
   end
 end
