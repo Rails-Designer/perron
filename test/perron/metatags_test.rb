@@ -2,7 +2,7 @@
 
 require "test_helper"
 require "perron/metatags"
-require "perron/site/resource"
+require "perron/resource"
 
 class Perron::MetatagsTest < ActiveSupport::TestCase
   include ConfigurationHelper

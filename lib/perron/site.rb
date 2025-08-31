@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require "perron/site/builder"
-require "perron/site/collection"
-require "perron/site/resource"
-require "perron/site/data"
-require "perron/site/data/proxy"
+require "perron/collection"
+require "perron/data"
+require "perron/data/proxy"
 
 module Perron
   module Site

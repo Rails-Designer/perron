@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "perron/site/resource/configuration"
-require "perron/site/resource/core"
-require "perron/site/resource/class_methods"
-require "perron/site/resource/metadata"
-require "perron/site/resource/publishable"
-require "perron/site/resource/related"
-require "perron/site/resource/renderer"
-require "perron/site/resource/slug"
-require "perron/site/resource/separator"
+require "perron/resource/configuration"
+require "perron/resource/core"
+require "perron/resource/class_methods"
+require "perron/resource/metadata"
+require "perron/resource/publishable"
+require "perron/resource/related"
+require "perron/resource/renderer"
+require "perron/resource/slug"
+require "perron/resource/separator"
 
 module Perron
   class Resource
