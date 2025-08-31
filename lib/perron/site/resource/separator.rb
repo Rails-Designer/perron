@@ -9,9 +9,9 @@ module Perron
         parsed(content)
       end
 
-      def metadata
-        @metadata_with_dot_access ||= ActiveSupport::OrderedOptions.new.tap do |options|
-          @metadata.each { |key, value| options[key] = value }
+      def frontmatter
+        @frontmatter_with_dot_access ||= ActiveSupport::OrderedOptions.new.tap do |options|
+          @frontmatter.each { |key, value| options[key] = value }
         end
       end
 
@@ -19,10 +19,10 @@ module Perron
 
       def parsed(content)
         if content =~ /\A---\s*(.*?)\s*---\s*(.*)/m
-          @metadata = YAML.safe_load($1, permitted_classes: [Date, Time]) || {}
+          @frontmatter = YAML.safe_load($1, permitted_classes: [Date, Time]) || {}
           @content = $2.strip
         else
-          @metadata = {}
+          @frontmatter = {}
           @content = content
         end
       end

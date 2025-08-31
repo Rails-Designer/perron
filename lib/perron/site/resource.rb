@@ -3,6 +3,7 @@
 require "perron/site/resource/configuration"
 require "perron/site/resource/core"
 require "perron/site/resource/class_methods"
+require "perron/site/resource/metadata"
 require "perron/site/resource/publishable"
 require "perron/site/resource/related"
 require "perron/site/resource/renderer"
@@ -29,7 +30,7 @@ module Perron
 
     def filename = File.basename(@file_path)
 
-    def slug = Perron::Resource::Slug.new(self).create
+    def slug = Perron::Resource::Slug.new(self, frontmatter).create
     alias_method :path, :slug
     alias_method :to_param, :slug
 
@@ -41,7 +42,13 @@ module Perron
       Perron::Resource::Renderer.erb(page_content, {resource: self})
     end
 
-    def metadata = Perron::Resource::Separator.new(raw_content).metadata
+    def metadata
+      Perron::Resource::Metadata.new(
+        resource: self,
+        frontmatter: frontmatter,
+        collection: collection
+      ).data
+    end
 
     def raw_content = File.read(@file_path)
     alias_method :raw, :raw_content
@@ -52,6 +59,10 @@ module Perron
     alias_method :related, :related_resources
 
     private
+
+    def frontmatter
+      @frontmatter ||= Perron::Resource::Separator.new(raw_content).frontmatter
+    end
 
     def erb_processing?
       @file_path.ends_with?(".erb") || metadata.erb == true

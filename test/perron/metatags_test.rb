@@ -15,7 +15,7 @@ class Perron::MetatagsTest < ActiveSupport::TestCase
 
   test "renders title with suffix when title is different from site name" do
     resource = Content::Post.new("test/dummy/app/content/posts/2023-05-15-sample-post.md")
-    metatags = Perron::Metatags.new(resource).render
+    metatags = Perron::Metatags.new(resource.metadata).render
 
     assert_match "<title>Sample Post — Helptail</title>", metatags
   end
@@ -24,7 +24,7 @@ class Perron::MetatagsTest < ActiveSupport::TestCase
     Perron.configuration.metadata.title_suffix = nil
 
     resource = Content::Post.new("test/dummy/app/content/pages/about.md")
-    html = Perron::Metatags.new(resource).render
+    html = Perron::Metatags.new(resource.metadata).render
 
     assert_match "<title>About</title>", html
     assert_no_match "—", html
@@ -34,7 +34,7 @@ class Perron::MetatagsTest < ActiveSupport::TestCase
     Perron.configuration.metadata.title_suffix = nil
 
     resource = Content::Post.new("test/dummy/app/content/pages/root.md")
-    html = Perron::Metatags.new(resource).render
+    html = Perron::Metatags.new(resource.metadata).render
 
     assert_match "<title>Dummy App</title>", html
     assert_no_match "— Helptail</title>", html
@@ -42,7 +42,7 @@ class Perron::MetatagsTest < ActiveSupport::TestCase
 
   test "renders og:url using default_url_options and resource path" do
     resource = Content::Post.new("test/dummy/app/content/posts/2023-05-15-sample-post.md")
-    html = Perron::Metatags.new(resource).render
+    html = Perron::Metatags.new(resource.metadata).render
 
     assert_match "<meta name=\"description\" content=\"Describing sample post\">", html
     assert_match "<meta property=\"og:url\" content=\"http://localhost:3000/sample-post/\">", html

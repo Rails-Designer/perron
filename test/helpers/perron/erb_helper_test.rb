@@ -3,7 +3,7 @@ require "test_helper"
 class ErbHelperTest < ActionView::TestCase
   include Perron::ErbHelper
 
-  setup { @resource = Perron::Resource.new("test/dummy/app/content/pages/about.md") }
+  setup { @resource = Content::Page.new("test/dummy/app/content/pages/about.md") }
 
   test "erbify processes a string with access to @resource" do
     content_string = "Page Title: <%= @resource.metadata.title %>"

@@ -7,13 +7,14 @@ module Perron
     class Slug
       using Perron::SuffixStripping
 
-      def initialize(resource)
+      def initialize(resource, frontmatter)
         @resource = resource
-        @metadata = resource.metadata
+        @frontmatter = frontmatter
       end
 
       def create
-        @metadata.slug.presence || @resource.filename.sub(/^[\d-]+-/, "").delete_suffixes(dot_prepended_allowed_extensions)
+        @frontmatter.slug.presence ||
+          @resource.filename.sub(/^[\d-]+-/, "").delete_suffixes(dot_prepended_allowed_extensions)
       end
 
       private

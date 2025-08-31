@@ -2,8 +2,7 @@ require "test_helper"
 
 class Perron::Resource::RendererTest < ActiveSupport::TestCase
   setup do
-    @resource_path = "test/dummy/app/content/pages/about.md"
-    @resource = Perron::Resource.new(@resource_path)
+    @resource = Content::Page.new("test/dummy/app/content/pages/about.md")
   end
 
   test "renders basic ERB content" do
