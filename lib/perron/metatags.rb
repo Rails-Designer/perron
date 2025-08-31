@@ -21,6 +21,7 @@ module Perron
     def tags
       @tags ||= {
         title: title_tag(@data[:title]),
+        canonical: link_tag(rel: "canonical", href: @data[:canonical_url]),
 
         description: meta_tag(name: "description", content: @data[:description]),
         article_published: meta_tag(property: "article:published_time", content: @data[:article_published_time]),
@@ -49,6 +50,12 @@ module Perron
       suffix = (title_suffix if title_suffix.present? && resource_title != title_suffix)
 
       tag.title([resource_title, suffix].compact.join(config.metadata.title_separator))
+    end
+
+    def link_tag(attributes)
+      return if attributes[:href].blank?
+
+      tag.link(**attributes)
     end
 
     def meta_tag(attributes)
