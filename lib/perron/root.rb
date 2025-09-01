@@ -5,7 +5,7 @@ module Perron
     include ActiveSupport::Concern
 
     def root
-      @resource = Content::Page.find("/")
+      @resource = Content::Page.root
 
       render :show
     end

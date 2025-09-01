@@ -30,13 +30,17 @@ module Perron
 
         def collection = Collection.new(collection_name)
 
+        def root
+          collection_name.pages? && collection.find_by_file_name("root", name.constantize)
+        end
+
         def model_name
           @model_name ||= ActiveModel::Name.new(self, nil, name.demodulize.to_s)
         end
 
         private
 
-        def collection_name = name.demodulize.underscore.pluralize
+        def collection_name = name.demodulize.underscore.pluralize.inquiry
       end
     end
   end
