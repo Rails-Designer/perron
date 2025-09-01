@@ -12,6 +12,9 @@ class Perron::Resource::MetadataTest < ActiveSupport::TestCase
     @custom_page_frontmatter = Perron::Resource::Separator.new(@custom_page.raw_content).frontmatter
     @pages_collection = Perron::Site.collection("pages")
 
+    @root_page = Content::Page.new("test/dummy/app/content/pages/root.erb")
+    @root_page_frontmatter = Perron::Resource::Separator.new(@root_page.raw_content).frontmatter
+
     @about_page = Content::Page.new("test/dummy/app/content/pages/about.md")
     @about_page_frontmatter = Perron::Resource::Separator.new(@about_page.raw_content).frontmatter
   end
@@ -113,6 +116,16 @@ class Perron::Resource::MetadataTest < ActiveSupport::TestCase
     assert_not metadata.key?(:og_image), "key :og_image should be removed"
     assert_not metadata.key?(:twitter_image), "key :twitter_image should be removed"
     assert_not metadata.key?(:author), "key :author should be removed"
+  end
+
+  test "generates canonical url for root" do
+    metadata = Perron::Resource::Metadata.new(
+      resource: @root_page,
+      frontmatter: @root_page_frontmatter,
+      collection: @pages_collection
+    ).data
+
+    assert_equal "http://localhost:3000/", metadata.og_url
   end
 
   test "generates canonical url with trailing slash when configured" do

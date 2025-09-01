@@ -33,7 +33,7 @@ class Perron::MetatagsTest < ActiveSupport::TestCase
   test "renders title using Rails application name when resource has no title" do
     Perron.configuration.metadata.title_suffix = nil
 
-    resource = Content::Post.new("test/dummy/app/content/pages/root.md")
+    resource = Content::Post.new("test/dummy/app/content/pages/root.erb")
     html = Perron::Metatags.new(resource.metadata).render
 
     assert_match "<title>Dummy App</title>", html
