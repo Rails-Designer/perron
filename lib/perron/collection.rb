@@ -29,5 +29,11 @@ module Perron
 
       raise Errors::ResourceNotFoundError, "Resource not found with slug: #{slug}"
     end
+
+    def find_by_file_name(file_name, resource_class = Resource)
+      resource_class.new(
+        Perron.configuration.allowed_extensions.lazy.map { File.join(@collection_path, [file_name, it].join(".")) }.find { File.exist?(it) }
+      )
+    end
   end
 end
