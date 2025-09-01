@@ -2,9 +2,18 @@ require "test_helper"
 
 class Perron::Site::Resource::SlugTest < ActiveSupport::TestCase
   def setup
+    @root_file = "test/dummy/app/content/pages/root.erb"
     @dated_file = "test/dummy/app/content/posts/2023-05-15-sample-post.md"
     @normal_file = "test/dummy/app/content/pages/about.md"
     @custom_file = "test/dummy/app/content/pages/custom.md"
+  end
+
+  def test_create_with_root_file
+    resource = Perron::Resource.new(@root_file)
+    frontmatter = Perron::Resource::Separator.new(resource.raw_content).frontmatter
+    slug = Perron::Resource::Slug.new(resource, frontmatter)
+
+    assert_equal "/", slug.create
   end
 
   def test_create_with_dated_file

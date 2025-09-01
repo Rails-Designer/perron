@@ -71,7 +71,7 @@ This will create the following files:
 
 ### Setting a root page
 
-To set a root page, include `Perron::Root` in your `Content::PagesController` and add a `app/content/pages/root.{md,erb,*}` file (make sure to set `slug: "/"` in its frontmatter). This is automatically added for you when you create a `Page` collection.
+To set a root page, include `Perron::Root` in your `Content::PagesController` and add a `app/content/pages/root.{md,erb,*}` file. This is automatically added for you when you create a `Page` collection.
 
 
 ## Markdown support
