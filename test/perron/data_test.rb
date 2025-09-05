@@ -76,4 +76,23 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
       Perron::Data.new("not_an_array")
     end
   end
+
+  test "#to_partial_path returns the conventional path from a logical name" do
+    data = Perron::Data.new("users")
+
+    assert_equal "content/users/user", data.first.to_partial_path
+  end
+
+  test "#to_partial_path returns the conventional path from a nested logical name" do
+    data = Perron::Data.new("users/admins")
+
+    assert_equal "content/users/admins/admin", data.first.to_partial_path
+  end
+
+  test "#to_partial_path returns the conventional path from a full file path" do
+    full_path = Rails.root.join("app", "content", "data", "products.json").to_s
+    data = Perron::Data.new(full_path)
+
+    assert_equal "content/products/product", data.first.to_partial_path
+  end
 end

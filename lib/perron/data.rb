@@ -5,6 +5,7 @@ require "csv"
 module Perron
   class Data < SimpleDelegator
     def initialize(identifier)
+      @identifier = identifier
       @file_path = self.class.path_for!(identifier)
       @records = records
 
@@ -47,7 +48,7 @@ module Perron
         raise Errors::DataParseError, "Data in `#{@file_path}` must be an array of objects."
       end
 
-      data.map { Item.new(it) }
+      data.map { Item.new(it, identifier: @identifier) }
     end
 
     def rendered_from(path)
@@ -97,11 +98,20 @@ module Perron
     private_constant :HelperContext
 
     class Item
-      def initialize(attributes)
+      def initialize(attributes, identifier:)
         @attributes = attributes.transform_keys(&:to_sym)
+        @identifier = identifier
       end
 
       def [](key) = @attributes[key.to_sym]
+
+      def to_partial_path
+        identifier = @identifier.to_s
+        collection_path = File.extname(identifier).present? ? File.basename(identifier, ".*") : identifier
+        item = collection_path.split("/").last.singularize
+
+        File.join("content", collection_path, item)
+      end
 
       def method_missing(method_name, *arguments, &block)
         return super if !@attributes.key?(method_name) || arguments.any? || block
