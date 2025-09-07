@@ -78,14 +78,39 @@ To set a root page, include `Perron::Root` in your `Content::PagesController` an
 
 Perron supports markdown with the `markdownify` helper.
 
-There are no markdown gems bundled by default, so you'll need to add one of these:
+There are no markdown gems bundled by default, so you'll need to add one of these to your `Gemfile`:
 
-- CommonMarker
-- Kramdown
-- Redcarpet
+- `commonmarker`
+- `kramdown`
+- `redcarpet`
 
 ```bash
 bundle add {commonmarker,kramdown,redcarpet}
+```
+
+### Configuration
+
+To pass options to the parser, set `markdown_options` in `config/initializers/perron.rb`. The options hash is passed directly to the chosen library.
+
+**Commonmarker**
+```ruby
+# Options are passed as keyword arguments.
+Perron.configuration.markdown_options = { options: [:HARDBREAKS], extensions: [:table] }
+```
+
+**Kramdown**
+```ruby
+# Options are passed as a standard hash.
+Perron.configuration.markdown_options = { input: "GFM", smart_quotes: "apos,quot" }
+```
+
+**Redcarpet**
+```ruby
+# Options are nested under :renderer_options and :markdown_options.
+Perron.configuration.markdown_options = {
+  renderer_options: { hard_wrap: true },
+  markdown_options: { tables: true, autolink: true }
+}
 ```
 
 

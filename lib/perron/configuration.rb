@@ -36,6 +36,8 @@ module Perron
         trailing_slash: ENV.fetch("PERRON_TRAILING_SLASH", "true") == "true"
       }
 
+      @config.markdown_options = {}
+
       @config.sitemap = ActiveSupport::OrderedOptions.new
       @config.sitemap.enabled = false
       @config.sitemap.priority = 0.5
