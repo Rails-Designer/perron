@@ -53,6 +53,15 @@ module Perron
     def raw_content = File.read(@file_path)
     alias_method :raw, :raw_content
 
+    def to_partial_path
+      @to_partial_path ||= begin
+        element = ActiveSupport::Inflector.underscore(ActiveSupport::Inflector.demodulize(self.class.model_name))
+        collection = ActiveSupport::Inflector.tableize(self.class.model_name)
+
+        File.join("content", collection, element)
+      end
+    end
+
     def collection = Collection.new(self.class.model_name.collection)
 
     def related_resources(limit: 5) = Perron::Site::Resource::Related.new(self).find(limit:)

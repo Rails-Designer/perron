@@ -4,7 +4,6 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
   setup do
     @page_path = "test/dummy/app/content/pages/about.md"
     @post_path = "test/dummy/app/content/posts/2023-05-15-sample-post.md"
-    # @resource = Perron::Resource.new(@page_path)
     @page = Content::Page.new(@page_path)
     @post = Content::Post.new(@post_path)
   end
@@ -50,5 +49,13 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
 
   test "#raw is an alias for raw_content" do
     assert_equal @page.raw_content, @page.raw
+  end
+
+  test "#to_partial_path returns the conventional path from a logical name" do
+    assert_equal "content/pages/page", @page.to_partial_path
+  end
+
+  test "#to_partial_path returns the conventional path from a nested logical name" do
+    assert_equal "content/posts/post", @post.to_partial_path
   end
 end

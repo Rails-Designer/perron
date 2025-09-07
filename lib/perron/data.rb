@@ -106,11 +106,13 @@ module Perron
       def [](key) = @attributes[key.to_sym]
 
       def to_partial_path
-        identifier = @identifier.to_s
-        collection_path = File.extname(identifier).present? ? File.basename(identifier, ".*") : identifier
-        item = collection_path.split("/").last.singularize
+        @to_partial_path ||= begin
+          identifier = @identifier.to_s
+          collection = File.extname(identifier).present? ? File.basename(identifier, ".*") : identifier
+          element = ActiveSupport::Inflector.underscore(ActiveSupport::Inflector.singularize(File.basename(collection)))
 
-        File.join("content", collection_path, item)
+          File.join("content", collection, element)
+        end
       end
 
       def method_missing(method_name, *arguments, &block)
