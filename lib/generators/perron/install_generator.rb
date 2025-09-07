@@ -18,7 +18,8 @@ module Perron
     def add_markdown_gems
       append_to_file "Gemfile", <<~RUBY
 
-        # Perron can use one of the following gems. Uncomment your preferred choice and run `bundle install`
+        # Perron supports Markdown rendering using one of the following gems.
+        # Uncomment your preferred choice and run `bundle install`
         # gem "commonmarker"
         # gem "kramdown"
         # gem "redcarpet"
