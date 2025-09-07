@@ -62,6 +62,10 @@ module Perron
       end
     end
 
+    def root?
+      collection.name.inquiry.pages? && File.basename(filename) == "root"
+    end
+
     def collection = Collection.new(self.class.model_name.collection)
 
     def related_resources(limit: 5) = Perron::Site::Resource::Related.new(self).find(limit:)

@@ -40,7 +40,7 @@ module Perron
 
         private
 
-        def collection_name = name.demodulize.underscore.pluralize.inquiry
+        def collection_name = name.demodulize.underscore.pluralize
       end
     end
   end
