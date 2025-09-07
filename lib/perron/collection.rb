@@ -5,7 +5,7 @@ module Perron
     attr_reader :name
 
     def initialize(name)
-      @name = name
+      @name = name.inquiry
       @collection_path = File.join(Perron.configuration.input, name)
 
       raise Errors::CollectionNotFoundError, "No such collection: #{name}" unless File.exist?(@collection_path) && File.directory?(@collection_path)

@@ -32,6 +32,7 @@ class Perron::Site::Builder::SitemapTest < ActiveSupport::TestCase
     urls = sitemap.xpath("//url/loc").map(&:text)
     host = Perron.configuration.default_url_options[:host]
 
+    assert_includes urls, "http://#{host}/"
     assert_includes urls, "http://#{host}/about/"
     refute_includes urls, "http://#{host}/blog/"
   end

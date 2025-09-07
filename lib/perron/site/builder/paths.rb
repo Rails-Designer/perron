@@ -13,7 +13,7 @@ module Perron
 
           if routes.respond_to?(show_path)
             @collection.all.each do |resource|
-              root = resource.slug == "/"
+              root = resource.root?
 
               next if skip? root
 
