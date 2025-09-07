@@ -13,7 +13,6 @@ module Perron
       end
 
       def create
-        # return "/" if @resource.root?
         return "/" if Perron.configuration.allowed_extensions.any? { @resource.filename == "root.#{it}" }
 
         @frontmatter.slug.presence ||
