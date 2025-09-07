@@ -18,7 +18,7 @@ module Perron
       end
 
       def markdown_parser
-        if defined?(::CommonMarker)
+        if defined?(::Commonmarker)
           CommonMarkerParser.new
         elsif defined?(::Kramdown)
           KramdownParser.new
@@ -31,17 +31,18 @@ module Perron
     end
 
     class CommonMarkerParser
-      def parse(text) = CommonMarker.render_html(text, :DEFAULT)
+      def parse(text) = Commonmarker.to_html(text, **Perron.configuration.markdown_options)
     end
 
     class KramdownParser
-      def parse(text) = Kramdown::Document.new(text).to_html
+      def parse(text) = Kramdown::Document.new(text, Perron.configuration.markdown_options).to_html
     end
 
     class RedcarpetParser
       def parse(text)
-        renderer = Redcarpet::Render::HTML.new(filter_html: true)
-        markdown = Redcarpet::Markdown.new(renderer, autolink: true, tables: true)
+        options = Perron.configuration.markdown_options
+        renderer = Redcarpet::Render::HTML.new(options.fetch(:renderer_options, {}))
+        markdown = Redcarpet::Markdown.new(renderer, options.fetch(:markdown_options, {}))
 
         markdown.render(text)
       end
