@@ -35,6 +35,13 @@ class ContentGenerator < Rails::Generators::NamedBase
     route "resources :#{plural_file_name}, module: :content, only: %w[#{actions.join(" ")}]"
   end
 
+  def add_root_route
+    return unless pages_controller?
+    return if root_route_exists?
+
+    inject_into_file "config/routes.rb", "  root to: \"content/pages#show\"\n", before: /^\s*end\s*$/
+  end
+
   private
 
   def view_directory = Rails.root.join("app", "views", "content", plural_file_name)
@@ -44,4 +51,12 @@ class ContentGenerator < Rails::Generators::NamedBase
   def plural_class_name = plural_name.camelize
 
   def pages_controller? = plural_file_name == "pages"
+
+  def root_route_exists?
+    routes = Rails.root.join("config", "routes.rb")
+
+    return false unless File.exist?(routes)
+
+    File.read(routes).match?(/\broot\s+to:/)
+  end
 end
