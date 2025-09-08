@@ -5,6 +5,8 @@ require "rails/generators/base"
 class ContentGenerator < Rails::Generators::NamedBase
   source_root File.expand_path("templates", __dir__)
 
+  class_option :force_plural, type: :boolean, default: false, desc: "Forces the use of a plural model name and class"
+
   argument :actions, type: :array, default: %w[index show], desc: "Specify which actions to generate (index/show)"
 
   def create_model
@@ -43,6 +45,14 @@ class ContentGenerator < Rails::Generators::NamedBase
   end
 
   private
+
+  def file_name
+    options[:force_plural] ? super.pluralize : super.singularize
+  end
+
+  def class_name
+    options[:force_plural] ? super.pluralize : super.singularize
+  end
 
   def view_directory = Rails.root.join("app", "views", "content", plural_file_name)
 
