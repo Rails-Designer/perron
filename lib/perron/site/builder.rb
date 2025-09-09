@@ -39,7 +39,7 @@ module Perron
       def paths
         Set.new.tap do |paths|
           Perron::Site.collections.each { Perron::Site::Builder::Paths.new(it, paths).get }
-        end.to_a
+        end
       end
 
       def render_page(path) = Perron::Site::Builder::Page.new(path).render
