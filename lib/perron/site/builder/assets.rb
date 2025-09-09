@@ -29,7 +29,8 @@ module Perron
           end
 
           FileUtils.mkdir_p(destination)
-          FileUtils.cp_r(Dir.glob("#{source}/*"), destination)
+          FileUtils.move(Dir.glob("#{source}/*"), destination, force: true)
+          FileUtils.remove_dir(source)
 
           puts "   Copied assets to `#{destination.relative_path_from(Rails.root)}`"
 
