@@ -18,8 +18,8 @@ module Perron
             Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
               xml.rss(:version => "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom") do
                 xml.channel do
-                  xml.title @configuration.site_name
-                  xml.description @configuration.site_description
+                  xml.title feed_configuration.title.presence || @configuration.site_name
+                  xml.description feed_configuration.description.presence || @configuration.site_description
                   xml.link @configuration.url
                   xml.generator "Perron (#{Perron::VERSION})"
 
@@ -46,8 +46,10 @@ module Perron
               .reject { it.metadata.feed == false }
               .sort_by { it.metadata.published_at || it.metadata.updated_at || Time.current }
               .reverse
-              .take(@collection.configuration.feeds.rss.max_items)
+              .take(feed_configuration.max_items)
           end
+
+          def feed_configuration = @collection.configuration.feeds.rss
         end
       end
     end

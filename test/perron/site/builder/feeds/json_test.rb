@@ -2,6 +2,7 @@ require "test_helper"
 
 class Perron::Site::Builder::Feeds::JsonTest < ActiveSupport::TestCase
   include ConfigurationHelper
+  include FeedConfigurationHelper
 
   setup do
     @collection = Perron::Site.collection("posts")
@@ -15,6 +16,8 @@ class Perron::Site::Builder::Feeds::JsonTest < ActiveSupport::TestCase
 
     assert_equal "https://jsonfeed.org/version/1.1", json["version"]
     assert_equal "Dummy App", json["title"]
+    assert_nil json["description"]
+    assert_equal "http://localhost:3000/", json["home_page_url"]
     assert_equal 2, json["items"].count, "Should include 2 posts (one is excluded by frontmatter)"
 
     titles = json["items"].map { it["title"] }
@@ -28,5 +31,15 @@ class Perron::Site::Builder::Feeds::JsonTest < ActiveSupport::TestCase
 
     assert_equal 1, json["items"].count
     assert_equal "Another Sample Post", json["items"].first["title"]
+  end
+
+  test "configured feed name and description" do
+    @collection.configuration.feeds.json.title = "Custom JSON title"
+    @collection.configuration.feeds.json.description = "Custom JSON description"
+
+    json = JSON.parse(@builder.generate)
+
+    assert_equal "Custom JSON title", json["title"]
+    assert_equal "Custom JSON description", json["description"]
   end
 end
