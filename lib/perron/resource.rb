@@ -19,6 +19,7 @@ module Perron
     include Perron::Resource::ClassMethods
     include Perron::Resource::Publishable
 
+
     attr_reader :file_path, :id
 
     def initialize(file_path)
@@ -34,14 +35,6 @@ module Perron
     alias_method :path, :slug
     alias_method :to_param, :slug
 
-    def content
-      page_content = Perron::Resource::Separator.new(raw_content).content
-
-      return page_content unless erb_processing?
-
-      Perron::Resource::Renderer.erb(page_content, {resource: self})
-    end
-
     def metadata
       Perron::Resource::Metadata.new(
         resource: self,
@@ -53,6 +46,14 @@ module Perron
     def raw_content = File.read(@file_path)
     alias_method :raw, :raw_content
 
+    def content
+      page_content = Perron::Resource::Separator.new(raw_content).content
+
+      return page_content unless erb_processing?
+
+      Perron::Resource::Renderer.erb(page_content, {resource: self})
+    end
+
     def to_partial_path
       @to_partial_path ||= begin
         element = ActiveSupport::Inflector.underscore(ActiveSupport::Inflector.demodulize(self.class.model_name))
@@ -60,10 +61,6 @@ module Perron
 
         File.join("content", collection, element)
       end
-    end
-
-    def root?
-      collection.name.inquiry.pages? && File.basename(filename) == "root"
     end
 
     def collection = Collection.new(self.class.model_name.collection)
@@ -77,14 +74,18 @@ module Perron
       @frontmatter ||= Perron::Resource::Separator.new(raw_content).frontmatter
     end
 
-    def erb_processing?
-      @file_path.ends_with?(".erb") || metadata.erb == true
-    end
-
     def generate_id
       Digest::SHA1.hexdigest(
         @file_path.delete_prefix(Perron.configuration.input.to_s).parameterize
       ).first(ID_LENGTH)
+    end
+
+    def erb_processing?
+      @file_path.ends_with?(".erb") || metadata.erb == true
+    end
+
+    def root?
+      collection.name.inquiry.pages? && File.basename(filename) == "root"
     end
   end
 end

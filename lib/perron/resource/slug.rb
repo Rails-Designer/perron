@@ -5,7 +5,7 @@ require "perron/refinements/delete_suffixes"
 module Perron
   class Resource
     class Slug
-      using Perron::SuffixStripping
+      using Perron::Refinements::DeleteSuffixes
 
       def initialize(resource, frontmatter)
         @resource = resource
