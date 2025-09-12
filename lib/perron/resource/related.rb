@@ -70,6 +70,7 @@ module Perron
           @tokenized_content ||= {}
 
           return @tokenized_content[target_resource] if @tokenized_content.key?(target_resource)
+          return [] if target_resource.content.blank?
 
           content = target_resource.content.gsub(/<[^>]*>/, " ")
           tokens = content.downcase.scan(/\w+/).reject { StopWords.all.include?(it) || it.length < 3 }
