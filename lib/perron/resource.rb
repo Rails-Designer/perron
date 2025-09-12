@@ -19,7 +19,6 @@ module Perron
     include Perron::Resource::ClassMethods
     include Perron::Resource::Publishable
 
-
     attr_reader :file_path, :id
 
     def initialize(file_path)
