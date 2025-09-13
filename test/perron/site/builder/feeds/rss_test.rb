@@ -2,7 +2,6 @@ require "test_helper"
 
 class Perron::Site::Builder::Feeds::RssTest < ActiveSupport::TestCase
   include ConfigurationHelper
-  include FeedConfigurationHelper
 
   setup do
     @collection = Perron::Site.collection("posts")
@@ -10,35 +9,39 @@ class Perron::Site::Builder::Feeds::RssTest < ActiveSupport::TestCase
   end
 
   test "generates correct RSS string with items sorted by date" do
-    @collection.configuration.feeds.rss.max_items = 10
+    @collection.configuration.feeds.rss.stub(:max_items, 10) do
+      rss = Nokogiri::XML(@builder.generate).remove_namespaces!
 
-    rss = Nokogiri::XML(@builder.generate).remove_namespaces!
+      assert_equal "Dummy App", rss.at_xpath("//channel/title").text
+      assert_equal "", rss.at_xpath("//channel/description").text
+      assert_equal "http://localhost:3000/", rss.at_xpath("//channel/link").text
+      assert_equal 2, rss.xpath("//item").count, "Should include 2 posts (one is excluded by frontmatter)"
 
-    assert_equal "Dummy App", rss.at_xpath("//channel/title").text
-    assert_equal "", rss.at_xpath("//channel/description").text
-    assert_equal "http://localhost:3000/", rss.at_xpath("//channel/link").text
-    assert_equal 2, rss.xpath("//item").count, "Should include 2 posts (one is excluded by frontmatter)"
-
-    titles = rss.xpath("//item/title").map(&:text)
-    assert_equal ["Another Sample Post", "Sample Post"], titles, "Posts should be sorted by date descending"
+      titles = rss.xpath("//item/title").map(&:text)
+      assert_equal ["Another Sample Post", "Sample Post"], titles, "Posts should be sorted by date descending"
+    end
   end
 
   test "respects max_items configuration" do
-    @collection.configuration.feeds.rss.max_items = 1
+    @collection.configuration.feeds.rss.stub(:max_items, 1) do
+      rss = Nokogiri::XML(@builder.generate).remove_namespaces!
 
-    rss = Nokogiri::XML(@builder.generate).remove_namespaces!
-
-    assert_equal 1, rss.xpath("//item").count
-    assert_equal "Another Sample Post", rss.at_xpath("//item/title").text
+      assert_equal 1, rss.xpath("//item").count
+      assert_equal "Another Sample Post", rss.at_xpath("//item/title").text
+    end
   end
 
   test "configured feed name and description" do
-    @collection.configuration.feeds.rss.title = "Custom RSS title"
-    @collection.configuration.feeds.rss.description = "Custom RSS description"
+    @collection.configuration.feeds.rss.stub(:title, "Custom RSS title") do
+      rss = Nokogiri::XML(@builder.generate).remove_namespaces!
 
-    rss = Nokogiri::XML(@builder.generate).remove_namespaces!
+      assert_equal "Custom RSS title", rss.at_xpath("//channel/title").text
+    end
 
-    assert_equal "Custom RSS title", rss.at_xpath("//channel/title").text
-    assert_equal "Custom RSS description", rss.at_xpath("//channel/description").text
+    @collection.configuration.feeds.rss.stub(:description, "Custom RSS description") do
+      rss = Nokogiri::XML(@builder.generate).remove_namespaces!
+
+      assert_equal "Custom RSS description", rss.at_xpath("//channel/description").text
+    end
   end
 end
