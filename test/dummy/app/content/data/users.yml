@@ -1,4 +1,17 @@
-- name: Cam
-  role: administrator
-- name: Kendall
+- name: "Cam"
+  role: "administrator"
+  bio: |
+    Cam is a seasoned administrator with over 10_000 (really!) years of experience
+    in system management and team leadership (though he has no clue what that means).
+  notes: |+
+    Joined the company in 2015
+    Led the migration from some Ruby-based SGG to Perron
+
+- name: "Kendall"
   role: moderator
+  bio: >
+    Kendall is a Rails Designer (product UI engineer) who loves building
+    user-friendly apps in Rails and Hotwire.
+  notes: >-
+    Working on the new dashboard feature
+    Specialty coffee afficonado (but not annoying about it)

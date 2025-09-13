@@ -95,4 +95,28 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
 
     assert_equal "content/products/product", data.first.to_partial_path
   end
+
+  test "parses YAML literal block scalar" do
+    data = Perron::Data.new("users")
+
+    assert_includes data.first.bio, "\n"
+  end
+
+  test "parses YAML folded block scalar" do
+    data = Perron::Data.new("users")
+
+    refute_includes data.last.bio.strip, "\n"
+  end
+
+  test "parses YAML literal keep block scalar" do
+    data = Perron::Data.new("users")
+
+    assert_match /\n\n\z/, data.first.notes
+  end
+
+  test "parses YAML folded strip block scalar" do
+    data = Perron::Data.new("users")
+
+    refute_match /\n\z/, data.last.notes
+  end
 end
