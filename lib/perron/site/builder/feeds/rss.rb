@@ -28,7 +28,7 @@ module Perron
                       xml.item do
                         xml.guid resource.id
                         xml.link url.polymorphic_url(resource), isPermaLink: true
-                        xml.pubDate((resource.metadata.published_at || resource.metadata.updated_at)&.rfc822)
+                        xml.pubDate((resource.published_at)&.rfc822)
                         xml.title resource.metadata.title
                         xml.description { xml.cdata(Perron::Markdown.render(resource.content)) }
                       end

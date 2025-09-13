@@ -25,6 +25,7 @@ module Perron
         private
 
         def add_urls_for(collection, with:)
+          return if collection.configuration.blank?
           return if collection.configuration.sitemap.exclude == true
 
           collection.resources.each do |resource|
