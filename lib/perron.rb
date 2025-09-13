@@ -3,6 +3,7 @@
 require "perron/version"
 require "perron/configuration"
 require "perron/errors"
+require "perron/json_ld"
 require "perron/root"
 require "perron/site"
 require "perron/resource"
