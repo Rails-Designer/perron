@@ -25,7 +25,7 @@ module Perron
                   {
                     id: resource.id,
                     url: url.polymorphic_url(resource),
-                    date_published: (resource.published_at)&.iso8601,
+                    date_published: resource.published_at&.iso8601,
                     title: resource.metadata.title,
                     content_html: Perron::Markdown.render(resource.content)
                   }

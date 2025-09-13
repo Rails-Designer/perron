@@ -94,6 +94,8 @@ module Perron
       end
 
       def get_binding = binding
+
+      def default_url_options = Perron.configuration.default_url_options || {}
     end
     private_constant :HelperContext
 

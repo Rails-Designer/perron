@@ -13,7 +13,7 @@ module Perron
 
         def generate
           Perron::Site.collections.each do |collection|
-            return if collection.configuration.blank?
+            next if collection.configuration.blank?
 
             config = collection.configuration.feeds
 
