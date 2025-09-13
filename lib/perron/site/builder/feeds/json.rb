@@ -18,9 +18,9 @@ module Perron
             hash = Rails.application.routes.url_helpers.with_options(@configuration.default_url_options) do |url|
               {
                 version: "https://jsonfeed.org/version/1.1",
-                title: @configuration.site_name,
                 home_page_url: @configuration.url,
-                description: @configuration.site_description,
+                title: feed_configuration.title.presence || @configuration.site_name,
+                description: feed_configuration.description.presence || @configuration.site_description,
                 items: resources.map do |resource|
                   {
                     id: resource.id,
@@ -43,8 +43,10 @@ module Perron
               .reject { it.metadata.feed == false }
               .sort_by { it.metadata.published_at || it.metadata.updated_at || Time.current }
               .reverse
-              .take(@collection.configuration.feeds.json.max_items)
+              .take(feed_configuration.max_items)
           end
+
+          def feed_configuration = @collection.configuration.feeds.json
         end
       end
     end
