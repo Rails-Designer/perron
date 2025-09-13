@@ -12,7 +12,7 @@ module Perron
     end
 
     def configuration(resource_class = "Content::#{name.classify}".safe_constantize)
-      resource_class.configuration
+      resource_class&.configuration
     end
 
     def all(resource_class = "Content::#{name.classify}".safe_constantize)

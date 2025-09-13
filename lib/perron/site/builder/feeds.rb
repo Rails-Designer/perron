@@ -13,6 +13,8 @@ module Perron
 
         def generate
           Perron::Site.collections.each do |collection|
+            return if collection.configuration.blank?
+
             config = collection.configuration.feeds
 
             if config.rss.enabled

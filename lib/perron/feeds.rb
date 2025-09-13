@@ -13,6 +13,7 @@ module Perron
 
           next if options[:only]&.map(&:to_s)&.exclude?(collection_name)
           next if options[:except]&.map(&:to_s)&.include?(collection_name)
+          next if collection.configuration.blank?
 
           collection.configuration.feeds.each do |type, feed|
             next unless feed.enabled && feed.path && MIME_TYPES.key?(type)
