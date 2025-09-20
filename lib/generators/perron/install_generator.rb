@@ -25,5 +25,9 @@ module Perron
         # gem "redcarpet"
       RUBY
     end
+
+    def gitignore_output_folder
+      append_to_file ".gitignore", "/#{Perron.configuration.output}/\n"
+    end
   end
 end
