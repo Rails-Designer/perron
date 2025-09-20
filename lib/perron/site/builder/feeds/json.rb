@@ -17,6 +17,7 @@ module Perron
 
             hash = Rails.application.routes.url_helpers.with_options(@configuration.default_url_options) do |url|
               {
+                generator: "Perron (#{Perron::VERSION})",
                 version: "https://jsonfeed.org/version/1.1",
                 home_page_url: @configuration.url,
                 title: feed_configuration.title.presence || @configuration.site_name,

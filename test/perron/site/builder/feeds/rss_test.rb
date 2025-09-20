@@ -12,6 +12,7 @@ class Perron::Site::Builder::Feeds::RssTest < ActiveSupport::TestCase
     @collection.configuration.feeds.rss.stub(:max_items, 10) do
       rss = Nokogiri::XML(@builder.generate).remove_namespaces!
 
+      assert_equal "Perron (#{Perron::VERSION})", rss.at_xpath("//channel/generator").text
       assert_equal "Dummy App", rss.at_xpath("//channel/title").text
       assert_equal "", rss.at_xpath("//channel/description").text
       assert_equal "http://localhost:3000/", rss.at_xpath("//channel/link").text
