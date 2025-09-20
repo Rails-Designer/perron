@@ -38,7 +38,7 @@ end
 
 ## Mode
 
-Perron can operate in two modes, configured via `config.mode`. This allows you to build either a full static site or integrate pages into a dynamic Rails application.
+Perron can operate in two modes, configured via `config.mode`. This allows a build to be either a full static site or be integrated pages in a dynamic Rails application.
 
 | **Mode** | `:standalone` (default) | `:integrated` |
 | :--- | :--- | :--- |
@@ -54,7 +54,7 @@ Perron is, just like Rails, designed with convention over configuration in mind.
 The controllers are located in `app/controllers/content/`. To make them available, create a route: `resources :posts, module: :content, only: %w[index show]`.
 
 
-### Create content
+### Create a new collection
 
 ```bash
 bin/rails generate content Post
@@ -66,12 +66,39 @@ This will create the following files:
 * `app/controllers/content/posts_controller.rb`
 * `app/views/content/posts/index.html.erb`
 * `app/views/content/posts/show.html.erb`
-* Adds route: `resources :posts, module: :content, only: %w[index show]`
+
+And adds a route: `resources :posts, module: :content, only: %w[index show]`
+
+
+### Routes
+
+Perron uses standard Rails routing, allowing the use of familiar route helpers. For a typical “clean slug”, the filename without extensions serves as the `id` parameter (slug).
+```ruby
+<%# For app/content/pages/about.md %>
+<%= link_to "About Us", page_path("about") # => <a href="/about/">About Us</a> %>
+```
+
+To create files with specific extensions directly (e.g., `pricing.html`), the route must first be configured to treat the entire filename as the ID. In `config/routes.rb`, modify the generated `resources` line by adding a `constraints` option:
+
+```ruby
+# Change from…
+resources :pages, path: "/", module: :content, only: %w[show]
+
+# …to…
+resources :pages, path: "/", module: :content, only: %w[show], constraints: { id: /[^\/]+/ }
+```
+
+With this change, a content file named `app/content/pages/pricing.html.erb` can be linked using the full filename. The builder will then create `pricing.html` in the output directory.
+```ruby
+<%= link_to "View Pricing", page_path("pricing", format: :html) # => <a href="/pricing.html">View Pricing</a> %>
+```
 
 
 ### Setting a root page
 
-To set a root page, include `Perron::Root` in your `Content::PagesController` and add a `app/content/pages/root.{md,erb,*}` file. This is automatically added for you when you create a `Page` collection.
+To set a root page, include `Perron::Root` in your `Content::PagesController` and add a `app/content/pages/root.{md,erb,*}` file. Then add `root to: "content/pages#root"` add the bottom of your `config/routes.erb`.
+
+This is automatically added for you when you create a `Page` collection.
 
 
 ## Markdown support
