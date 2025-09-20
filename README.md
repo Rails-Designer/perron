@@ -244,9 +244,9 @@ You can render data collections directly using Rails-like partial rendering. Whe
 <%= render Perron::Site.data.features %>
 ```
 
-This expects a partial at `app/views/features/_feature.html.erb` that will be rendered once for each feature in your data file. The individual record is made available as a local variable matching the singular form of the collection name.
+This expects a partial at `app/views/content/features/_feature.html.erb` that will be rendered once for each feature in your data file. The individual record is made available as a local variable matching the singular form of the collection name.
 ```erb
-<!-- app/views/features/_feature.html.erb -->
+<!-- app/views/content/features/_feature.html.erb -->
 <div class="feature">
   <h4><%= feature.name %></h4>
   <p><%= feature.description %></p>
