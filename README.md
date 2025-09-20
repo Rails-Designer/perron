@@ -72,25 +72,25 @@ And adds a route: `resources :posts, module: :content, only: %w[index show]`
 
 ### Routes
 
-Perron uses standard Rails routing, allowing the use of familiar route helpers. For a typical “clean slug”, the filename without extensions serves as the `id` parameter (slug).
+Perron uses standard Rails routing, allowing the use of familiar route helpers. For a typical “clean slug”, the filename without extensions serves as the `id` parameter.
 ```ruby
 <%# For app/content/pages/about.md %>
-<%= link_to "About Us", page_path("about") # => <a href="/about/">About Us</a> %>
+<%= link_to "About Us", page_path("about") %> # => <a href="/about/">About Us</a>
 ```
 
 To create files with specific extensions directly (e.g., `pricing.html`), the route must first be configured to treat the entire filename as the ID. In `config/routes.rb`, modify the generated `resources` line by adding a `constraints` option:
 
 ```ruby
 # Change from…
-resources :pages, path: "/", module: :content, only: %w[show]
+resources :pages, module: :content, only: %w[show]
 
 # …to…
-resources :pages, path: "/", module: :content, only: %w[show], constraints: { id: /[^\/]+/ }
+resources :pages, module: :content, only: %w[show], constraints: { id: /[^\/]+/ }
 ```
 
 With this change, a content file named `app/content/pages/pricing.html.erb` can be linked using the full filename. The builder will then create `pricing.html` in the output directory.
 ```ruby
-<%= link_to "View Pricing", page_path("pricing", format: :html) # => <a href="/pricing.html">View Pricing</a> %>
+<%= link_to "View Pricing", page_path("pricing", format: :html) %> # => <a href="/pricing.html">View Pricing</a>
 ```
 
 
