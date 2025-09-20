@@ -18,10 +18,10 @@ module Perron
             Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
               xml.rss(:version => "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom") do
                 xml.channel do
+                  xml.generator "Perron (#{Perron::VERSION})"
                   xml.title feed_configuration.title.presence || @configuration.site_name
                   xml.description feed_configuration.description.presence || @configuration.site_description
                   xml.link @configuration.url
-                  xml.generator "Perron (#{Perron::VERSION})"
 
                   Rails.application.routes.url_helpers.with_options(@configuration.default_url_options) do |url|
                     resources.each do |resource|

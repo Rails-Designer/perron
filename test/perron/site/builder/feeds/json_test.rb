@@ -12,6 +12,7 @@ class Perron::Site::Builder::Feeds::JsonTest < ActiveSupport::TestCase
     @collection.configuration.feeds.json.stub(:max_items, 10) do
       json = JSON.parse(@builder.generate)
 
+      assert_equal "Perron (#{Perron::VERSION})", json["generator"]
       assert_equal "https://jsonfeed.org/version/1.1", json["version"]
       assert_equal "Dummy App", json["title"]
       assert_nil json["description"]
