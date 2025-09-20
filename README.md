@@ -88,10 +88,12 @@ resources :pages, module: :content, only: %w[show]
 resources :pages, module: :content, only: %w[show], constraints: { id: /[^\/]+/ }
 ```
 
-With this change, a content file named `app/content/pages/pricing.html.erb` can be linked using the full filename. The builder will then create `pricing.html` in the output directory.
+With this change, a content file named `app/content/pages/pricing.html.erb` can be linked like so:
 ```ruby
 <%= link_to "View Pricing", page_path("pricing", format: :html) %> # => <a href="/pricing.html">View Pricing</a>
 ```
+
+Perron will then create `pricing.html`.
 
 
 ### Setting a root page
