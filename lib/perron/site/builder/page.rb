@@ -29,10 +29,12 @@ module Perron
         private
 
         def save_html(html)
-          directory_path = @output_path.join(@path.delete_prefix("/"))
-          file_path = directory_path.join("index.html")
+          prefixless_path = @path.delete_prefix("/")
 
-          FileUtils.mkdir_p(directory_path)
+          file_path = @output_path.join(prefixless_path)
+          file_path = file_path.join("index.html") if File.extname(prefixless_path).empty?
+
+          FileUtils.mkdir_p(file_path.dirname)
           File.write(file_path, html)
 
           print "\e[32m.\e[0m"
