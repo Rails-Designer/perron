@@ -13,7 +13,9 @@ A Rails-based static site generator.
 </a>
 
 
-[View the docs](https://perron.railsdesigner.com/docs/)
+## Documentation
+
+📑 [See the docs site (built with Perron!)](https://perron.railsdesigner.com/docs/)
 
 
 ## License
