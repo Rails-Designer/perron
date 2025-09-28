@@ -4,6 +4,8 @@ module Perron
   class InstallGenerator < Rails::Generators::Base
     source_root File.expand_path("templates", __dir__)
 
+    desc "Install Perron in your Rails app"
+
     def copy_initializer
       template "initializer.rb.tt", "config/initializers/perron.rb"
     end

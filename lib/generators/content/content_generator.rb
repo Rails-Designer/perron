@@ -7,7 +7,7 @@ class ContentGenerator < Rails::Generators::NamedBase
 
   class_option :force_plural, type: :boolean, default: false, desc: "Forces the use of a plural model name and class"
 
-  argument :actions, type: :array, default: %w[index show], desc: "Specify which actions to generate (index/show)"
+  argument :actions, type: :array, default: %w[index show], banner: "actions", desc: "Specify which actions to generate (index/show)"
 
   def create_model
     template "model.rb.tt", File.join("app/models/content", "#{file_name}.rb")
