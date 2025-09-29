@@ -18,6 +18,10 @@ module Perron
               next if skip? root
 
               @paths << (root ? routes.root_path : routes.public_send(show_path, resource))
+
+              (resource.class.try(:nested_routes) || []).each do |nested|
+                @paths << routes.polymorphic_path([resource, nested])
+              end
             end
           end
         end
