@@ -16,10 +16,10 @@ class Perron::Site::Builder::Feeds::RssTest < ActiveSupport::TestCase
       assert_equal "Dummy App", rss.at_xpath("//channel/title").text
       assert_equal "", rss.at_xpath("//channel/description").text
       assert_equal "http://localhost:3000/", rss.at_xpath("//channel/link").text
-      assert_equal 2, rss.xpath("//item").count, "Should include 2 posts (one is excluded by frontmatter)"
+      assert_equal 3, rss.xpath("//item").count, "Should include 2 posts (one is excluded by frontmatter)"
 
       titles = rss.xpath("//item/title").map(&:text)
-      assert_equal ["Another Sample Post", "Sample Post"], titles, "Posts should be sorted by date descending"
+      assert_equal ["Inline ERB post", "Another Sample Post", "Sample Post"], titles, "Posts should be sorted by date descending"
     end
   end
 
@@ -28,7 +28,7 @@ class Perron::Site::Builder::Feeds::RssTest < ActiveSupport::TestCase
       rss = Nokogiri::XML(@builder.generate).remove_namespaces!
 
       assert_equal 1, rss.xpath("//item").count
-      assert_equal "Another Sample Post", rss.at_xpath("//item/title").text
+      assert_equal "Inline ERB post", rss.at_xpath("//item/title").text
     end
   end
 

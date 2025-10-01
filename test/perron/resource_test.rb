@@ -4,8 +4,10 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
   setup do
     @page_path = "test/dummy/app/content/pages/about.md"
     @post_path = "test/dummy/app/content/posts/2023-05-15-sample-post.md"
+    @inline_erb_post_path = "test/dummy/app/content/posts/2025-10-01-inline-erb-post.md"
     @page = Content::Page.new(@page_path)
     @post = Content::Post.new(@post_path)
+    @inline_erb_post = Content::Post.new(@inline_erb_post_path) # <-- Addition
   end
 
   test "initialization sets file_path" do
@@ -37,6 +39,16 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
 
   test "#content returns processed content" do
     assert @post.content
+  end
+
+  test "#content renders inline ERB blocks using erbify helper" do
+    content = @inline_erb_post.content
+
+    assert_match "The slug for this resource is: inline-erb-post", content
+    assert_no_match(/<%= erbify do %>/, content)
+
+    assert_match "This is a regular paragraph", content
+    assert_match "And one more paragraph for good measure", content
   end
 
   test "#metadata returns metadata hash" do

@@ -48,9 +48,9 @@ module Perron
     def content
       page_content = Perron::Resource::Separator.new(raw_content).content
 
-      return page_content unless erb_processing?
+      return Perron::Resource::Renderer.erb(page_content, resource: self) if erb_processing?
 
-      Perron::Resource::Renderer.erb(page_content, {resource: self})
+      render_inline_erb using: page_content
     end
 
     def to_partial_path
@@ -77,6 +77,12 @@ module Perron
       Digest::SHA1.hexdigest(
         @file_path.delete_prefix(Perron.configuration.input.to_s).parameterize
       ).first(ID_LENGTH)
+    end
+
+    def render_inline_erb(using:)
+      using.gsub(/<%=\s*erbify\s+do\s*%>(.*?)<%\s*end\s*%>/m) do
+        Perron::Resource::Renderer.erb(Regexp.last_match(1).strip_heredoc, resource: self)
+      end
     end
 
     def erb_processing?
