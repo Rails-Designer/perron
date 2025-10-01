@@ -17,10 +17,10 @@ class Perron::Site::Builder::Feeds::JsonTest < ActiveSupport::TestCase
       assert_equal "Dummy App", json["title"]
       assert_nil json["description"]
       assert_equal "http://localhost:3000/", json["home_page_url"]
-      assert_equal 2, json["items"].count, "Should include 2 posts (one is excluded by frontmatter)"
+      assert_equal 3, json["items"].count, "Should include 3 posts (one is excluded by frontmatter)"
 
       titles = json["items"].map { it["title"] }
-      assert_equal ["Another Sample Post", "Sample Post"], titles, "Posts should be sorted by date descending"
+      assert_equal ["Inline ERB post", "Another Sample Post", "Sample Post"], titles, "Posts should be sorted by date descending"
     end
   end
 
@@ -29,7 +29,7 @@ class Perron::Site::Builder::Feeds::JsonTest < ActiveSupport::TestCase
       json = JSON.parse(@builder.generate)
 
       assert_equal 1, json["items"].count
-      assert_equal "Another Sample Post", json["items"].first["title"]
+      assert_equal "Inline ERB post", json["items"].first["title"]
     end
   end
 
