@@ -9,7 +9,7 @@ module Perron
         return [] if content.blank? || metadata.toc == false
 
         document = Nokogiri::HTML::DocumentFragment.parse(Markdown.render(content))
-        headings = extract_headings from: document, levels: levels.join(', ')
+        headings = extract_headings from: document, levels: levels.join(", ")
 
         Builder.new.build(headings)
       end
@@ -40,7 +40,7 @@ module Perron
 
       class Builder
         def build(headings)
-          parents = { 0 => { children: [] } }
+          parents = {0 => {children: []}}
 
           headings.each_with_object(parents[0][:children]) do |heading, _|
             parents.delete_if { |level, _| level >= heading.level }
