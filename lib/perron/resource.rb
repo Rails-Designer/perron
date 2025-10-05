@@ -9,6 +9,7 @@ require "perron/resource/related"
 require "perron/resource/renderer"
 require "perron/resource/slug"
 require "perron/resource/separator"
+require "perron/resource/table_of_content"
 
 module Perron
   class Resource
@@ -18,6 +19,7 @@ module Perron
     include Perron::Resource::Core
     include Perron::Resource::ClassMethods
     include Perron::Resource::Publishable
+    include Perron::Resource::TableOfContent
 
     attr_reader :file_path, :id
 
