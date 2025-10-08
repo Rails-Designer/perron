@@ -15,6 +15,8 @@ module Perron
   class Resource
     ID_LENGTH = 8
 
+    include ActiveModel::Validations
+
     include Perron::Resource::Configuration
     include Perron::Resource::Core
     include Perron::Resource::ClassMethods
@@ -24,6 +26,7 @@ module Perron
     attr_reader :file_path, :id
 
     def initialize(file_path)
+      @errors = ActiveModel::Errors.new(self)
       @file_path = file_path
       @id = generate_id
 

@@ -3,11 +3,13 @@ require "test_helper"
 class Perron::Site::ResourceTest < ActiveSupport::TestCase
   setup do
     @page_path = "test/dummy/app/content/pages/about.md"
+    @invalid_page = "test/dummy/app/content/pages/invalid.md"
     @post_path = "test/dummy/app/content/posts/2023-05-15-sample-post.md"
     @inline_erb_post_path = "test/dummy/app/content/posts/2025-10-01-inline-erb-post.md"
     @page = Content::Page.new(@page_path)
+    @invalid_page = Content::Page.new(@invalid_page)
     @post = Content::Post.new(@post_path)
-    @inline_erb_post = Content::Post.new(@inline_erb_post_path) # <-- Addition
+    @inline_erb_post = Content::Post.new(@inline_erb_post_path)
   end
 
   test "initialization sets file_path" do
@@ -69,5 +71,31 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
 
   test "#to_partial_path returns the conventional path from a nested logical name" do
     assert_equal "content/posts/post", @post.to_partial_path
+  end
+
+  test "#valid? returns true for valid page" do
+    assert_equal @page.valid?, true
+  end
+
+  test "#valid? returns false for invalid page" do
+    assert_equal @invalid_page.valid?, false
+  end
+
+  test "#validate returns true for valid page" do
+    assert_equal @page.validate, true
+  end
+
+  test "#validate returns false for invalid page" do
+    assert_equal @invalid_page.validate, false
+  end
+
+  test "#validate! returns true for valid page" do
+    assert_equal @page.validate!, true
+  end
+
+  test "#validate! returns false for invalid page" do
+    assert_raises(ActiveModel::ValidationError) { @invalid_page.validate! }
+    assert @invalid_page.errors.any?
+    assert_includes @invalid_page.errors.full_messages, "Description can't be blank"
   end
 end
