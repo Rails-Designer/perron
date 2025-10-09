@@ -18,7 +18,6 @@ module Perron
       Dir.children(Perron.configuration.input)
         .select { File.directory?(File.join(Perron.configuration.input, it)) }
         .reject { it == "data" }
-        .reject { it == "themes" } # TODO: remove me
         .map { Collection.new(it) }
     end
 
