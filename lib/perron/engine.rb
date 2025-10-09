@@ -7,7 +7,8 @@ module Perron
     end
 
     rake_tasks do
-      load File.expand_path("../tasks/perron.rake", __FILE__)
+      load File.expand_path("../tasks/build.rake", __FILE__)
+      load File.expand_path("../tasks/validate.rake", __FILE__)
     end
   end
 end

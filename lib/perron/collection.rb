@@ -16,7 +16,7 @@ module Perron
     end
 
     def all(resource_class = "Content::#{name.classify}".safe_constantize)
-      @all ||= Dir.glob("#{@collection_path}/**/*.*").map do |file_path|
+      Dir.glob("#{@collection_path}/**/*.*").map do |file_path|
         resource_class.new(file_path)
       end.select(&:published?)
     end
@@ -35,5 +35,7 @@ module Perron
         Perron.configuration.allowed_extensions.lazy.map { File.join(@collection_path, [file_name, it].join(".")) }.find { File.exist?(it) }
       )
     end
+
+    def validate = Perron::Site::Validate.new(collections: [self]).validate
   end
 end

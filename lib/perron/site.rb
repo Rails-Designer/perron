@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
-require "perron/site/builder"
 require "perron/collection"
 require "perron/data"
 require "perron/data/proxy"
+require "perron/site/builder"
+require "perron/site/validate"
 
 module Perron
   module Site
@@ -11,10 +12,13 @@ module Perron
 
     def build = Perron::Site::Builder.new.build
 
+    def validate = Perron::Site::Validate.new.validate
+
     def collections
-      @collections ||= Dir.children(Perron.configuration.input)
+      Dir.children(Perron.configuration.input)
         .select { File.directory?(File.join(Perron.configuration.input, it)) }
         .reject { it == "data" }
+        .reject { it == "themes" } # TODO: remove me
         .map { Collection.new(it) }
     end
 
