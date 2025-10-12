@@ -16,9 +16,12 @@ module Perron
     end
 
     def all(resource_class = "Content::#{name.classify}".safe_constantize)
-      Dir.glob("#{@collection_path}/**/*.*").map do |file_path|
-        resource_class.new(file_path)
-      end.select(&:published?)
+      allowed_extensions = Perron.configuration.allowed_extensions.map { ".#{it}" }.to_set
+
+      Dir.glob("#{@collection_path}/**/*.*")
+        .select { allowed_extensions.include?(File.extname(it)) }
+        .map { resource_class.new(it) }
+        .select(&:published?)
     end
     alias_method :resources, :all
 
