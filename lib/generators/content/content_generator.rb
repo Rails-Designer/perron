@@ -41,7 +41,7 @@ class ContentGenerator < Rails::Generators::NamedBase
     return unless pages_controller?
     return if root_route_exists?
 
-    inject_into_file "config/routes.rb", "  root to: \"content/pages#show\"\n", before: /^\s*end\s*$/
+    inject_into_file "config/routes.rb", "  root to: \"content/pages#root\"\n", before: /^\s*end\s*$/
   end
 
   private
