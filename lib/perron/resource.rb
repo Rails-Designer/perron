@@ -5,6 +5,7 @@ require "perron/resource/core"
 require "perron/resource/class_methods"
 require "perron/resource/metadata"
 require "perron/resource/publishable"
+require "perron/resource/reading_time"
 require "perron/resource/related"
 require "perron/resource/renderer"
 require "perron/resource/slug"
@@ -20,6 +21,7 @@ module Perron
     include Perron::Resource::Configuration
     include Perron::Resource::Core
     include Perron::Resource::ClassMethods
+    include Perron::Resource::ReadingTime
     include Perron::Resource::Publishable
     include Perron::Resource::TableOfContent
 

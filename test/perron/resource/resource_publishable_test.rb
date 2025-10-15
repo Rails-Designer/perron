@@ -7,8 +7,8 @@ class Perron::Site::Resource::PublishableTest < ActiveSupport::TestCase
     @page_path = "test/dummy/app/content/pages/about.md"
     @post_path = "test/dummy/app/content/posts/2023-05-15-sample-post.md"
 
-    @page_resource = Perron::Resource.new(@page_path)
-    @post_resource = Perron::Resource.new(@post_path)
+    @page_resource = Content::Page.new(@page_path)
+    @post_resource = Content::Post.new(@post_path)
   end
 
   teardown { travel_back }
