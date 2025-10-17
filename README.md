@@ -1,6 +1,6 @@
 # Perron
 
-A Rails-based static site generator.
+Static Site Generator for Ruby on Rails. Build with Rails. Deploy static sites.
 
 **Sponsored By [Rails Designer](https://railsdesigner.com/)**
 
