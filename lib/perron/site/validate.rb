@@ -19,10 +19,12 @@ module Perron
 
         puts [
           "Validation finished",
-          (" with #{@failures.count} failures" if @failures.any?),
+          (" with #{@failures.count} failures" if failed?),
           "."
         ].join
       end
+
+      def failed? = @failures.any?
 
       private
 
