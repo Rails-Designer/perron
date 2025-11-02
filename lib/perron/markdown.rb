@@ -18,11 +18,21 @@ module Perron
       end
 
       def configured_parser
-        c = Perron.configuration.markdown_parser
-        return unless c
+        return unless (c = Perron.configuration.markdown_parser)
         const = c.to_s.camelize
-        return Object.const_get(const) if Object.const_defined?(const)
-        raise "Can't find parser #{c} by class name #{const}"
+        klass = if Object.const_defined?(const)
+          Object.const_get(const)
+        elsif const_defined?(const)
+          const_get(const)
+        else
+          raise "Can't find parser #{c} by class name #{const}"
+        end
+
+        unless klass.avail?
+          raise "Parser #{c} #{const} is not available (gem not installed?)"
+        end
+
+        klass
       end
 
       def available_parser = Parser.descendants.filter(&:avail?).first || Parser
