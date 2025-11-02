@@ -20,12 +20,10 @@ module Perron
       def configured_parser
         return unless (c = Perron.configuration.markdown_parser)
         const = c.to_s.camelize
-        klass = if Object.const_defined?(const)
-          Object.const_get(const)
-        elsif const_defined?(const)
-          const_get(const)
-        else
-          raise "Can't find parser #{c} by class name #{const}"
+        klass = find_class(const) || find_class(const + "Parser")
+
+        unless klass
+          raise "Can't find parser #{c}"
         end
 
         unless klass.avail?
@@ -33,6 +31,14 @@ module Perron
         end
 
         klass
+      end
+
+      def find_class(const)
+        if Object.const_defined?(const)
+          Object.const_get(const)
+        elsif const_defined?(const)
+          const_get(const)
+        end
       end
 
       def available_parser = Parser.descendants.filter(&:avail?).first || Parser
