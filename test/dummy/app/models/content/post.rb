@@ -1,4 +1,6 @@
 class Content::Post < Perron::Resource
+  belongs_to :author
+
   configure do |config|
     config.sitemap.enabled = false
 

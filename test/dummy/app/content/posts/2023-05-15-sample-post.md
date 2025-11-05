@@ -2,6 +2,7 @@
 title: Sample Post
 description: Describing sample post
 image: https://example.com/images/sample.jpg
+author_id: rails-designer
 ---
 
 Labore qui mollit commodo id nulla qui exercitation nulla reprehenderit nulla excepteur aute eu sint. Minim sit aute et ad ut esse aute sunt magna voluptate duis tempor. Commodo commodo qui amet ullamco Lorem ex cillum ea occaecat deserunt elit amet consequat nulla Lorem. Reprehenderit id aute dolor minim aliquip officia et reprehenderit nisi. Aute labore ex veniam enim enim duis sint elit proident aute sunt consectetur ut aliqua. Laboris elit exercitation veniam non commodo magna sunt in sunt id.
