@@ -18,25 +18,26 @@ module Perron
       end
 
       def configured_parser
-        return unless (c = Perron.configuration.markdown_parser)
-        const = c.to_s.camelize
-        const += "Parser" unless const.end_with?("Parser")
-        klass = if const_defined?(const)
-          const_get(const)
-        elsif Object.const_defined?(const)
-          Object.const_get(const)
+        return unless (parser_name = Perron.configuration.markdown_parser)
+        class_name = parser_name.to_s.camelize
+        class_name += "Parser" unless class_name.end_with?("Parser")
+
+        klass = if const_defined?(class_name)
+          const_get(class_name)
+        elsif Object.const_defined?(class_name)
+          Object.const_get(class_name)
         else
-          raise "Can't find parser #{c} by class name #{const}"
+          raise "Can't find parser #{parser_name} by class name #{class_name}"
         end
 
-        unless klass.avail?
-          raise "Parser #{c} #{const} is not available (gem not installed?)"
+        unless klass.available?
+          raise "Parser #{parser_name} #{class_name} is not available (gem not installed?)"
         end
 
         klass
       end
 
-      def available_parser = Parser.descendants.filter(&:avail?).first || Parser
+      def available_parser = Parser.descendants.find(&:available?) || Parser
 
       def markdown_parser
         (configured_parser || available_parser).new(**Perron.configuration.markdown_options)
@@ -52,7 +53,7 @@ module Perron
 
       def parse(text) = text.to_s
 
-      def self.avail? = true
+      def self.available? = true
     end
 
     class RedcarpetParser < Parser
@@ -66,19 +67,19 @@ module Perron
 
       def parse(text) = markdown.render(text)
 
-      def self.avail? = defined?(::Redcarpet)
+      def self.available? = defined?(::Redcarpet)
     end
 
     class KramdownParser < Parser
       def parse(text) = Kramdown::Document.new(text, options).to_html
 
-      def self.avail? = defined?(::Kramdown)
+      def self.available? = defined?(::Kramdown)
     end
 
     class CommonMarkerParser < Parser
       def parse(text) = Commonmarker.to_html(text, **options)
 
-      def self.avail? = defined?(::Commonmarker)
+      def self.available? = defined?(::Commonmarker)
     end
   end
 end
