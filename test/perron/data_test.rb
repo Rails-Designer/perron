@@ -25,7 +25,7 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
 
 
   test "loads json file by basename" do
-    data = Perron::Data.new("products")
+    data = Perron::Data.new("skus")
 
     assert_equal 2, data.count
 
@@ -90,10 +90,10 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
   end
 
   test "#to_partial_path returns the conventional path from a full file path" do
-    full_path = Rails.root.join("app", "content", "data", "products.json").to_s
+    full_path = Rails.root.join("app", "content", "data", "skus.json").to_s
     data = Perron::Data.new(full_path)
 
-    assert_equal "content/products/product", data.first.to_partial_path
+    assert_equal "content/skus/sku", data.first.to_partial_path
   end
 
   test "parses YAML literal block scalar" do

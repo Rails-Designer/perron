@@ -2,7 +2,7 @@ require "test_helper"
 
 class Perron::Site::Resource::RelatedTest < ActiveSupport::TestCase
   setup do
-    @main_product = Perron::Site.collection("products").resources.find { it.filename == "main-product.md" }
+    @main_product = Perron::Site.collection("similar_products").resources.find { it.filename == "main-product.md" }
   end
 
   test "initialization succeeds with a valid resource" do
@@ -41,6 +41,6 @@ class Perron::Site::Resource::RelatedTest < ActiveSupport::TestCase
     related_products = @main_product.related_resources
 
     assert_kind_of Array, related_products
-    assert_kind_of Content::Product, related_products.first if related_products.any?
+    assert_kind_of Content::SimilarProduct, related_products.first if related_products.any?
   end
 end
