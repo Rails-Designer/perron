@@ -25,7 +25,7 @@ module Perron
                 items: resources.map do |resource|
                   {
                     id: resource.id,
-                    url: url.polymorphic_url(resource),
+                    url: url.polymorphic_url(resource, ref: feed_configuration.ref).delete_suffix("?ref="),
                     date_published: resource.published_at&.iso8601,
                     title: resource.metadata.title,
                     content_html: Perron::Markdown.render(resource.content)
