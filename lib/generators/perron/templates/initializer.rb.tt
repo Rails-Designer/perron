@@ -1,7 +1,7 @@
 Perron.configure do |config|
   # config.output = "output"
 
-  # config.site_name = "Helptail"
+  # config.site_name = "Chirp Form"
 
   # The build mode for Perron. Can be :standalone or :integrated
   # config.mode = :standalone
@@ -16,8 +16,8 @@ Perron.configure do |config|
 
   # Set default meta values
   # Examples:
-  # - `config.metadata.description = "Put your routine tasks on autopilot"`
-  # - `config.metadata.author = "Helptail Team"`
+  # - `config.metadata.description = "Add forms to any static site. Display responses anywhere."`
+  # - `config.metadata.author = "Chirp Form Team"`
 
   # Set meta title suffix
   # config.metadata.title_suffix = nil

@@ -9,7 +9,7 @@ class Perron::MetatagsTest < ActiveSupport::TestCase
 
   setup do
     Perron.configure do |config|
-      config.metadata.title_suffix = "Helptail"
+      config.metadata.title_suffix = "Chirp Form"
     end
   end
 
@@ -17,7 +17,7 @@ class Perron::MetatagsTest < ActiveSupport::TestCase
     resource = Content::Post.new("test/dummy/app/content/posts/2023-05-15-sample-post.md")
     metatags = Perron::Metatags.new(resource.metadata).render
 
-    assert_match "<title>Sample Post — Helptail</title>", metatags
+    assert_match "<title>Sample Post — Chirp Form</title>", metatags
   end
 
   test "renders only the page title when the page title is the same as the suffix" do
