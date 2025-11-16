@@ -17,39 +17,69 @@ module Perron
         @parser ||= markdown_parser
       end
 
-      def markdown_parser
-        if defined?(::Commonmarker)
-          CommonMarkerParser.new
-        elsif defined?(::Kramdown)
-          KramdownParser.new
-        elsif defined?(::Redcarpet)
-          RedcarpetParser.new
+      def configured_parser
+        return unless (parser_name = Perron.configuration.markdown_parser)
+        class_name = parser_name.to_s.camelize
+        class_name += "Parser" unless class_name.end_with?("Parser")
+
+        klass = if const_defined?(class_name)
+          const_get(class_name)
+        elsif Object.const_defined?(class_name)
+          Object.const_get(class_name)
         else
-          PlainTextParser.new
+          raise "Can't find parser #{parser_name} by class name #{class_name}"
         end
+
+        unless klass.available?
+          raise "Parser #{parser_name} #{class_name} is not available (gem not installed?)"
+        end
+
+        klass
+      end
+
+      def available_parser = Parser.descendants.find(&:available?) || Parser
+
+      def markdown_parser
+        (configured_parser || available_parser).new(**Perron.configuration.markdown_options)
       end
     end
 
-    class CommonMarkerParser
-      def parse(text) = Commonmarker.to_html(text, **Perron.configuration.markdown_options)
-    end
+    class Parser
+      attr_reader :options
 
-    class KramdownParser
-      def parse(text) = Kramdown::Document.new(text, Perron.configuration.markdown_options).to_html
-    end
-
-    class RedcarpetParser
-      def parse(text)
-        options = Perron.configuration.markdown_options
-        renderer = Redcarpet::Render::HTML.new(options.fetch(:renderer_options, {}))
-        markdown = Redcarpet::Markdown.new(renderer, options.fetch(:markdown_options, {}))
-
-        markdown.render(text)
+      def initialize(**options)
+        @options = options
       end
-    end
 
-    class PlainTextParser
       def parse(text) = text.to_s
+
+      def self.available? = true
+    end
+
+    class RedcarpetParser < Parser
+      def renderer
+        @renderer ||= Redcarpet::Render::HTML.new(options.fetch(:renderer_options, {}))
+      end
+
+      def markdown
+        @markdown ||= Redcarpet::Markdown.new(renderer, options.fetch(:markdown_options, {}))
+      end
+
+      def parse(text) = markdown.render(text)
+
+      def self.available? = defined?(::Redcarpet)
+    end
+
+    class KramdownParser < Parser
+      def parse(text) = Kramdown::Document.new(text, options).to_html
+
+      def self.available? = defined?(::Kramdown)
+    end
+
+    class CommonMarkerParser < Parser
+      def parse(text) = Commonmarker.to_html(text, **options)
+
+      def self.available? = defined?(::Commonmarker)
     end
   end
 end
