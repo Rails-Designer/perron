@@ -11,6 +11,7 @@ require "perron/resource/related"
 require "perron/resource/renderer"
 require "perron/resource/slug"
 require "perron/resource/separator"
+require "perron/resource/sourceable"
 require "perron/resource/table_of_content"
 
 module Perron
@@ -24,6 +25,7 @@ module Perron
     include Perron::Resource::ClassMethods
     include Perron::Resource::Associations
     include Perron::Resource::ReadingTime
+    include Perron::Resource::Sourceable
     include Perron::Resource::Publishable
     include Perron::Resource::TableOfContent
 
