@@ -27,7 +27,7 @@ module Perron
                     resources.each do |resource|
                       xml.item do
                         xml.guid resource.id
-                        xml.link url.polymorphic_url(resource), isPermaLink: true
+                        xml.link url.polymorphic_url(resource, ref: feed_configuration.ref).delete_suffix("?ref="), isPermaLink: true
                         xml.pubDate(resource.published_at&.rfc822)
                         xml.title resource.metadata.title
                         xml.description { xml.cdata(Perron::Markdown.render(resource.content)) }

@@ -45,4 +45,24 @@ class Perron::Site::Builder::Feeds::RssTest < ActiveSupport::TestCase
       assert_equal "Custom RSS description", rss.at_xpath("//channel/description").text
     end
   end
+
+  test "uses polymorphic links for items" do
+    @collection.configuration.feeds.rss.stub(:max_items, 1) do
+      rss = Nokogiri::XML(@builder.generate).remove_namespaces!
+
+      assert_equal 1, rss.xpath("//item").count
+      assert_equal "http://localhost:3000/blog/inline-erb-post/", rss.at_xpath("//item/link").text
+    end
+  end
+
+  test "sets a `ref` param to the link" do
+    @collection.configuration.feeds.rss.stub(:ref, "perron.railsdesigner.com") do
+      @collection.configuration.feeds.rss.stub(:max_items, 1) do
+        rss = Nokogiri::XML(@builder.generate).remove_namespaces!
+
+        assert_equal 1, rss.xpath("//item").count
+        assert_equal "http://localhost:3000/blog/inline-erb-post/?ref=perron.railsdesigner.com", rss.at_xpath("//item/link").text
+      end
+    end
+  end
 end

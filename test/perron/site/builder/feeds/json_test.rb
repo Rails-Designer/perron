@@ -24,15 +24,6 @@ class Perron::Site::Builder::Feeds::JsonTest < ActiveSupport::TestCase
     end
   end
 
-  test "respects max_items configuration" do
-    @collection.configuration.feeds.json.stub(:max_items, 1) do
-      json = JSON.parse(@builder.generate)
-
-      assert_equal 1, json["items"].count
-      assert_equal "Inline ERB post", json["items"].first["title"]
-    end
-  end
-
   test "configured feed name and description" do
     @collection.configuration.feeds.json.stub(:title, "Custom JSON title") do
       json = JSON.parse(@builder.generate)
@@ -44,6 +35,27 @@ class Perron::Site::Builder::Feeds::JsonTest < ActiveSupport::TestCase
       json = JSON.parse(@builder.generate)
 
       assert_equal "Custom JSON description", json["description"]
+    end
+  end
+
+  test "respects max_items configuration" do
+    @collection.configuration.feeds.json.stub(:max_items, 1) do
+      json = JSON.parse(@builder.generate)
+
+      assert_equal 1, json["items"].count
+      assert_equal "Inline ERB post", json["items"].first["title"]
+      assert_equal "http://localhost:3000/blog/inline-erb-post/", json["items"].first["url"]
+    end
+  end
+
+  test "sets a `ref` param to the link" do
+    @collection.configuration.feeds.json.stub(:ref, "perron.railsdesigner.com") do
+      @collection.configuration.feeds.json.stub(:max_items, 1) do
+        json = JSON.parse(@builder.generate)
+
+        assert_equal 1, json["items"].count
+        assert_equal "http://localhost:3000/blog/inline-erb-post/?ref=perron.railsdesigner.com", json["items"].first["url"]
+      end
     end
   end
 end
