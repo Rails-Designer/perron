@@ -5,11 +5,13 @@ Example:
     rails generate content post
 
     This will create:
+      - app/content/posts/
       - app/models/content/post.rb
       - app/controllers/content/posts_controller.rb
       - app/views/content/posts/index.html.erb
       - app/views/content/posts/show.html.erb
-      - …and add `resource :posts, module: :content, only: %w[index show]` to `config/routes.rb`
+
+    And adds `resource :posts, module: :content, only: %w[index show]` to `config/routes.rb`
 
 Arguments:
     NAME: Name of the content model
