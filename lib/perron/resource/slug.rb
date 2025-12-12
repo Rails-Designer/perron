@@ -15,8 +15,13 @@ module Perron
       def create
         return "/" if Perron.configuration.allowed_extensions.any? { @resource.filename == "root.#{it}" }
 
-        @frontmatter.slug.presence ||
-          @resource.filename.sub(/^[\d-]+-/, "").delete_suffixes(dot_prepended_allowed_extensions)
+        base_slug = @frontmatter.slug.presence || @resource.filename.sub(/^[\d-]+-/, "").delete_suffixes(dot_prepended_allowed_extensions)
+
+        if @resource.previewable?
+          "#{base_slug}-#{@resource.preview_token}"
+        else
+          base_slug
+        end
       end
 
       private

@@ -16,7 +16,15 @@ module Perron
           true
         end
 
+        def buildable?
+          published? || previewable?
+        end
+
         def scheduled? = publication_date&.after?(Time.current)
+
+        def draft?
+          frontmatter.draft == true || frontmatter.published == false
+        end
 
         def publication_date
           @publication_date ||= begin

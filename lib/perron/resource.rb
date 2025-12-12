@@ -5,6 +5,7 @@ require "perron/resource/core"
 require "perron/resource/class_methods"
 require "perron/resource/associations"
 require "perron/resource/metadata"
+require "perron/resource/previewable"
 require "perron/resource/publishable"
 require "perron/resource/reading_time"
 require "perron/resource/related"
@@ -27,6 +28,7 @@ module Perron
     include Perron::Resource::ReadingTime
     include Perron::Resource::Sourceable
     include Perron::Resource::Publishable
+    include Perron::Resource::Previewable
     include Perron::Resource::TableOfContent
 
     attr_reader :file_path, :id

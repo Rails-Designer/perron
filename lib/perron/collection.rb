@@ -21,7 +21,7 @@ module Perron
       Dir.glob("#{@collection_path}/**/*.*")
         .select { allowed_extensions.include?(File.extname(it)) }
         .map { resource_class.new(it) }
-        .select(&:published?)
+        .select(&:buildable?)
     end
     alias_method :resources, :all
 
