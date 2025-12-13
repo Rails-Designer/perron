@@ -16,17 +16,12 @@ module Perron
     end
 
     def all(resource_class = "Content::#{name.classify}".safe_constantize)
-      allowed_extensions = Perron.configuration.allowed_extensions.map { ".#{it}" }.to_set
-
-      Dir.glob("#{@collection_path}/**/*.*")
-        .select { allowed_extensions.include?(File.extname(it)) }
-        .map { resource_class.new(it) }
-        .select(&:buildable?)
+      load_resources(resource_class).select(&:published?)
     end
     alias_method :resources, :all
 
     def find(slug, resource_class = Resource)
-      resource = all(resource_class).find { it.slug == slug }
+      resource = load_resources(resource_class).find { it.slug == slug }
 
       return resource if resource
 
@@ -40,5 +35,15 @@ module Perron
     end
 
     def validate = Perron::Site::Validate.new(collections: [self]).validate
+
+    private
+
+    def load_resources(resource_class = "Content::#{name.classify}".safe_constantize)
+      allowed_extensions = Perron.configuration.allowed_extensions.map { ".#{it}" }.to_set
+
+      Dir.glob("#{@collection_path}/**/*.*")
+        .select { allowed_extensions.include?(File.extname(it)) }
+        .map { resource_class.new(it) }
+    end
   end
 end

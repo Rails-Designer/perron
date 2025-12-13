@@ -31,6 +31,8 @@ module Perron
         Perron::Site::Builder::Sitemap.new(@output_path).generate
         Perron::Site::Builder::Feeds.new(@output_path).generate
 
+        output_preview_urls
+
         puts "\n✅ Build complete"
       end
 
@@ -43,6 +45,17 @@ module Perron
       end
 
       def render_page(path) = Perron::Site::Builder::Page.new(path).render
+
+      def output_preview_urls
+        previewable_resources = Perron::Site.collections.flat_map { it.send(:load_resources) }.select(&:previewable?)
+
+        if previewable_resources.any?
+          puts "\n🔒 Preview URLs:"
+          previewable_resources.each do |resource|
+            puts "   #{Rails.application.routes.url_helpers.polymorphic_url(resource, **Perron.configuration.default_url_options)}"
+          end
+        end
+      end
     end
   end
 end

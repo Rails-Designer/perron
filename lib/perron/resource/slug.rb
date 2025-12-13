@@ -17,11 +17,7 @@ module Perron
 
         base_slug = @frontmatter.slug.presence || @resource.filename.sub(/^[\d-]+-/, "").delete_suffixes(dot_prepended_allowed_extensions)
 
-        if @resource.previewable?
-          "#{base_slug}-#{@resource.preview_token}"
-        else
-          base_slug
-        end
+        [base_slug, @resource.preview_token].compact.join("-")
       end
 
       private

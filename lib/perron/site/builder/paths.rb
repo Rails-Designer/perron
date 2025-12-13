@@ -12,7 +12,7 @@ module Perron
           @paths << routes.public_send(index_path) if routes.respond_to?(index_path)
 
           if routes.respond_to?(show_path)
-            @collection.all.each do |resource|
+            @collection.send(:load_resources).select(&:buildable?).each do |resource|
               root = resource.slug == "/"
 
               next if skip? root
