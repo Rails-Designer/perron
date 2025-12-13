@@ -56,4 +56,22 @@ class Perron::Site::Resource::PublishableTest < ActiveSupport::TestCase
       assert_nil @post_resource.scheduled_at
     end
   end
+
+  test "#draft? returns true when draft is true" do
+    draft_feature = Content::Feature.new("test/dummy/app/content/features/beta-feature.md")
+
+    assert draft_feature.draft?
+  end
+
+  test "#draft? returns true when published is false" do
+    unpublished_feature = Content::Feature.new("test/dummy/app/content/features/custom-preview-feature.md")
+
+    assert unpublished_feature.draft?
+  end
+
+  test "#draft? returns false for published content" do
+    public_feature = Content::Feature.new("test/dummy/app/content/features/public-feature.md")
+
+    refute public_feature.draft?
+  end
 end

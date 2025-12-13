@@ -18,7 +18,7 @@ class Perron::Site::CollectionTest < ActiveSupport::TestCase
   end
 
   test "#all returns resources when given a resource class" do
-    resources = @posts.all(Perron::Resource)
+    resources = @posts.all(Content::Post)
 
     assert_not_empty resources
 
@@ -28,7 +28,7 @@ class Perron::Site::CollectionTest < ActiveSupport::TestCase
   end
 
   test "#all filters for published resources" do
-    resources = @posts.all(Perron::Resource)
+    resources = @posts.all(Content::Post)
 
     resources.each do |resource|
       assert resource.published?
@@ -37,13 +37,13 @@ class Perron::Site::CollectionTest < ActiveSupport::TestCase
 
   test "#find returns a resource with the given slug" do
     travel_to Time.zone.local(2024, 1, 1) do
-      resources = @posts.all(Perron::Resource)
+      resources = @posts.all(Content::Post)
 
       skip "No resources found to test with" if resources.empty?
 
       resource = resources.first
       slug = resource.slug
-      found_resource = @posts.find(slug, Perron::Resource)
+      found_resource = @posts.find(slug, Content::Post)
 
       assert_equal resource.id, found_resource.id
     end
@@ -51,7 +51,7 @@ class Perron::Site::CollectionTest < ActiveSupport::TestCase
 
   test "#find raises error when resource with slug doesn't exist" do
     assert_raises Perron::Errors::ResourceNotFoundError do
-      @posts.find("nonexistent-slug", Perron::Resource)
+      @posts.find("nonexistent-slug", Content::Post)
     end
   end
 end

@@ -40,4 +40,13 @@ class Perron::Site::Resource::SlugTest < ActiveSupport::TestCase
 
     assert_equal "sample-post", slug.create
   end
+
+  test "create appends preview token when previewable" do
+    resource = Content::Feature.new("test/dummy/app/content/features/beta-feature.md")
+    frontmatter = Perron::Resource::Separator.new(resource.raw_content).frontmatter
+    slug = Perron::Resource::Slug.new(resource, frontmatter)
+
+    assert slug.create.start_with?("beta-feature-")
+    assert_equal 25, slug.create.length # "beta-feature-" (13) + token (12)
+  end
 end
