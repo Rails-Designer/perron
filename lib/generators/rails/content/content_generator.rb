@@ -16,7 +16,7 @@ module Rails
       def initialize(*args)
         super
 
-        @content_mode = options[:new] != nil
+        @content_mode = !options[:new].nil?
         @content_title = options[:new].presence
       end
 
@@ -108,9 +108,7 @@ module Rails
       end
 
       def template_file
-        @template_file ||= begin
-          Dir.glob(File.join(content_directory, "{YYYY-MM-DD-,}template.*.tt")).first
-        end
+        @template_file ||= Dir.glob(File.join(content_directory, "{YYYY-MM-DD-,}template.*.tt")).first
       end
 
       def filename_from_template
