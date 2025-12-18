@@ -38,6 +38,7 @@ coverage/
 
 # Ignore test and spec reports
 /test/reports/
+/test/dummy/tmp/
 /spec/reports/
 
 # Ignore generated documentation

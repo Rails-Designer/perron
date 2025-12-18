@@ -1,18 +1,41 @@
 Description:
-    Creates a new content model with specified actions
+    Generates content model scaffold (controller, views, routes) or creates
+    new content files from templates.
 
-Example:
-    rails generate content post
+Examples:
+    Generate content scaffold:
+        rails generate content Post
+        rails generate content Post index
+        rails generate content Post index show
 
     This will create:
-      - app/content/posts/
-      - app/models/content/post.rb
-      - app/controllers/content/posts_controller.rb
-      - app/views/content/posts/index.html.erb
-      - app/views/content/posts/show.html.erb
+        app/content/posts/
+        app/models/content/post.rb
+        app/controllers/content/posts_controller.rb
+        app/views/content/posts/index.html.erb
+        app/views/content/posts/show.html.erb
 
-    And adds `resource :posts, module: :content, only: %w[index show]` to `config/routes.rb`
+    And adds: resources :posts, module: :content, only: %w[index show]
+
+    Create new content file from template:
+        rails generate content Post --new
+        rails generate content Post --new "My First Post"
+
+    This will create a new content file in app/content/posts/ using:
+        - YYYY-MM-DD-template.*.tt (if exists, with date prefix)
+        - template.*.tt (if exists, without date prefix)
+        - Empty file with frontmatter dashes (if no template)
+
+    Template files support ERB:
+        ---
+        title: <%= @title %>
+        published_at: <%= Time.current %>
+        ---
 
 Arguments:
-    NAME: Name of the content model
-    actions: List of actions to generate (index or show)
+    NAME: Name of the content model (singular or plural)
+    actions: Actions to generate (default: index show)
+
+Options:
+    --new [TITLE]: Create new content file instead of scaffold
+    --force-plural: Use plural form for model name and class
