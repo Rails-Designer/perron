@@ -11,10 +11,7 @@ module Perron
     end
 
     def create_data_directory
-      data_directory = Rails.root.join("app", "content", "data")
-      empty_directory data_directory
-
-      template "README.md.tt", File.join(data_directory, "README.md")
+      template "README.md.tt", "app/content/data/README.md"
     end
 
     def add_markdown_gems
