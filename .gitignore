@@ -68,3 +68,5 @@ docker-compose.override.yml
 debug.log
 
 pkg/
+
+test/generators/dummy/tmp/
