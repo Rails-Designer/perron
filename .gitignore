@@ -68,3 +68,6 @@ docker-compose.override.yml
 debug.log
 
 pkg/
+
+# Ignore all tmp directories
+test/generators/dummy/tmp/
