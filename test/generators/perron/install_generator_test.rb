@@ -5,7 +5,7 @@ module Perron
   class InstallGeneratorTest < Rails::Generators::TestCase
     tests Perron::InstallGenerator
 
-    destination File.expand_path("../../dummy/tmp/", __dir__)
+    destination File.expand_path("../../dummy/tmp/generators", __dir__)
 
     setup :prepare_destination
     setup :create_gemfile
