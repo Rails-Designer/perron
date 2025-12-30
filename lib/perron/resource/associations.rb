@@ -22,11 +22,11 @@ module Perron
           define_method(association_name) do
             cache_has_many_association(association_name) do
               associated_class = association_class_for(association_name, singularize: true, **options)
-              foreign_key = foreign_key_for(inverse_association_name, **options)
-              primary_key_method = options.fetch(:primary_key, :slug)
-              lookup_value = public_send(primary_key_method)
+              ids_key = "#{association_name}_ids"
 
-              associated_class.all.select { it.metadata[foreign_key] == lookup_value }
+              metadata[ids_key] ?
+                records_for_ids(associated_class, metadata[ids_key]) :
+                records_for_foreign_key(associated_class, association_name, **options)
             end
           end
         end
@@ -39,6 +39,10 @@ module Perron
         return @belongs_to_cache[name] if @belongs_to_cache.key?(name)
 
         @belongs_to_cache[name] = yield
+      end
+
+      def foreign_key_for(base_name, **options)
+        (options[:foreign_key] || "#{base_name}_id").to_s
       end
 
       def cache_has_many_association(name)
@@ -59,8 +63,18 @@ module Perron
         end
       end
 
-      def foreign_key_for(base_name, **options)
-        (options[:foreign_key] || "#{base_name}_id").to_s
+      def records_for_ids(associated_class, ids)
+        ids = Array(ids)
+
+        associated_class.all.select { ids.include?(it[:id]) || ids.include?(it["id"]) }
+      end
+
+      def records_for_foreign_key(associated_class, association_name, **options)
+        foreign_key = foreign_key_for(inverse_association_name, **options)
+        primary_key_method = options.fetch(:primary_key, :slug)
+        lookup_value = public_send(primary_key_method)
+
+        associated_class.all.select { it.association_value(foreign_key) == lookup_value }
       end
 
       def inverse_association_name = self.class.name.demodulize.underscore

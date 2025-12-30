@@ -66,6 +66,8 @@ module Perron
       render_inline_erb using: page_content
     end
 
+    def association_value(key) = metadata[key]
+
     def to_partial_path
       @to_partial_path ||= begin
         element = ActiveSupport::Inflector.underscore(ActiveSupport::Inflector.demodulize(self.class.model_name))

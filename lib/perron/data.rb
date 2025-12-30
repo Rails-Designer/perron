@@ -118,6 +118,8 @@ module Perron
 
       def [](key) = @attributes[key.to_sym]
 
+      def association_value(key) = self[key]
+
       def to_partial_path
         @to_partial_path ||= begin
           identifier = @identifier.to_s
