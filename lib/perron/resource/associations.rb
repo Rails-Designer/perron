@@ -26,7 +26,7 @@ module Perron
               primary_key_method = options.fetch(:primary_key, :slug)
               lookup_value = public_send(primary_key_method)
 
-              associated_class.all.select { |record| record.metadata[foreign_key] == lookup_value }
+              associated_class.all.select { it.metadata[foreign_key] == lookup_value }
             end
           end
         end
@@ -49,14 +49,14 @@ module Perron
       end
 
       def association_class_for(association_name, singularize: false, **options)
-        class_name = options[:class_name] || begin
+        if options[:class_name]
+          options[:class_name].to_s.constantize
+        else
           name = association_name.to_s
           name = name.singularize if singularize
 
-          "Content::#{name.classify}"
+          "Content::#{name.classify}".constantize
         end
-
-        class_name.constantize
       end
 
       def foreign_key_for(base_name, **options)

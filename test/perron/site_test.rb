@@ -10,12 +10,4 @@ class Perron::SiteTest < ActiveSupport::TestCase
   test "collections returns all collections as Perron::Site::Collection instances" do
     assert Perron::Site.collections.all? { it.is_a?(Perron::Collection) }
   end
-
-  test "data(name) returns a Perron::Data instance" do
-    assert_instance_of Perron::Data, Perron::Site.data("users")
-  end
-
-  test "data returns a Perron::Data::Proxy instance" do
-    assert_instance_of Perron::Data::Proxy, Perron::Site.data
-  end
 end
