@@ -2,9 +2,11 @@
 
 require "perron/version"
 require "perron/configuration"
+require "perron/deprecator"
 require "perron/errors"
 require "perron/root"
 require "perron/site"
+require "perron/content/data"
 require "perron/resource"
 require "perron/markdown"
 require "perron/feeds"

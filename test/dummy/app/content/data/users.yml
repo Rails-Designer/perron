@@ -1,4 +1,5 @@
 - name: "Cam"
+  id: cam
   role: "administrator"
   bio: |
     Cam is a seasoned administrator with over 10_000 (really!) years of experience
@@ -8,6 +9,7 @@
     Led the migration from some Ruby-based SGG to Perron
 
 - name: "Kendall"
+  id: kendall
   role: moderator
   bio: >
     Kendall is a Rails Designer (product UI engineer) who loves building

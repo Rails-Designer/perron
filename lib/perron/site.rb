@@ -24,6 +24,8 @@ module Perron
     def collection(name) = Collection.new(name)
 
     def data(name = nil)
+      Perron.deprecator.deprecation_warning(:data, "Use Content::Data::ClassName instead, e.g. `Content::Data::Users.all`")
+
       (name && Perron::Data.new(name)) || Perron::Data::Proxy.new
     end
   end

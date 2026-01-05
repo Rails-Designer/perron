@@ -13,6 +13,17 @@ module Perron
     end
 
     class << self
+      def all
+        parts = name.to_s.split("::").drop(2)
+        identifier = parts.empty? ? name.demodulize.underscore : parts.map(&:underscore).join("/")
+
+        new(identifier)
+      end
+
+      def find(id)
+        all.find { it[:id] == id || it["id"] == id }
+      end
+
       def path_for(identifier)
         path = Pathname.new(identifier)
 
@@ -106,6 +117,8 @@ module Perron
       end
 
       def [](key) = @attributes[key.to_sym]
+
+      def association_value(key) = self[key]
 
       def to_partial_path
         @to_partial_path ||= begin

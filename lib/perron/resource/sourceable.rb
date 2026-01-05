@@ -40,7 +40,7 @@ module Perron
         end
 
         def combinations
-          datasets = source_names.map { Perron::Site.data.public_send(it) }
+          datasets = source_names.map { Perron::Data.new(it.to_s) }
 
           datasets.first.product(*datasets[1..])
         end
@@ -71,7 +71,8 @@ module Perron
             primary_key = options[:primary_key]
             singular_name = name.to_s.singularize
             identifier = frontmatter["#{singular_name}_#{primary_key}"]
-            hash[name] = Perron::Site.data.public_send(name).find { it.public_send(primary_key).to_s == identifier.to_s }
+
+            hash[name] = Perron::Data.new(name.to_s).find { it.public_send(primary_key).to_s == identifier.to_s }
           end
 
           Source.new(data)

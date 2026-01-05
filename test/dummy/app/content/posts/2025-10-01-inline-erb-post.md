@@ -1,6 +1,7 @@
 ---
 title: Inline ERB post
 author: Rails Designer
+editor_id: author-1
 ---
 
 This is a regular paragraph in the post. It should not be processed by ERB.

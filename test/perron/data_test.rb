@@ -46,16 +46,17 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
     assert_equal "79", first_order[:amount]
   end
 
-  test "loads file via Data::Proxy" do
-    data = Perron::Site.data.users
+  test ".all returns dataset for the class" do
+    data = Content::Data::Users.all
 
+    assert_equal 2, data.count
     assert_equal "Cam", data.first.name
   end
 
-  test "loads nested file via Data::Proxy" do
-    data = Perron::Site.data.users.admins
+  test ".find returns item by id" do
+    user = Content::Data::Users.find("cam")
 
-    assert_equal "Cam", data.first.name
+    assert_equal "Cam", user.name
   end
 
   test "loads file with a full path" do
