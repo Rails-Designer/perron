@@ -111,12 +111,12 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
   test "parses YAML literal keep block scalar" do
     data = Perron::Data.new("users")
 
-    assert_match /\n\n\z/, data.first.notes
+    assert_match (/\n\n\z/), data.first.notes
   end
 
   test "parses YAML folded strip block scalar" do
     data = Perron::Data.new("users")
 
-    refute_match /\n\z/, data.last.notes
+    refute_match (/\n\z/), data.last.notes
   end
 end

@@ -48,6 +48,19 @@ class Perron::Site::Builder::Feeds::JsonTest < ActiveSupport::TestCase
     end
   end
 
+  test "includes authors when present" do
+    @collection.configuration.feeds.json.stub(:max_items, 10) do
+      json = JSON.parse(@builder.generate)
+
+      item_with_author = json["items"].find { it["title"] == "Sample Post" }
+
+      assert_not_nil item_with_author["authors"]
+      assert_equal 1, item_with_author["authors"].count
+      assert_equal "Rails Designer", item_with_author["authors"].first["name"]
+      assert_equal "support@railsdesigner.com", item_with_author["authors"].first["email"]
+    end
+  end
+
   test "sets a `ref` param to the link" do
     @collection.configuration.feeds.json.stub(:ref, "perron.railsdesigner.com") do
       @collection.configuration.feeds.json.stub(:max_items, 1) do
