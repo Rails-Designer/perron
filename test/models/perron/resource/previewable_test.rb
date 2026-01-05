@@ -23,6 +23,10 @@ class Perron::Resource::PreviewableTest < ActiveSupport::TestCase
     assert @preview_feature.previewable?
   end
 
+  test "#preview? alias of #previewable?" do
+    assert @preview_feature.preview?
+  end
+
   test "#preview_token returns nil when not previewable" do
     assert_nil @public_feature.preview_token
   end

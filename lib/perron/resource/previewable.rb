@@ -9,6 +9,7 @@ module Perron
         def previewable?
           frontmatter.preview.present? && (draft? || scheduled?)
         end
+        alias_method :preview?, :previewable?
 
         def preview_token
           return nil unless previewable?
