@@ -4,7 +4,7 @@ require "generators/rails/content/content_generator"
 class ContentGeneratorTest < Rails::Generators::TestCase
   tests Rails::Generators::ContentGenerator
 
-  destination File.expand_path("../dummy/tmp/generators", __dir__)
+  destination File.expand_path("../../dummy/tmp/generators", __dir__)
 
   setup :prepare_destination
   setup :create_routes_file
