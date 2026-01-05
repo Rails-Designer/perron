@@ -39,6 +39,7 @@ coverage/
 # Ignore test and spec reports
 /test/reports/
 /test/dummy/tmp/
+/test/generators/dummy/tmp/
 /spec/reports/
 
 # Ignore generated documentation
@@ -68,5 +69,3 @@ docker-compose.override.yml
 debug.log
 
 pkg/
-
-test/generators/dummy/tmp/
