@@ -16,8 +16,6 @@ module Perron
       @config.site_name = nil
       @config.site_description = nil
 
-      @config.site_email = nil
-
       @config.output = "output"
 
       @config.mode = :standalone
