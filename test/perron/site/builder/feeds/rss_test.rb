@@ -55,6 +55,19 @@ class Perron::Site::Builder::Feeds::RssTest < ActiveSupport::TestCase
     end
   end
 
+  test "includes author when present" do
+    @collection.configuration.feeds.rss.stub(:max_items, 10) do
+      rss = Nokogiri::XML(@builder.generate).remove_namespaces!
+
+      item_with_author = rss.xpath("//item").find do |item|
+        item.at_xpath("title").text == "Sample Post"
+      end
+
+      author = item_with_author.at_xpath("author")
+      assert_equal "support@railsdesigner.com (Rails Designer)", author.text
+    end
+  end
+
   test "sets a `ref` param to the link" do
     @collection.configuration.feeds.rss.stub(:ref, "perron.railsdesigner.com") do
       @collection.configuration.feeds.rss.stub(:max_items, 1) do

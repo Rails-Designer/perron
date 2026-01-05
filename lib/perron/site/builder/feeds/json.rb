@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 require "json"
+require "perron/site/builder/feeds/author"
 
 module Perron
   module Site
     class Builder
       class Feeds
         class Json
+          include Feeds::Author
+
           def initialize(collection:)
             @collection = collection
             @configuration = Perron.configuration
@@ -27,6 +30,7 @@ module Perron
                     id: resource.id,
                     url: url.polymorphic_url(resource, ref: feed_configuration.ref).delete_suffix("?ref="),
                     date_published: resource.published_at&.iso8601,
+                    authors: authors(resource),
                     title: resource.metadata.title,
                     content_html: Perron::Markdown.render(resource.content)
                   }
@@ -48,6 +52,14 @@ module Perron
           end
 
           def feed_configuration = @collection.configuration.feeds.json
+
+          def authors(resource)
+            author = author(resource)
+
+            return nil unless author&.name
+
+            [{name: author.name, email: author.email, url: author.url, avatar: author.avatar}.compact].presence
+          end
         end
       end
     end
