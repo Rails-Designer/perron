@@ -64,7 +64,6 @@ class Perron::Site::Builder::Feeds::RssTest < ActiveSupport::TestCase
       end
 
       author = item_with_author.at_xpath("author")
-      assert_not_nil author
       assert_equal "support@railsdesigner.com (Rails Designer)", author.text
     end
   end

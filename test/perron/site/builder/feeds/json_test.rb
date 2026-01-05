@@ -52,7 +52,7 @@ class Perron::Site::Builder::Feeds::JsonTest < ActiveSupport::TestCase
     @collection.configuration.feeds.json.stub(:max_items, 10) do
       json = JSON.parse(@builder.generate)
 
-      item_with_author = json["items"].find { |item| item["title"] == "Sample Post" }
+      item_with_author = json["items"].find { it["title"] == "Sample Post" }
 
       assert_not_nil item_with_author["authors"]
       assert_equal 1, item_with_author["authors"].count
