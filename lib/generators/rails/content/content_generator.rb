@@ -7,9 +7,12 @@ module Rails
     class ContentGenerator < Rails::Generators::NamedBase
       source_root File.expand_path("templates", __dir__)
 
-      class_option :force_plural, type: :boolean, default: false, desc: "Forces the use of a plural model name and class"
+      class_option :force_plural, type: :boolean, default: false,
+        desc: "Forces the use of a plural model name and class"
       class_option :new, type: :string, default: nil, banner: "TITLE",
         desc: "Create a new content file from template instead of generating scaffold"
+      class_option :data, type: :array, default: [], banner: "source1(.ext) source2(.ext)",
+        desc: "Specify data sources with optional extensions (defaults to .yml)"
 
       argument :actions, type: :array, default: %w[index show], banner: "actions", desc: "Specify which actions to generate (index/show)"
 
@@ -67,6 +70,17 @@ module Rails
         template "root.erb.tt", File.join(content_directory, "root.erb")
       end
 
+      def create_data_sources
+        return if @content_mode
+        return if options[:data].empty?
+
+        options[:data].each do |source|
+          name, extension = source.split(".", 2)
+
+          create_file File.join(content_directory, "#{name}.#{extension || "yml"}"), ""
+        end
+      end
+
       def add_content_route
         return if @content_mode
 
@@ -121,6 +135,12 @@ module Rails
           end
         end
       end
+
+      def data_sources
+        options[:data].map { it.split(".").first }
+      end
+
+      def data_sources? = !options[:data].empty?
     end
   end
 end
