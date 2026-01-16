@@ -3,5 +3,5 @@
     <%%= @resource.filename %>
   </h1>
 
-  <%%= markdownify @resource.content %>
+  <%%= @resource.content %>
 </article>
