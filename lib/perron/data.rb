@@ -4,6 +4,8 @@ require "csv"
 
 module Perron
   class Data < SimpleDelegator
+    include Enumerable
+
     def initialize(identifier)
       @identifier = identifier
       @file_path = self.class.path_for!(identifier)
@@ -11,6 +13,21 @@ module Perron
 
       super(records)
     end
+
+    def each(&block) = @records.each(&block)
+
+    def count = @records.count
+
+    def first(n = nil)
+      n ? @records.first(n) : @records.first
+    end
+
+    def last = @records.last
+
+    def [](index) = @records[index]
+
+    def size = @records.size
+    alias_method :length, :size
 
     class << self
       def all
@@ -23,6 +40,24 @@ module Perron
       def find(id)
         all.find { it[:id] == id || it["id"] == id }
       end
+
+      def count = all.size
+
+      def first = all.first
+
+      def second = all[1]
+
+      def third = all[2]
+
+      def fourth = all[3]
+
+      def fifth = all[4]
+
+      def forty_two = all[41]
+
+      def last = all.last
+
+      def take(n) = all.first(n)
 
       def path_for(identifier)
         path = Pathname.new(identifier)
