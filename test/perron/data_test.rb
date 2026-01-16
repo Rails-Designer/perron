@@ -120,4 +120,115 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
 
     refute_match (/\n\z/), data.last.notes
   end
+
+  test ".count returns the number of items" do
+    assert_equal 2, Content::Data::Users.count
+  end
+
+  test ".first returns the first item" do
+    user = Content::Data::Users.first
+
+    assert_equal "Cam", user.name
+  end
+
+  test ".second returns the second item" do
+    user = Content::Data::Users.second
+
+    assert_equal "Kendall", user.name
+  end
+
+  test ".third returns the third item" do
+    assert_nil Content::Data::Users.third
+  end
+
+  test ".last returns the last item" do
+    user = Content::Data::Users.last
+
+    assert_equal "Kendall", user.name
+  end
+
+  test ".take returns the first n items" do
+    users = Content::Data::Users.take(1)
+
+    assert_equal 1, users.size
+    assert_equal "Cam", users.first.name
+  end
+
+  test "#select filters items" do
+    admins = Perron::Data.new("users").select { it[:role] == "administrator" }
+
+    assert_equal 1, admins.count
+    assert_equal "Cam", admins.first.name
+  end
+
+  test "#map transforms items" do
+    names = Perron::Data.new("users").map(&:name)
+
+    assert_equal ["Cam", "Kendall"], names
+  end
+
+  test "#sort_by orders items" do
+    sorted = Perron::Data.new("users").sort_by(&:name)
+
+    assert_equal "Cam", sorted.first.name
+    assert_equal "Kendall", sorted.last.name
+  end
+
+  test "#group_by groups items" do
+    grouped = Perron::Data.new("users").group_by { it[:role] }
+
+    assert_equal 1, grouped["administrator"].size
+    assert_equal 1, grouped["moderator"].size
+  end
+
+  test "#any? returns true when condition matches" do
+    data = Perron::Data.new("users")
+
+    assert data.any? { it.name == "Cam" }
+    refute data.any? { it.name == "NonExistent" }
+  end
+
+  test "#all? returns true when all match condition" do
+    data = Perron::Data.new("users")
+
+    assert data.all? { it.name.is_a?(String) }
+    refute data.all? { it[:role] == "administrator" }
+  end
+
+  test "#find_all returns matching items" do
+    cheap_items = Perron::Data.new("skus").find_all { it[:price] < 30 }
+
+    assert_equal 1, cheap_items.count
+  end
+
+  test "#reject filters out items" do
+    non_admins = Perron::Data.new("users").reject { it[:role] == "administrator" }
+
+    assert_equal 1, non_admins.count
+    assert_equal "Kendall", non_admins.first.name
+  end
+
+  test "#each_with_index provides index" do
+    result = []
+
+    Perron::Data.new("users").each_with_index { |user, index| result << [user.name, index] }
+
+    assert_equal [["Cam", 0], ["Kendall", 1]], result
+  end
+
+  test "#partition splits into two arrays" do
+    data = Perron::Data.new("users")
+    admins, others = data.partition { it[:role] == "administrator" }
+
+    assert_equal 1, admins.size
+    assert_equal 1, others.size
+  end
+
+  test "#[] accesses items by index" do
+    data = Perron::Data.new("users")
+
+    assert_equal "Cam", data[0].name
+    assert_equal "Kendall", data[1].name
+    assert_nil data[2]
+  end
 end
