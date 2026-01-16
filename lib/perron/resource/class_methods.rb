@@ -12,7 +12,9 @@ module Perron
 
         def count = all.size
 
-        def first = all[0]
+        def first(n = nil)
+          n ? all.first(n) : all[0]
+        end
 
         def second = all[1]
 
