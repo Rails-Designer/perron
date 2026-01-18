@@ -8,7 +8,8 @@ module Perron
           private
 
           def author(resource)
-            author = resource.author || feed_configuration.author
+            author = (resource&.respond_to?(:author) && resource.author) ||
+              feed_configuration.author
 
             Author.new(author) if author
           end
