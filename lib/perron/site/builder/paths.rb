@@ -13,6 +13,8 @@ module Perron
 
           if routes.respond_to?(show_path)
             @collection.send(:load_resources).select(&:buildable?).each do |resource|
+              next if resource.root?
+
               @paths << routes.public_send(show_path, resource)
 
               (resource.class.try(:nested_routes) || []).each do |nested|

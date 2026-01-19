@@ -17,6 +17,20 @@ Examples:
 
     And adds: resources :posts, module: :content, only: %w[index show]
 
+    Generate pages scaffold with root:
+        rails generate content Page
+
+    This will additionally create:
+        app/content/pages/root.erb
+        def root action in Content::PagesController
+        root route in config/routes.rb (if not already defined)
+
+    Skip root generation for pages:
+        rails generate content Page --no-include-root
+
+    Include root for non-pages content:
+        rails generate content Article --include-root
+
     Create new content file from template:
         rails generate content Post --new
         rails generate content Post --new "My First Post"
@@ -39,3 +53,4 @@ Arguments:
 Options:
     --new [TITLE]: Create new content file instead of scaffold
     --force-plural: Use plural form for model name and class
+    --[no-]include-root: Include root action and route (default: true for pages, false otherwise)
