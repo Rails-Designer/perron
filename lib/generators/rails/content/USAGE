@@ -31,6 +31,13 @@ Examples:
     Include root for non-pages content:
         rails generate content Article --include-root
 
+    Generate content scaffold with data sources:
+        rails generate content Product --data countries products
+        rails generate content Product --data countries.json products.yml
+
+    This will additionally create data source files in app/content/products/
+    and add sources/template_source class methods to the model.
+
     Create new content file from template:
         rails generate content Post --new
         rails generate content Post --new "My First Post"
@@ -52,5 +59,6 @@ Arguments:
 
 Options:
     --new [TITLE]: Create new content file instead of scaffold
+    --data [source1(.ext) source2(.ext)]: Create data source files (default extension: .yml)
     --force-plural: Use plural form for model name and class
     --[no-]include-root: Include root action and route (default: true for pages, false otherwise)
