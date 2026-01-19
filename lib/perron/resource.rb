@@ -82,6 +82,10 @@ module Perron
     def related_resources(limit: 5) = Perron::Site::Resource::Related.new(self).find(limit:)
     alias_method :related, :related_resources
 
+    def root?
+      slug == "/"
+    end
+
     private
 
     def frontmatter
@@ -102,10 +106,6 @@ module Perron
 
     def erb_processing?
       @file_path.ends_with?(".erb") || metadata.erb == true
-    end
-
-    def root?
-      collection.name.inquiry.pages? && File.basename(filename) == "root"
     end
   end
 end

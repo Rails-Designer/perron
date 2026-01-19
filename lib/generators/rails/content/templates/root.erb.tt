@@ -1,4 +1,4 @@
 ---
 ---
 
-Find me in `app/content/pages/root.erb`
+Find me in `app/content/<%= plural_file_name %>/root.erb`

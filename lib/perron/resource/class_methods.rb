@@ -32,9 +32,7 @@ module Perron
 
         def collection = Collection.new(collection_name)
 
-        def root
-          collection_name.pages? && collection.find_by_file_name("root", name.constantize)
-        end
+        def root = all.find(&:root?)
 
         def model_name
           @model_name ||= ActiveModel::Name.new(self, nil, name.demodulize.to_s)

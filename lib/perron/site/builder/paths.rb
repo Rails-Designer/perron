@@ -13,11 +13,9 @@ module Perron
 
           if routes.respond_to?(show_path)
             @collection.send(:load_resources).select(&:buildable?).each do |resource|
-              root = resource.slug == "/"
+              next if resource.root?
 
-              next if skip? root
-
-              @paths << (root ? routes.root_path : routes.public_send(show_path, resource))
+              @paths << routes.public_send(show_path, resource)
 
               (resource.class.try(:nested_routes) || []).each do |nested|
                 @paths << routes.polymorphic_path([resource, nested])
@@ -27,11 +25,6 @@ module Perron
         end
 
         private
-
-        def skip?(root)
-          root &&
-            Perron.configuration.mode.integrated? && Perron.configuration.exclude_root?
-        end
 
         def routes = Rails.application.routes.url_helpers
 

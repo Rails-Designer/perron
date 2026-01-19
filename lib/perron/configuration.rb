@@ -19,7 +19,6 @@ module Perron
       @config.output = "output"
 
       @config.mode = :standalone
-      @config.include_root = false
 
       @config.allowed_extensions = %w[erb md]
 
@@ -53,7 +52,11 @@ module Perron
 
     def mode = @config.mode.to_s.inquiry
 
-    def exclude_root? = !@config.include_root
+    def additional_routes
+      @additional_routes || (mode.integrated? ? [] : %w[root_path])
+    end
+
+    attr_writer :additional_routes
 
     def url
       options = Perron.configuration.default_url_options
