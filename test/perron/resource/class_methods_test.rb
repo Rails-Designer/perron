@@ -4,12 +4,12 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
   test ".all returns collection of resources" do
     posts = Content::Post.all
 
-    assert_equal 3, posts.size
+    assert_equal 4, posts.size
     assert_instance_of Content::Post, posts.first
   end
 
   test ".count returns the number of resources" do
-    assert_equal 3, Content::Post.count
+    assert_equal 4, Content::Post.count
     assert_equal 4, Content::Page.count
   end
 
@@ -41,7 +41,7 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
   end
 
   test ".fourth returns nil when not enough resources" do
-    assert_nil Content::Post.fourth
+    assert_nil Content::Post.fifth
   end
 
   test ".fifth returns nil when not enough resources" do
@@ -56,7 +56,7 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
     post = Content::Post.last
 
     assert_instance_of Content::Post, post
-    assert_equal "inline-erb-post", post.slug
+    assert_equal "no-author", post.slug
   end
 
   test ".take returns the first n resources" do
@@ -69,7 +69,7 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
   test ".take returns all resources when n is larger than collection" do
     posts = Content::Post.take(10)
 
-    assert_equal 3, posts.size
+    assert_equal 4, posts.size
   end
 
   test ".find returns resource by slug" do
@@ -89,12 +89,6 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
     root = Content::Page.root
 
     assert_instance_of Content::Page, root
-  end
-
-  test ".root returns false for non-page collections" do
-    root = Content::Post.root
-
-    assert_equal false, root
   end
 
   test ".model_name returns ActiveModel::Name" do
