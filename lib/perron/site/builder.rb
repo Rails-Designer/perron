@@ -5,6 +5,7 @@ require "perron/site/builder/sitemap"
 require "perron/site/builder/feeds"
 require "perron/site/builder/public_files"
 require "perron/site/builder/paths"
+require "perron/site/builder/additional_routes"
 require "perron/site/builder/page"
 
 module Perron
@@ -40,6 +41,7 @@ module Perron
 
       def paths
         Set.new.tap do |paths|
+          Perron::Site::Builder::AdditionalRoutes.new(paths).get
           Perron::Site.collections.each { Perron::Site::Builder::Paths.new(it, paths).get }
         end
       end

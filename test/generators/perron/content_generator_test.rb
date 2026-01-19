@@ -53,6 +53,57 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     assert_no_file "app/controllers/content/posts_controller.rb"
   end
 
+  test "pages generates root action and route by default" do
+    run_generator %w[page]
+
+    assert_file "app/models/content/page.rb", /class Content::Page/
+    assert_file "app/controllers/content/pages_controller.rb" do |content|
+      assert_match /class Content::PagesController/, content
+      assert_match /def root/, content
+      assert_match /@resource = Content::Page\.root/, content
+      assert_match /render :show/, content
+    end
+
+    assert_file "app/content/pages/root.erb", /Find me in `app\/content\/pages\/root\.erb`/
+    assert_file "config/routes.rb", /root to: "content\/pages#root"/
+  end
+
+  test "pages with --no-include-root skips root generation" do
+    run_generator %w[page --no-include-root]
+
+    assert_file "app/controllers/content/pages_controller.rb" do |content|
+      assert_no_match /def root/, content
+    end
+
+    assert_no_file "app/content/pages/root.erb"
+    assert_file "config/routes.rb" do |content|
+      assert_no_match /root to:/, content
+    end
+  end
+
+  test "non-pages with --include-root generates root" do
+    run_generator %w[post --include-root]
+
+    assert_file "app/controllers/content/posts_controller.rb" do |content|
+      assert_match /def root/, content
+    end
+
+    assert_file "app/content/posts/root.erb"
+    assert_file "config/routes.rb", /root to: "content\/posts#root"/
+  end
+
+  test "skips root route if one already exists" do
+    File.write(File.join(destination_root, "config", "routes.rb"),
+      "Rails.application.routes.draw do\n  root to: \"home#index\"\nend\n")
+
+    run_generator %w[page]
+
+    assert_file "config/routes.rb" do |content|
+      assert_match /root to: "home#index"/, content
+      assert_no_match /root to: "content\/pages#root"/, content
+    end
+  end
+
   private
 
   def create_routes_file

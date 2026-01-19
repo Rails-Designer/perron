@@ -8,6 +8,7 @@ module Rails
       source_root File.expand_path("templates", __dir__)
 
       class_option :force_plural, type: :boolean, default: false, desc: "Forces the use of a plural model name and class"
+      class_option :include_root, type: :boolean, default: nil, desc: "Include root action and route (defaults to true for pages)"
       class_option :new, type: :string, default: nil, banner: "TITLE",
         desc: "Create a new content file from template instead of generating scaffold"
 
@@ -60,25 +61,41 @@ module Rails
         FileUtils.mkdir_p(content_directory)
       end
 
-      def create_pages_root
-        return if @content_mode
-        return unless pages_controller?
-
-        template "root.erb.tt", File.join(content_directory, "root.erb")
-      end
-
       def add_content_route
         return if @content_mode
 
         route "resources :#{plural_file_name}, module: :content, only: %w[#{actions.join(" ")}]"
       end
 
+      def add_root_action
+        return if @content_mode
+        return unless should_include_root?
+
+        inject_into_class "app/controllers/content/#{plural_file_name}_controller.rb", "Content::#{plural_class_name}Controller" do
+          <<-RUBY
+
+        def root
+          @resource = Content::#{class_name}.root
+
+          render :show
+        end
+          RUBY
+        end
+      end
+
+      def create_root_content_file
+        return if @content_mode
+        return unless should_include_root?
+
+        template "root.erb.tt", File.join(content_directory, "root.erb")
+      end
+
       def add_root_route
         return if @content_mode
-        return unless pages_controller?
+        return unless should_include_root?
         return if root_route_exists?
 
-        inject_into_file "config/routes.rb", "  root to: \"content/pages#root\"\n", before: /^\s*end\s*$/
+        route "root to: \"content/#{plural_file_name}#root\""
       end
 
       private
@@ -99,14 +116,6 @@ module Rails
 
       def pages_controller? = plural_file_name == "pages"
 
-      def root_route_exists?
-        routes = File.join(destination_root, "config", "routes.rb")
-
-        return false unless File.exist?(routes)
-
-        File.read(routes).match?(/\broot\s+to:/)
-      end
-
       def template_file
         @template_file ||= Dir.glob(File.join(content_directory, "{YYYY-MM-DD-,}template.*.tt")).first
       end
@@ -120,6 +129,17 @@ module Rails
             name.sub!("template", @content_title ? @content_title.parameterize : "untitled")
           end
         end
+      end
+
+      def should_include_root?
+        options[:include_root].nil? ? pages_controller? : options[:include_root]
+      end
+
+      def root_route_exists?
+        routes = File.join(destination_root, "config", "routes.rb")
+        return false unless File.exist?(routes)
+
+        File.read(routes).match?(/\broot\s+to:/)
       end
     end
   end

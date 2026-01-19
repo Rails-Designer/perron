@@ -47,7 +47,7 @@ module Perron
 
       def canonical_url
         return @frontmatter[:canonical_url] if @frontmatter[:canonical_url]
-        return Rails.application.routes.url_helpers.root_url(**Perron.configuration.default_url_options) if @resource.slug == "/"
+        return Rails.application.routes.url_helpers.root_url(**Perron.configuration.default_url_options) if @resource.root?
 
         begin
           Rails.application.routes.url_helpers.polymorphic_url(
