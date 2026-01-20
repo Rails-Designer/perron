@@ -2,7 +2,7 @@ require "test_helper"
 
 class Perron::Site::DataTest < ActiveSupport::TestCase
   test "loads yaml file by basename" do
-    data = Perron::Data.new("users")
+    data = Content::Data.new("users")
 
     assert_equal 2, data.count
 
@@ -13,7 +13,7 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
   end
 
   test "loads nested yaml file by nested basename" do
-    data = Perron::Data.new("users/admins")
+    data = Content::Data.new("users/admins")
 
     assert_equal 1, data.count
 
@@ -25,7 +25,7 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
 
 
   test "loads json file by basename" do
-    data = Perron::Data.new("skus")
+    data = Content::Data.new("skus")
 
     assert_equal 2, data.count
 
@@ -36,7 +36,7 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
   end
 
   test "loads csv file by basename" do
-    data = Perron::Data.new("orders")
+    data = Content::Data.new("orders")
 
     assert_equal 2, data.count
 
@@ -61,62 +61,62 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
 
   test "loads file with a full path" do
     full_path = Rails.root.join("app", "content", "data", "users.yml").to_s
-    data = Perron::Data.new(full_path)
+    data = Content::Data.new(full_path)
 
     assert_equal "Kendall", data.last.name
   end
 
   test "raises FileNotFoundError for a missing file" do
     assert_raises Perron::Errors::FileNotFoundError do
-      Perron::Data.new("non_existent_file")
+      Content::Data.new("non_existent_file")
     end
   end
 
   test "raises DataParseError for data not structured as an array" do
     assert_raises Perron::Errors::DataParseError do
-      Perron::Data.new("not_an_array")
+      Content::Data.new("not_an_array")
     end
   end
 
   test "#to_partial_path returns the conventional path from a logical name" do
-    data = Perron::Data.new("users")
+    data = Content::Data.new("users")
 
     assert_equal "content/users/user", data.first.to_partial_path
   end
 
   test "#to_partial_path returns the conventional path from a nested logical name" do
-    data = Perron::Data.new("users/admins")
+    data = Content::Data.new("users/admins")
 
     assert_equal "content/users/admins/admin", data.first.to_partial_path
   end
 
   test "#to_partial_path returns the conventional path from a full file path" do
     full_path = Rails.root.join("app", "content", "data", "skus.json").to_s
-    data = Perron::Data.new(full_path)
+    data = Content::Data.new(full_path)
 
     assert_equal "content/skus/sku", data.first.to_partial_path
   end
 
   test "parses YAML literal block scalar" do
-    data = Perron::Data.new("users")
+    data = Content::Data.new("users")
 
     assert_includes data.first.bio, "\n"
   end
 
   test "parses YAML folded block scalar" do
-    data = Perron::Data.new("users")
+    data = Content::Data.new("users")
 
     refute_includes data.last.bio.strip, "\n"
   end
 
   test "parses YAML literal keep block scalar" do
-    data = Perron::Data.new("users")
+    data = Content::Data.new("users")
 
     assert_match (/\n\n\z/), data.first.notes
   end
 
   test "parses YAML folded strip block scalar" do
-    data = Perron::Data.new("users")
+    data = Content::Data.new("users")
 
     refute_match (/\n\z/), data.last.notes
   end
@@ -155,54 +155,54 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
   end
 
   test "#select filters items" do
-    admins = Perron::Data.new("users").select { it[:role] == "administrator" }
+    admins = Content::Data.new("users").select { it[:role] == "administrator" }
 
     assert_equal 1, admins.count
     assert_equal "Cam", admins.first.name
   end
 
   test "#map transforms items" do
-    names = Perron::Data.new("users").map(&:name)
+    names = Content::Data.new("users").map(&:name)
 
     assert_equal ["Cam", "Kendall"], names
   end
 
   test "#sort_by orders items" do
-    sorted = Perron::Data.new("users").sort_by(&:name)
+    sorted = Content::Data.new("users").sort_by(&:name)
 
     assert_equal "Cam", sorted.first.name
     assert_equal "Kendall", sorted.last.name
   end
 
   test "#group_by groups items" do
-    grouped = Perron::Data.new("users").group_by { it[:role] }
+    grouped = Content::Data.new("users").group_by { it[:role] }
 
     assert_equal 1, grouped["administrator"].size
     assert_equal 1, grouped["moderator"].size
   end
 
   test "#any? returns true when condition matches" do
-    data = Perron::Data.new("users")
+    data = Content::Data.new("users")
 
     assert data.any? { it.name == "Cam" }
     refute data.any? { it.name == "NonExistent" }
   end
 
   test "#all? returns true when all match condition" do
-    data = Perron::Data.new("users")
+    data = Content::Data.new("users")
 
     assert data.all? { it.name.is_a?(String) }
     refute data.all? { it[:role] == "administrator" }
   end
 
   test "#find_all returns matching items" do
-    cheap_items = Perron::Data.new("skus").find_all { it[:price] < 30 }
+    cheap_items = Content::Data.new("skus").find_all { it[:price] < 30 }
 
     assert_equal 1, cheap_items.count
   end
 
   test "#reject filters out items" do
-    non_admins = Perron::Data.new("users").reject { it[:role] == "administrator" }
+    non_admins = Content::Data.new("users").reject { it[:role] == "administrator" }
 
     assert_equal 1, non_admins.count
     assert_equal "Kendall", non_admins.first.name
@@ -211,13 +211,13 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
   test "#each_with_index provides index" do
     result = []
 
-    Perron::Data.new("users").each_with_index { |user, index| result << [user.name, index] }
+    Content::Data.new("users").each_with_index { |user, index| result << [user.name, index] }
 
     assert_equal [["Cam", 0], ["Kendall", 1]], result
   end
 
   test "#partition splits into two arrays" do
-    data = Perron::Data.new("users")
+    data = Content::Data.new("users")
     admins, others = data.partition { it[:role] == "administrator" }
 
     assert_equal 1, admins.size
@@ -225,7 +225,7 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
   end
 
   test "#[] accesses items by index" do
-    data = Perron::Data.new("users")
+    data = Content::Data.new("users")
 
     assert_equal "Cam", data[0].name
     assert_equal "Kendall", data[1].name

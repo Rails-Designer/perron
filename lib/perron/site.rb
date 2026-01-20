@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require "perron/collection"
-require "perron/data"
-require "perron/data/proxy"
+require "perron/data_source"
+require "perron/data_source/proxy"
 require "perron/site/builder"
 require "perron/site/validate"
 
@@ -26,7 +26,7 @@ module Perron
     def data(name = nil)
       Perron.deprecator.deprecation_warning(:data, "Use Content::Data::ClassName instead, e.g. `Content::Data::Users.all`")
 
-      (name && Perron::Data.new(name)) || Perron::Data::Proxy.new
+      (name && Perron::DataSource.new(name)) || Perron::DataSource::Proxy.new
     end
   end
 end
