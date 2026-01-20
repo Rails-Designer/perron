@@ -22,8 +22,6 @@ module Perron
             config.feeds.json.path = "feeds/#{collection.name.demodulize.parameterize}.json"
             config.feeds.json.max_items = 20
 
-            config.linked_data = ActiveSupport::OrderedOptions.new
-
             config.related_posts = ActiveSupport::OrderedOptions.new
             config.related_posts.enabled = false
             config.related_posts.max = 5
@@ -39,18 +37,17 @@ module Perron
       end
 
       class Options < ActiveSupport::OrderedOptions
-        def method_missing(name, *arguments)
-          if name.to_s.end_with?("=")
-            key = name.to_s.chomp("=").to_sym
-            value = arguments.first
-
-            return self[key].merge!(value) if self[key].is_a?(ActiveSupport::OrderedOptions) && value.is_a?(Hash)
+        def []=(key, value)
+          if self[key].is_a?(ActiveSupport::OrderedOptions) && value.is_a?(Hash)
+            self[key].merge!(value)
+          else
+            super
           end
-
-          super
         end
 
-        def respond_to_missing?(name, include_private = false) = super
+        def respond_to_missing?(name, include_private = false)
+          name.to_s.end_with?("=") || super
+        end
       end
       private_constant :Options
     end
