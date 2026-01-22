@@ -7,6 +7,8 @@ module Perron
   class HtmlProcessor
     class SyntaxHighlight < HtmlProcessor::Base
       def process
+        Perron.deprecator.deprecation_warning(:syntax_highlight)
+
         @html.css('pre > code[class*="language-"]').each do |code_block|
           language = code_block[:class][/(?<=language-)\S+/]
 
