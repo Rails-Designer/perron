@@ -4,10 +4,10 @@ require "perron/markdown"
 
 module Perron
   module MarkdownHelper
-    def markdownify(content = nil, options = {}, &block)
-      processors = options.fetch(:process, [])
+    def markdownify(content = nil, process: [], &block)
+      text = block_given? ? capture(&block).strip_heredoc : content
 
-      Perron::Markdown.render(content || capture(&block).strip_heredoc, processors: processors)
+      Perron::Markdown.render(text, processors: process)
     end
   end
 end
