@@ -11,25 +11,27 @@ require "perron/resource/reading_time"
 require "perron/resource/related"
 require "perron/resource/renderer"
 require "perron/resource/slug"
+require "perron/resource/searchable"
 require "perron/resource/separator"
 require "perron/resource/sourceable"
+require "perron/resource/sweeper"
 require "perron/resource/table_of_content"
 
 module Perron
   class Resource
-    ID_LENGTH = 8
-
     include ActiveModel::Validations
 
-    include Perron::Resource::Configuration
-    include Perron::Resource::Core
-    include Perron::Resource::ClassMethods
-    include Perron::Resource::Associations
-    include Perron::Resource::ReadingTime
-    include Perron::Resource::Sourceable
-    include Perron::Resource::Publishable
-    include Perron::Resource::Previewable
-    include Perron::Resource::TableOfContent
+    include Configuration
+    include Core
+    include ClassMethods
+    include Associations
+    include ReadingTime
+    include Searchable
+    include Sourceable
+    include Publishable
+    include Previewable
+    include Sweeper
+    include TableOfContent
 
     attr_reader :file_path, :id
 
@@ -66,17 +68,6 @@ module Perron
       render_inline_erb using: page_content
     end
 
-    def association_value(key) = metadata[key]
-
-    def to_partial_path
-      @to_partial_path ||= begin
-        element = ActiveSupport::Inflector.underscore(ActiveSupport::Inflector.demodulize(self.class.model_name))
-        collection = ActiveSupport::Inflector.tableize(self.class.model_name)
-
-        File.join("content", collection, element)
-      end
-    end
-
     def collection = Collection.new(self.class.model_name.collection)
 
     def related_resources(limit: 5) = Perron::Site::Resource::Related.new(self).find(limit:)
@@ -87,6 +78,8 @@ module Perron
     end
 
     private
+
+    ID_LENGTH = 8
 
     def frontmatter
       @frontmatter ||= Perron::Resource::Separator.new(raw_content).frontmatter
