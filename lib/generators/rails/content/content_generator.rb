@@ -76,7 +76,7 @@ module Rails
         options[:data].each do |source|
           name, extension = source.split(".", 2)
 
-          create_file File.join(content_directory, "#{name}.#{extension || "yml"}"), ""
+          create_file File.join("app", "content", "data", "#{name}.#{extension || "yml"}"), ""
         end
       end
 
@@ -85,13 +85,12 @@ module Rails
         return unless should_include_root?
 
         inject_into_class "app/controllers/content/#{plural_file_name}_controller.rb", "Content::#{plural_class_name}Controller" do
-          <<-RUBY
+          <<~RUBY
+            def root
+              @resource = Content::#{class_name}.root
 
-        def root
-          @resource = Content::#{class_name}.root
-
-          render :show
-        end
+              render :show
+            end
           RUBY
         end
       end

@@ -107,8 +107,8 @@ class ContentGeneratorTest < Rails::Generators::TestCase
   test "--data flag creates data source files with default yml extension" do
     run_generator %w[product --data countries products]
 
-    assert_file "app/content/products/countries.yml"
-    assert_file "app/content/products/products.yml"
+    assert_file "app/content/data/countries.yml"
+    assert_file "app/content/data/products.yml"
 
     assert_file "app/models/content/product.rb", /sources :countries, :products/
     assert_file "app/models/content/product.rb", /def self\.source_template\(sources\)/
@@ -117,8 +117,8 @@ class ContentGeneratorTest < Rails::Generators::TestCase
   test "--data flag creates data source files with custom extensions" do
     run_generator %w[product --data countries.json products.yml]
 
-    assert_file "app/content/products/countries.json"
-    assert_file "app/content/products/products.yml"
+    assert_file "app/content/data/countries.json"
+    assert_file "app/content/data/products.yml"
 
     assert_file "app/models/content/product.rb", /sources :countries, :products/
   end
@@ -126,8 +126,8 @@ class ContentGeneratorTest < Rails::Generators::TestCase
   test "--data flag with mixed extensions" do
     run_generator %w[product --data countries.json products]
 
-    assert_file "app/content/products/countries.json"
-    assert_file "app/content/products/products.yml"
+    assert_file "app/content/data/countries.json"
+    assert_file "app/content/data/products.yml"
 
     assert_file "app/models/content/product.rb", /sources :countries, :products/
   end
