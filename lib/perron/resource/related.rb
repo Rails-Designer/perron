@@ -6,9 +6,16 @@ module Perron
   module Site
     class Resource
       class Related
+        @collection_caches = {}
+
+        def self.cache_for(collection_name)
+          @collection_caches[collection_name] ||= { tfidf_vectors: {}, inverse_document_frequency: nil }
+        end
+
         def initialize(resource)
           @resource = resource
           @collection = resource.collection
+          @cache = self.class.cache_for(@collection.name)
         end
 
         def find(limit: 5)
@@ -42,15 +49,15 @@ module Perron
         end
 
         def tfidf_vector_for(target_resource)
-          @tfidf_vectors ||= {}
+          vectors = @cache[:tfidf_vectors]
           slug = target_resource.slug
 
-          return @tfidf_vectors[slug] if @tfidf_vectors.key?(slug)
+          return vectors[slug] if vectors.key?(slug)
 
           tokens = tokenize_content(target_resource)
           token_count = tokens.size
 
-          return @tfidf_vectors[slug] = {} if token_count.zero?
+          return vectors[slug] = {} if token_count.zero?
 
           term_count = Hash.new(0)
 
@@ -64,7 +71,7 @@ module Perron
             tfidf_vector[term] = terms * inverse_document_frequency[term]
           end
 
-          @tfidf_vectors[slug] = tfidf_vector
+          vectors[slug] = tfidf_vector
         end
 
         def tokenize_content(target_resource)
@@ -81,7 +88,9 @@ module Perron
         end
 
         def inverse_document_frequency
-          @inverse_document_frequency ||= begin
+          return @cache[:inverse_document_frequency] if @cache[:inverse_document_frequency]
+
+          @cache[:inverse_document_frequency] = begin
             resource_frequency = Hash.new(0)
 
             @collection.resources.each { tokenize_content(it).uniq.each { resource_frequency[it] += 1 } }
