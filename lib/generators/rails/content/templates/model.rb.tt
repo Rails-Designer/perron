@@ -1,13 +1,13 @@
 class Content::<%= class_name %> < Perron::Resource
 <% if data_sources? -%>
-
   sources <%= data_sources.map { ":#{it}" }.join(", ") %>
 
   def self.source_template(sources)
-    <<~TEMPLATE
+    <<~MARKDOWN
     ---
     ---
-    TEMPLATE
+
+    MARKDOWN
   end
 <% end -%>
 end
