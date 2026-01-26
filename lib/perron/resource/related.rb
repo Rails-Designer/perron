@@ -43,13 +43,14 @@ module Perron
 
         def tfidf_vector_for(target_resource)
           @tfidf_vectors ||= {}
+          slug = target_resource.slug
 
-          return @tfidf_vectors[target_resource] if @tfidf_vectors.key?(target_resource)
+          return @tfidf_vectors[slug] if @tfidf_vectors.key?(slug)
 
           tokens = tokenize_content(target_resource)
           token_count = tokens.size
 
-          return {} if token_count.zero?
+          return @tfidf_vectors[slug] = {} if token_count.zero?
 
           term_count = Hash.new(0)
 
@@ -63,19 +64,20 @@ module Perron
             tfidf_vector[term] = terms * inverse_document_frequency[term]
           end
 
-          @tfidf_vectors[target_resource] = tfidf_vector
+          @tfidf_vectors[slug] = tfidf_vector
         end
 
         def tokenize_content(target_resource)
           @tokenized_content ||= {}
+          slug = target_resource.slug
 
-          return @tokenized_content[target_resource] if @tokenized_content.key?(target_resource)
-          return [] if target_resource.content.blank?
+          return @tokenized_content[slug] if @tokenized_content.key?(slug)
+          return @tokenized_content[slug] = [] if target_resource.content.blank?
 
           content = target_resource.content.gsub(/<[^>]*>/, " ")
           tokens = content.downcase.scan(/\w+/).reject { StopWords.all.include?(it) || it.length < 3 }
 
-          @tokenized_content[target_resource] = tokens
+          @tokenized_content[slug] = tokens
         end
 
         def inverse_document_frequency
