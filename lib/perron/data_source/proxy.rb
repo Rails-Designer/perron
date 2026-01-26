@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Perron
-  class Data
+  class DataSource
     class Proxy
       include Enumerable
 
