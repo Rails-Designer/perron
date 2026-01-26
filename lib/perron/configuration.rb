@@ -35,6 +35,8 @@ module Perron
 
       @config.markdown_options = {}
 
+      @config.search_scope = []
+
       @config.sitemap = ActiveSupport::OrderedOptions.new
       @config.sitemap.enabled = false
       @config.sitemap.priority = 0.5

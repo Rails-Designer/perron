@@ -20,24 +20,6 @@ module Perron
 
       Item = ::Data.define(:id, :text, :level, :children)
 
-      def extract_headings(from:, levels:)
-        from.css(levels).each_with_object([]) do |heading, headings|
-          heading.tap do |node|
-            heading_text = node.text.strip
-            id = node["id"] || node.at("a")&.[]("id")
-
-            next if heading_text.empty? || id.blank?
-
-            headings << Item.new(
-              id: id,
-              text: heading_text,
-              level: node.name[1..].to_i,
-              children: []
-            )
-          end
-        end
-      end
-
       class Builder
         def build(headings)
           parents = {0 => {children: []}}
