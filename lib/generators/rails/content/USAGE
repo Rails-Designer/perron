@@ -2,63 +2,65 @@ Description:
     Generates content model scaffold (controller, views, routes) or creates
     new content files from templates.
 
+Arguments:
+    NAME                Name of the content model (singular or plural)
+    actions             Actions to generate (default: index show)
+
+Options:
+    --new [TITLE]                   Create new content file instead of scaffold
+    --data [SOURCE...]              Create data source files (default extension: .yml)
+    --force-plural                  Use plural form for model name and class
+    --[no-]include-root             Include root action and route
+                                    (default: true for pages, false otherwise)
+
 Examples:
-    Generate content scaffold:
+    Generate basic content scaffold:
         rails generate content Post
         rails generate content Post index
         rails generate content Post index show
 
-    This will create:
+    Creates:
         app/content/posts/
         app/models/content/post.rb
         app/controllers/content/posts_controller.rb
         app/views/content/posts/index.html.erb
         app/views/content/posts/show.html.erb
 
-    And adds: resources :posts, module: :content, only: %w[index show]
+    Adds route:
+        resources :posts, module: :content, only: %w[index show]
 
     Generate pages scaffold with root:
         rails generate content Page
 
-    This will additionally create:
+    Additionally creates:
         app/content/pages/root.erb
-        def root action in Content::PagesController
-        root route in config/routes.rb (if not already defined)
+        root action in app/controllers/content/pages_controller.rb
+        root route in config/routes.rb
 
-    Skip root generation for pages:
+    Control root generation:
         rails generate content Page --no-include-root
-
-    Include root for non-pages content:
         rails generate content Article --include-root
 
-    Generate content scaffold with data sources:
+    Generate scaffold with data sources:
         rails generate content Product --data countries products
         rails generate content Product --data countries.json products.yml
 
-    This will additionally create data source files in app/content/products/
-    and add sources/template_source class methods to the model.
+    Creates data source files in app/content/data/ and adds
+    .sources and .template_source class methods to the model.
+
+    Adds .sources and .template_source class methods to model.
 
     Create new content file from template:
         rails generate content Post --new
         rails generate content Post --new "My First Post"
 
-    This will create a new content file in app/content/posts/ using:
-        - YYYY-MM-DD-template.*.tt (if exists, with date prefix)
-        - template.*.tt (if exists, without date prefix)
-        - Empty file with frontmatter dashes (if no template)
+    Creates a new content file in app/content/posts/ using:
+        1. YYYY-MM-DD-template.*.tt (if exists, with date prefix)
+        2. template.*.tt (if exists, without date prefix)
+        3. Empty file with frontmatter dashes (if no template)
 
     Template files support ERB:
         ---
         title: <%= @title %>
         published_at: <%= Time.current %>
         ---
-
-Arguments:
-    NAME: Name of the content model (singular or plural)
-    actions: Actions to generate (default: index show)
-
-Options:
-    --new [TITLE]: Create new content file instead of scaffold
-    --data [source1(.ext) source2(.ext)]: Create data source files (default extension: .yml)
-    --force-plural: Use plural form for model name and class
-    --[no-]include-root: Include root action and route (default: true for pages, false otherwise)
