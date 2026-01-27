@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "perron/relation"
 require "perron/resource/configuration"
 require "perron/resource/core"
 require "perron/resource/class_methods"
@@ -10,6 +11,7 @@ require "perron/resource/publishable"
 require "perron/resource/reading_time"
 require "perron/resource/related"
 require "perron/resource/renderer"
+require "perron/resource/scopes"
 require "perron/resource/slug"
 require "perron/resource/searchable"
 require "perron/resource/separator"
@@ -30,6 +32,7 @@ module Perron
     include Sourceable
     include Publishable
     include Previewable
+    include Scopes
     include Sweeper
     include TableOfContent
 
@@ -41,6 +44,16 @@ module Perron
       @id = generate_id
 
       raise Errors::FileNotFoundError, "No such file: #{file_path}" unless File.exist?(file_path)
+    end
+
+    def pluck(*attributes)
+      raise ArgumentError, "wrong number of arguments (given 0, expected 1+)" if attributes.empty?
+
+      if attributes.size == 1
+        public_send(attributes.first)
+      else
+        attributes.map { |attr| public_send(attr) }
+      end
     end
 
     def filename = File.basename(@file_path)

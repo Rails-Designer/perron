@@ -103,4 +103,52 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
 
     assert_instance_of Perron::Collection, collection
   end
+
+  test ".where filters resources by single condition" do
+    posts = Content::Post.where(slug: "sample-post")
+
+    assert_instance_of Perron::Relation, posts
+    assert_equal 1, posts.size
+    assert_equal "sample-post", posts.first.slug
+  end
+
+  test ".where filters resources with array of values" do
+    posts = Content::Post.where(slug: ["sample-post", "another-post"])
+
+    assert_equal 2, posts.size
+  end
+
+  test ".where returns empty relation when no matches" do
+    posts = Content::Post.where(slug: "non-existent")
+
+    assert_instance_of Perron::Relation, posts
+    assert_equal 0, posts.size
+  end
+
+  test ".order sorts resources by attribute ascending" do
+    posts = Content::Post.order(:slug)
+
+    assert_instance_of Perron::Relation, posts
+    assert_equal "another-post", posts.first.slug
+  end
+
+  test ".order sorts resources by attribute descending" do
+    posts = Content::Post.order(:slug, :desc)
+
+    assert_equal "sample-post", posts.first.slug
+  end
+
+  test ".limit returns limited number of resources" do
+    posts = Content::Post.limit(2)
+
+    assert_instance_of Perron::Relation, posts
+    assert_equal 2, posts.size
+  end
+
+  test ".offset skips specified number of resources" do
+    posts = Content::Post.offset(2)
+
+    assert_instance_of Perron::Relation, posts
+    assert_equal 2, posts.size
+  end
 end
