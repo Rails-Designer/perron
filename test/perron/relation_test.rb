@@ -67,6 +67,12 @@ class Perron::RelationTest < ActiveSupport::TestCase
     assert_equal "sample-post", sorted.first.slug
   end
 
+  test "#order sorts resources descending using hash" do
+    sorted = @posts.order(slug: :desc)
+
+    assert_equal "sample-post", sorted.first.slug
+  end
+
   test "#limit returns limited relation" do
     limited = @posts.limit(2)
 

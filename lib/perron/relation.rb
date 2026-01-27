@@ -27,6 +27,10 @@ module Perron
     def offset(count) = Relation.new(drop(count))
 
     def order(attribute, direction = :asc)
+      if attribute.is_a?(Hash)
+        attribute, direction = attribute.first
+      end
+
       sorted = sort_by { it.public_send(attribute) }
 
       Relation.new((direction == :desc) ? sorted.reverse : sorted)
