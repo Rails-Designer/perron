@@ -10,7 +10,15 @@ module Perron
 
         def all = collection.all(self)
 
+        def where(**conditions) = all.where(**conditions)
+
+        def limit(count) = all.limit(count)
+
+        def offset(count) = all.offset(count)
+
         def count = all.size
+
+        def order(attribute, direction = :asc) = all.order(attribute, direction)
 
         def first(n = nil)
           n ? all.first(n) : all[0]
