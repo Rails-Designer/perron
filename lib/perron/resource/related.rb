@@ -12,12 +12,27 @@ module Perron
       # Results are cached at the class level so the O(n²) comparison
       # is paid once, not once per resource.
       class Related
-        Cache = Struct.new(:resources, :similarity_matrix)
+        Cache = Struct.new(:resources, :similarity_matrix, :fingerprint)
 
         @collection_caches = {}
 
         def self.cache_for(collection_name)
-          @collection_caches[collection_name] ||= Cache.new
+          clear_cache!(collection_name) if stale?(collection_name)
+          @collection_caches[collection_name] ||= Cache.new(nil, nil, content_fingerprint(collection_name))
+        end
+
+        def self.clear_cache!(collection_name)
+          @collection_caches.delete(collection_name)
+        end
+
+        def self.stale?(collection_name)
+          @collection_caches[collection_name]&.fingerprint != content_fingerprint(collection_name)
+        end
+
+        def self.content_fingerprint(collection_name)
+          path = File.join(Perron.configuration.input, collection_name)
+          files = Dir.glob(File.join(path, "**", "*.*"))
+          [files.size, files.map { File.mtime(it) }.max]
         end
 
         def initialize(resource)
