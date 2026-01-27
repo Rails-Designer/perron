@@ -5,11 +5,19 @@ require "perron/resource/related/stop_words"
 module Perron
   module Site
     class Resource
+      # Finds related resources using TF-IDF cosine similarity.
+      #
+      # Pre-normalizes vectors so cosine similarity reduces to a dot product,
+      # then builds a symmetric similarity matrix once per collection.
+      # Results are cached at the class level so the O(n²) comparison
+      # is paid once, not once per resource.
       class Related
+        Cache = Struct.new(:resources, :similarity_matrix)
+
         @collection_caches = {}
 
         def self.cache_for(collection_name)
-          @collection_caches[collection_name] ||= { tfidf_vectors: {}, inverse_document_frequency: nil }
+          @collection_caches[collection_name] ||= Cache.new
         end
 
         def initialize(resource)
@@ -19,90 +27,77 @@ module Perron
         end
 
         def find(limit: 5)
-          @collection.resources
+          scores = similarity_matrix[@resource.slug] || {}
+
+          resources
             .reject { it.slug == @resource.slug }
-            .map { [it, cosine_similarities_for(@resource, it)] }
-            .sort_by { |_, score| -score }
-            .map(&:first)
+            .sort_by { -(scores[it.slug] || 0.0) }
             .first(limit)
         end
 
         private
 
-        def cosine_similarities_for(resource_one, resource_two)
-          first_vector = tfidf_vector_for(resource_one)
-          second_vector = tfidf_vector_for(resource_two)
+        def resources = @cache.resources ||= @collection.resources
 
-          return 0.0 if first_vector.empty? || second_vector.empty?
+        def similarity_matrix = @cache.similarity_matrix ||= build_similarity_matrix
 
-          dot_product = 0.0
+        def build_similarity_matrix
+          vectors = resources.to_h { [it.slug, normalize(tfidf_vector_for(it))] }
+          matrix = Hash.new { |h, k| h[k] = {} }
 
-          first_vector.each_key { dot_product += first_vector[it] * second_vector[it] if second_vector.key?(it) }
+          slugs = vectors.keys
+          slugs.each_with_index do |slug_a, i|
+            next if vectors[slug_a].empty?
 
-          first_magnitude = Math.sqrt(first_vector.values.sum { it**2 })
-          second_magnitude = Math.sqrt(second_vector.values.sum { it**2 })
-          denominator = first_magnitude * second_magnitude
+            slugs[(i + 1)..].each do |slug_b|
+              next if vectors[slug_b].empty?
 
-          return 0.0 if denominator.zero?
-
-          dot_product / denominator
-        end
-
-        def tfidf_vector_for(target_resource)
-          vectors = @cache[:tfidf_vectors]
-          slug = target_resource.slug
-
-          return vectors[slug] if vectors.key?(slug)
-
-          tokens = tokenize_content(target_resource)
-          token_count = tokens.size
-
-          return vectors[slug] = {} if token_count.zero?
-
-          term_count = Hash.new(0)
-
-          tokens.each { |token| term_count[token] += 1 }
-
-          tfidf_vector = {}
-
-          term_count.each do |term, count|
-            terms = count.to_f / token_count
-
-            tfidf_vector[term] = terms * inverse_document_frequency[term]
+              score = dot_product(vectors[slug_a], vectors[slug_b])
+              matrix[slug_a][slug_b] = score
+              matrix[slug_b][slug_a] = score
+            end
           end
 
-          vectors[slug] = tfidf_vector
+          matrix
         end
 
-        def tokenize_content(target_resource)
-          @tokenized_content ||= {}
-          slug = target_resource.slug
+        def dot_product(vec_a, vec_b)
+          score = 0.0
+          vec_a.each_key { score += vec_a[it] * vec_b[it] if vec_b.key?(it) }
+          score
+        end
 
-          return @tokenized_content[slug] if @tokenized_content.key?(slug)
-          return @tokenized_content[slug] = [] if target_resource.content.blank?
+        def normalize(vector)
+          return {} if vector.empty?
 
-          content = target_resource.content.gsub(/<[^>]*>/, " ")
-          tokens = content.downcase.scan(/\w+/).reject { StopWords.all.include?(it) || it.length < 3 }
+          magnitude = Math.sqrt(vector.values.sum { it**2 })
+          return {} if magnitude.zero?
 
-          @tokenized_content[slug] = tokens
+          vector.transform_values { it / magnitude }
+        end
+
+        def tfidf_vector_for(resource)
+          tokens = tokenize(resource)
+          return {} if tokens.empty?
+
+          token_count = tokens.size.to_f
+
+          tokens.tally.to_h { |term, count| [term, (count / token_count) * inverse_document_frequency[term]] }
+        end
+
+        def tokenize(resource)
+          return [] if resource.content.blank?
+
+          resource.content.gsub(/<[^>]*>/, " ").downcase.scan(/\w+/).reject { StopWords.all.include?(it) || it.length < 3 }
         end
 
         def inverse_document_frequency
-          return @cache[:inverse_document_frequency] if @cache[:inverse_document_frequency]
+          @inverse_document_frequency ||= begin
+            doc_frequency = Hash.new(0)
+            resources.each { tokenize(it).uniq.each { doc_frequency[it] += 1 } }
 
-          @cache[:inverse_document_frequency] = begin
-            resource_frequency = Hash.new(0)
-
-            @collection.resources.each { tokenize_content(it).uniq.each { resource_frequency[it] += 1 } }
-
-            frequencies = {}
-            total_resources = @collection.resources.size
-
-            resource_frequency.each do |term, frequency|
-              frequencies[term] = Math.log(total_resources.to_f / (1 + frequency))
-            end
-
-            frequencies
+            total = resources.size.to_f
+            doc_frequency.transform_values { Math.log(total / (1 + it)) }
           end
         end
       end
