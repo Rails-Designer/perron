@@ -98,4 +98,23 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
     assert @invalid_page.errors.any?
     assert_includes @invalid_page.errors.full_messages, "Description can't be blank"
   end
+
+  test "#inline returns hash with html content and default layout" do
+    result = @page.inline
+
+    assert_equal @page.content, result[:html]
+    assert_equal "application", result[:layout]
+  end
+
+  test "#inline accepts a custom layout" do
+    result = @page.inline(layout: "admin")
+
+    assert_equal "admin", result[:layout]
+  end
+
+  test "#inline merges additional options" do
+    result = @page.inline(status: :not_found)
+
+    assert_equal :not_found, result[:status]
+  end
 end
