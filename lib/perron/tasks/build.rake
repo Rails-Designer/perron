@@ -1,6 +1,13 @@
 namespace :perron do
+  task :set_production_env do
+    unless ENV["RAILS_ENV"]
+      ENV["RAILS_ENV"] = "production"
+      puts "RAILS_ENV not set, defaulting to production"
+    end
+  end
+
   desc "Generate static HTML files from Perron collections"
-  task build: :environment do
+  task build: [:set_production_env, :environment] do
     Perron::Site.build
   end
 end
