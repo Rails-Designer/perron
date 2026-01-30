@@ -21,6 +21,15 @@ module Perron
     alias_method :resources, :all
 
     def find(slug, resource_class = Resource)
+      Perron.deprecator.deprecation_warning(
+        :find,
+        "Collection#find will return nil instead of raising in the next major version. Use #find! to raise an error."
+      )
+
+      find!(slug, resource_class)
+    end
+
+    def find!(slug, resource_class = Resource)
       resource = load_resources(resource_class).find { it.slug == slug }
 
       return resource if resource
