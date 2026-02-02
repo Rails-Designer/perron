@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "perron/output_server"
+require "mata"
 
 module Perron
   class Engine < Rails::Engine
@@ -10,6 +11,17 @@ module Perron
 
     initializer "perron.output_server" do |app|
       app.middleware.use Perron::OutputServer
+    end
+
+    initializer "perron.configure_hmr", after: :load_config_initializers do |app|
+      if Perron.configuration.hmr && Rails.env.development?
+        app.config.middleware.insert_before(
+          ActionDispatch::Static,
+          Mata,
+          watch: Perron.configuration.hmr_watch_paths,
+          skip: Perron.configuration.hmr_skip_paths
+        )
+      end
     end
 
     rake_tasks do

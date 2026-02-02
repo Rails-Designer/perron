@@ -5,6 +5,7 @@ source "https://rubygems.org"
 gemspec
 
 gem "rails", "~> 7.2.0"
+gem "mata"
 
 group :development do
   gem "standard", "~> 1.50.0"

@@ -22,6 +22,10 @@ module Perron
 
       @config.allowed_extensions = %w[erb md]
 
+      @config.hmr = false
+      @config.hmr_watch_paths = %w[app/content app/views app/assets]
+      @config.hmr_skip_paths = %w[tmp log node_modules .git coverage]
+
       @config.exclude_from_public = %w[assets storage]
       @config.excluded_assets = %w[action_cable actioncable actiontext activestorage rails-ujs trix turbo]
 
