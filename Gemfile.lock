@@ -4,7 +4,7 @@ PATH
     perron (0.17.0)
       csv
       json
-      mata (~> 0.5)
+      mata (~> 0.6)
       psych
       rails (>= 7.2.0)
 
@@ -132,7 +132,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
-    mata (0.5.0)
+    mata (0.6.0)
       listen (~> 3.0)
       rack (>= 3.0)
     mini_mime (1.1.5)
@@ -287,7 +287,6 @@ PLATFORMS
 
 DEPENDENCIES
   debug (~> 1.11.0)
-  mata
   minitest (~> 5.25, >= 5.25.5)
   perron!
   rails (~> 7.2.0)
