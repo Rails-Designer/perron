@@ -25,9 +25,14 @@ module Perron
           Perron::Site::Builder::PublicFiles.new.copy
         end
 
-        puts "\n📝 Generating collections…"
+        locales = Perron.configuration.locales
 
-        paths.each { render_page(it) }
+        puts "\n📝 Generating collections…"
+        if locales.present?
+          render_pages_for(locales)
+        else
+          paths.each { render_page(it) }
+        end
 
         Perron::Site::Builder::Sitemap.new(@output_path).generate
         Perron::Site::Builder::Feeds.new(@output_path).generate
@@ -39,6 +44,14 @@ module Perron
 
       private
 
+      def render_pages_for(locales)
+        locales.each do |locale|
+          I18n.with_locale(locale) do
+            paths.each { render_page(it, locale) }
+          end
+        end
+      end
+
       def paths
         Set.new.tap do |paths|
           Perron::Site::Builder::AdditionalRoutes.new(paths).get
@@ -46,7 +59,7 @@ module Perron
         end
       end
 
-      def render_page(path) = Perron::Site::Builder::Page.new(path).render
+      def render_page(path, locale = nil) = Perron::Site::Builder::Page.new(path, locale).render
 
       def output_preview_urls
         previewable_resources = Perron::Site.collections.flat_map { it.send(:load_resources) }.select(&:previewable?)

@@ -10,6 +10,29 @@ module Perron
       app.config.action_controller.default_url_options = Perron.configuration.default_url_options
     end
 
+    require "perron/locale_middleware"
+
+    initializer "perron.i18n_setup" do
+      if Perron.configuration.locales.present?
+        I18n.enforce_available_locales = false
+        I18n.available_locales ||= []
+        I18n.available_locales.concat(Perron.configuration.locales.map(&:to_sym))
+        I18n.default_locale = Perron.configuration.default_locale || Perron.configuration.locales.first
+      end
+    end
+
+    config.after_initialize do
+      require "perron/locale_setter"
+
+      ActiveSupport.on_load(:action_controller) do
+        include Perron::LocaleSetter
+      end
+    end
+
+    initializer "perron.locale_middleware" do |app|
+      app.middleware.use Perron::LocaleMiddleware if Perron.configuration.locales.present?
+    end
+
     initializer "perron.output_server" do |app|
       app.middleware.use Perron::OutputServer if Rails.env.development?
     end

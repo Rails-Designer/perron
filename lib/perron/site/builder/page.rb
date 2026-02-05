@@ -6,8 +6,17 @@ module Perron
   module Site
     class Builder
       class Page
-        def initialize(path)
-          @output_path, @path = Rails.root.join(Perron.configuration.output), path
+        def initialize(path, locale = nil)
+          @path, @locale = path, locale
+
+          base_output = Rails.root.join(Perron.configuration.output)
+          default_locale = Perron.configuration.default_locale || Perron.configuration.locales&.first
+
+          @output_path = if @locale && @locale != default_locale
+            base_output.join(@locale.to_s)
+          else
+            base_output
+          end
         end
 
         def render

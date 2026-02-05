@@ -49,8 +49,16 @@ module Perron
           return path.to_s if path.file? && path.absolute?
 
           base_path = Rails.root.join("app", "content", "data")
+          locale = I18n.locale.to_s
+          default_locale = Perron.configuration.default_locale&.to_s || Perron.configuration.locales&.first&.to_s
 
-          SUPPORTED_EXTENSIONS.lazy.map { base_path.join("#{identifier}#{it}") }.find(&:exist?)&.to_s
+          locale_path = base_path.join(locale)
+
+          candidates = SUPPORTED_EXTENSIONS.flat_map do |ext|
+            [locale_path.join("#{identifier}#{ext}"), base_path.join("#{identifier}#{ext}")]
+          end
+
+          candidates.find(&:exist?)&.to_s
         end
 
         def path_for!(identifier)
