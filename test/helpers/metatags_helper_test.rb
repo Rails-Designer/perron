@@ -3,6 +3,8 @@
 require "test_helper"
 
 class MetaTagsHelperTest < ActionView::TestCase
+  include Perron::MetaTagsHelper
+
   test "meta_tags returns a truthy value" do
     def request.path; "/test-path"; end
 
