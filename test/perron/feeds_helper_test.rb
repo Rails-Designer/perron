@@ -3,7 +3,7 @@
 require "test_helper"
 
 class Perron::FeedsHelperTest < Minitest::Test
-  include FeedsHelper
+  include Perron::FeedsHelper
 
   def test_feeds_calls_feeds_correctly
     called = false
