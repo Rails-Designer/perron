@@ -38,12 +38,18 @@ module Perron
 
     private
 
-    def load_resources(resource_class = "Content::#{name.classify}".safe_constantize)
+    def load_resources(resource_class = "Content::#{name.classify}".safe_constantize, locale: I18n.locale.to_s)
       allowed_extensions = Perron.configuration.allowed_extensions.map { ".#{it}" }.to_set
 
-      Dir.glob("#{@collection_path}/**/*.*")
+      Dir.glob("#{collection_path}/**/*.*")
         .select { allowed_extensions.include?(File.extname(it)) }
         .map { resource_class.new(it) }
+    end
+
+    def collection_path
+      locale_path = "#{@collection_path}/#{I18n.locale.to_s}"
+
+      Dir.exist?(locale_path) ? locale_path : @collection_path
     end
   end
 end
