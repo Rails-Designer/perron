@@ -14,12 +14,12 @@ module Perron
     end
 
     initializer "perron.configure_hmr", after: :load_config_initializers do |app|
-      if Perron.configuration.hmr && Rails.env.development?
+      if Rails.env.development? && Perron.configuration.live_reload
         app.config.middleware.insert_before(
           ActionDispatch::Static,
           Mata,
-          watch: Perron.configuration.hmr_watch_paths,
-          skip: Perron.configuration.hmr_skip_paths
+          watch: Perron.configuration.live_reload_watch_paths,
+          skip: Perron.configuration.live_reload_skip_paths
         )
       end
     end
