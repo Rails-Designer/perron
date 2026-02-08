@@ -43,4 +43,21 @@ class Perron::Site::Resource::RelatedTest < ActiveSupport::TestCase
     assert_kind_of Array, related_products
     assert_kind_of Content::SimilarProduct, related_products.first if related_products.any?
   end
+
+  test "#find includes newly added content (busts cache)" do
+    new_file = File.join(File.dirname(@main_product.file_path), "duplicate-product.md")
+
+    # Prime the related_resources cache
+    before = @main_product.related_resources.map(&:slug)
+    refute_includes before, "duplicate-product"
+
+    # Add new content
+    FileUtils.cp(@main_product.file_path, new_file)
+
+    after = @main_product.related_resources.map(&:slug)
+    assert_includes after, "duplicate-product"
+  ensure
+    FileUtils.rm_f(new_file)
+    Perron::Site::Resource::Related.clear_cache!("similar_products")
+  end
 end

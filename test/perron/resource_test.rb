@@ -117,4 +117,23 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
       @page.pluck
     end
   end
+    
+  test "#inline returns hash with html content and default layout" do
+    result = @page.inline
+
+    assert_equal @page.content, result[:html]
+    assert_equal "application", result[:layout]
+  end
+
+  test "#inline accepts a custom layout" do
+    result = @page.inline(layout: "admin")
+
+    assert_equal "admin", result[:layout]
+  end
+
+  test "#inline merges additional options" do
+    result = @page.inline(status: :not_found)
+
+    assert_equal :not_found, result[:status]
+  end
 end

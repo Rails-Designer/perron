@@ -22,6 +22,10 @@ module Perron
 
       @config.allowed_extensions = %w[erb md]
 
+      @config.live_reload = false
+      @config.live_reload_watch_paths = %w[app/content app/views app/assets]
+      @config.live_reload_skip_paths = %w[app/assets/builds]
+
       @config.exclude_from_public = %w[assets storage]
       @config.excluded_assets = %w[action_cable actioncable actiontext activestorage rails-ujs trix turbo]
 

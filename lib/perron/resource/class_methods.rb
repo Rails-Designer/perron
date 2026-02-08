@@ -8,6 +8,8 @@ module Perron
       class_methods do
         def find(slug) = collection.find(slug, name.constantize)
 
+        def find!(slug) = collection.find!(slug, name.constantize)
+
         def all = collection.all(self)
 
         def where(**conditions) = all.where(**conditions)

@@ -231,4 +231,29 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
     assert_equal "Kendall", data[1].name
     assert_nil data[2]
   end
+
+  test "raises DataParseError for malformed CSV with column mismatch" do
+    error = assert_raises Perron::Errors::DataParseError do
+      Content::Data.new("malformed_csv")
+    end
+
+    assert_includes error.message, "Column mismatch"
+    assert_includes error.message, "Expected: name, email, role"
+  end
+
+  test "raises DataParseError for malformed JSON" do
+    error = assert_raises Perron::Errors::DataParseError do
+      Content::Data.new("malformed_json")
+    end
+
+    assert_includes error.message, "Invalid JSON syntax"
+  end
+
+  test "raises DataParseError for malformed YAML" do
+    error = assert_raises Perron::Errors::DataParseError do
+      Content::Data.new("malformed_yml")
+    end
+
+    assert_includes error.message, "Invalid YAML syntax"
+  end
 end

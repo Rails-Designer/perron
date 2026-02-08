@@ -81,6 +81,10 @@ module Perron
       render_inline_erb using: page_content
     end
 
+    def inline(layout: "application", **options)
+      {html: content, layout: layout}.merge(options)
+    end
+
     def collection = Collection.new(self.class.model_name.collection)
 
     def related_resources(limit: 5) = Perron::Site::Resource::Related.new(self).find(limit:)
