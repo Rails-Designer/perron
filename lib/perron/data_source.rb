@@ -51,8 +51,24 @@ module Perron
         raise Errors::DataParseError, "Data in `#{@file_path}` must be an array of objects."
       end
 
-      data.map { Item.new(it, identifier: @identifier) }
+      data.map.with_index do |item, index|
+        unless item.is_a?(Hash)
+          raise Errors::DataParseError, "Item at index #{index} in `#{@file_path}` must be a hash/object, got #{item.class}"
+        end
+
+        Item.new(item, identifier: @identifier)
+      end
     end
+    # def records
+    #   content = rendered_from(@file_path)
+    #   data = parsed_from(content, @file_path)
+
+    #   unless data.is_a?(Array)
+    #     raise Errors::DataParseError, "Data in `#{@file_path}` must be an array of objects."
+    #   end
+
+    #   data.map { Item.new(it, identifier: @identifier) }
+    # end
 
     def rendered_from(path)
       raw_content = File.read(path)
@@ -65,26 +81,75 @@ module Perron
     def parsed_from(content, path)
       extension = File.extname(path)
       parser_method = PARSER_METHODS.fetch(extension) do
-        raise Errors::UnsupportedDataFormatError, "Unsupported data format: #{extension}"
+        raise Errors::UnsupportedDataFormatError, "Unsupported data format: #{extension}. Supported formats: #{SUPPORTED_EXTENSIONS.join(", ")}"
       end
 
-      send(parser_method, content)
-    rescue Psych::SyntaxError, JSON::ParserError, CSV::MalformedCSVError => error
-      raise Errors::DataParseError, "Failed to parse data format in `#{path}`: (#{error.class}) #{error.message}"
+      send(parser_method, content, path)
     end
+    # def parsed_from(content, path)
+    #   extension = File.extname(path)
+    #   parser_method = PARSER_METHODS.fetch(extension) do
+    #     raise Errors::UnsupportedDataFormatError, "Unsupported data format: #{extension}"
+    #   end
+
+    #   send(parser_method, content)
+    # rescue Psych::SyntaxError, JSON::ParserError, CSV::MalformedCSVError => error
+    #   raise Errors::DataParseError, "Failed to parse data format in `#{path}`: (#{error.class}) #{error.message}"
+    # end
 
     def render_erb(content) = ERB.new(content).result(HelperContext.instance.get_binding)
 
-    def parse_yaml(content)
+    def parse_yaml(content, path)
       YAML.safe_load(content, permitted_classes: [Symbol, Time], aliases: true)
-    end
+    rescue Psych::SyntaxError => error
+      line_info = error.line ? " at line #{error.line}" : ""
+      column_info = error.column ? ", column #{error.column}" : ""
 
-    def parse_json(content)
+      raise Errors::DataParseError, "Invalid YAML syntax in `#{path}`#{line_info}#{column_info}: #{error.problem}"
+    end
+    # def parse_yaml(content)
+    #   YAML.safe_load(content, permitted_classes: [Symbol, Time], aliases: true)
+    # end
+
+    def parse_json(content, path)
       JSON.parse(content, symbolize_names: true)
-    end
+    rescue JSON::ParserError => error
+      line_match = error.message.match(/at line (\d+)/)
+      line_info = line_match ? " at line #{line_match[1]}" : ""
 
-    def parse_csv(content)
-      CSV.new(content, headers: true, header_converters: :symbol).to_a.map(&:to_h)
+      raise Errors::DataParseError, "Invalid JSON syntax in `#{path}`#{line_info}: #{error.message}"
     end
+    # def parse_json(content)
+    #   JSON.parse(content, symbolize_names: true)
+    # end
+
+    def parse_csv(content, path)
+      expected_headers = nil
+
+      CSV.new(content, headers: true, header_converters: :symbol).map.with_index do |row, index|
+        expected_headers ||= row.headers
+
+        if row.headers != expected_headers
+          missing = expected_headers - row.headers
+          extra = row.headers - expected_headers
+
+          error_parts = []
+          error_parts << "missing columns: #{missing.join(", ")}" if missing.any?
+          error_parts << "extra columns: #{extra.join(", ")}" if extra.any?
+
+          raise Errors::DataParseError, "Column mismatch in `#{path}` at row #{index + 2} (#{error_parts.join("; ")}). Expected: #{expected_headers.join(", ")}"
+        end
+
+        row.to_h
+      end
+    rescue CSV::MalformedCSVError => error
+      line_match = error.message.match(/line (\d+)/)
+      line_info = line_match ? " at line #{line_match[1]}" : ""
+
+      raise Errors::DataParseError, "Malformed CSV in `#{path}`#{line_info}: #{error.message}"
+    end
+    # def parse_csv(content)
+    #   CSV.new(content, headers: true, header_converters: :symbol).to_a.map(&:to_h)
+    # end
   end
 end

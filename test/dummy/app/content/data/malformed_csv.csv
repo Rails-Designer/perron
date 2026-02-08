@@ -1,0 +1,4 @@
+name,email,role
+John,john@example.com,admin
+Jane,jane@example.com
+Bob,bob@example.com,user,extra_column
