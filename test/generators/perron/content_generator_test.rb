@@ -14,6 +14,7 @@ class ContentGeneratorTest < Rails::Generators::TestCase
 
     assert_file "app/models/content/post.rb", /class Content::Post/
     assert_file "app/controllers/content/posts_controller.rb", /class Content::PostsController/
+    assert_file "app/controllers/content/posts_controller.rb", /@resource = Content::Post.find!\(params\[:id\]\)/
 
     assert_file "app/views/content/posts/index.html.erb"
     assert_file "app/views/content/posts/show.html.erb"
