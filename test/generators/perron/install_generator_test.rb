@@ -20,7 +20,10 @@ module Perron
     test "data folder creation" do
       run_generator
 
-      assert_file "app/content/data/README.md"
+      assert_file "app/content/data/README.md" do |content|
+        assert_match(/<% Content::Data::Features.all.each do |feature| %>/, content)
+        assert_match(/<%= render Content::Data::Features.all %>/, content)
+      end
     end
 
     test "adds (optional) markdown gem" do
