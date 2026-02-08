@@ -13,14 +13,9 @@ module Perron
     def initialize
       @config = ActiveSupport::OrderedOptions.new
 
-      @config.site_name = nil
-      @config.site_description = nil
-
       @config.output = "output"
 
       @config.mode = :standalone
-
-      @config.allowed_extensions = %w[erb md]
 
       @config.live_reload = false
       @config.live_reload_watch_paths = %w[app/content app/views app/assets]
@@ -28,6 +23,7 @@ module Perron
 
       @config.exclude_from_public = %w[assets storage]
       @config.excluded_assets = %w[action_cable actioncable actiontext activestorage rails-ujs trix turbo]
+      @config.allowed_extensions = %w[erb md]
 
       @config.view_unpublished = Rails.env.development?
 
@@ -45,6 +41,9 @@ module Perron
       @config.sitemap.enabled = false
       @config.sitemap.priority = 0.5
       @config.sitemap.change_frequency = :monthly
+
+      @config.site_name = nil
+      @config.site_description = nil
 
       @config.metadata = ActiveSupport::OrderedOptions.new
       @config.metadata.title_separator = " — "
