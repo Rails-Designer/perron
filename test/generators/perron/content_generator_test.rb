@@ -58,10 +58,10 @@ class ContentGeneratorTest < Rails::Generators::TestCase
 
     assert_file "app/models/content/page.rb", /class Content::Page/
     assert_file "app/controllers/content/pages_controller.rb" do |content|
-      assert_match /class Content::PagesController/, content
-      assert_match /def root/, content
-      assert_match /@resource = Content::Page\.root/, content
-      assert_match /render :show/, content
+      assert_match (/class Content::PagesController/), content
+      assert_match (/def root/), content
+      assert_match (/@resource = Content::Page\.root/), content
+      assert_match (/render :show/), content
     end
 
     assert_file "app/content/pages/root.erb", /Find me in `app\/content\/pages\/root\.erb`/
@@ -72,12 +72,12 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     run_generator %w[page --no-include-root]
 
     assert_file "app/controllers/content/pages_controller.rb" do |content|
-      assert_no_match /def root/, content
+      assert_no_match (/def root/), content
     end
 
     assert_no_file "app/content/pages/root.erb"
     assert_file "config/routes.rb" do |content|
-      assert_no_match /root to:/, content
+      assert_no_match (/root to:/), content
     end
   end
 
@@ -85,11 +85,11 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     run_generator %w[post --include-root]
 
     assert_file "app/controllers/content/posts_controller.rb" do |content|
-      assert_match /def root/, content
+      assert_match (/def root/), content
     end
 
     assert_file "app/content/posts/root.erb"
-    assert_file "config/routes.rb", /root to: "content\/posts#root"/
+    assert_file "config/routes.rb", (/root to: "content\/posts#root"/)
   end
 
   test "skips root route if one already exists" do
@@ -99,8 +99,8 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     run_generator %w[page]
 
     assert_file "config/routes.rb" do |content|
-      assert_match /root to: "home#index"/, content
-      assert_no_match /root to: "content\/pages#root"/, content
+      assert_match (/root to: "home#index"/), content
+      assert_no_match (/root to: "content\/pages#root"/), content
     end
   end
 

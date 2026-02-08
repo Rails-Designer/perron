@@ -6,6 +6,7 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
     @invalid_page = "test/dummy/app/content/pages/invalid.md"
     @post_path = "test/dummy/app/content/posts/2023-05-15-sample-post.md"
     @inline_erb_post_path = "test/dummy/app/content/posts/2025-10-01-inline-erb-post.md"
+
     @page = Content::Page.new(@page_path)
     @invalid_page = Content::Page.new(@invalid_page)
     @post = Content::Post.new(@post_path)
@@ -99,6 +100,24 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
     assert_includes @invalid_page.errors.full_messages, "Description can't be blank"
   end
 
+  test "#pluck with single attribute returns the value" do
+    assert_equal "About", @page.pluck(:title)
+  end
+
+  test "#pluck with multiple attributes returns array of values" do
+    result = @page.pluck(:title, :description)
+
+    assert_instance_of Array, result
+    assert_equal 2, result.size
+    assert_equal "About", result.first
+  end
+
+  test "#pluck raises ArgumentError when no attributes given" do
+    assert_raises ArgumentError do
+      @page.pluck
+    end
+  end
+    
   test "#inline returns hash with html content and default layout" do
     result = @page.inline
 
