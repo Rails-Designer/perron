@@ -66,7 +66,7 @@ module Perron
       def records_for_ids(associated_class, ids)
         ids = Array(ids)
 
-        associated_class.all.select { ids.include?(it[:id]) || ids.include?(it["id"]) }
+        Perron::Relation.new(associated_class.all.select { ids.include?(it[:id]) || ids.include?(it["id"]) })
       end
 
       def records_for_foreign_key(associated_class, association_name, **options)
@@ -74,7 +74,7 @@ module Perron
         primary_key_method = options.fetch(:primary_key, :slug)
         lookup_value = public_send(primary_key_method)
 
-        associated_class.all.select { it.association_value(foreign_key) == lookup_value }
+        Perron::Relation.new(associated_class.all.select { it.association_value(foreign_key) == lookup_value })
       end
 
       def inverse_association_name = self.class.name.demodulize.underscore
