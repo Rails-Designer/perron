@@ -62,4 +62,16 @@ class Perron::Resource::AssociationsTest < ActiveSupport::TestCase
 
     assert_equal "Cam", post.editor.name
   end
+
+  test "has_many returns a Perron::Relation" do
+    posts = @author.posts
+
+    assert_kind_of Perron::Relation, posts
+  end
+
+  test "has_many result supports chaining scopes" do
+    posts = @author.posts.ordered
+
+    assert_kind_of Perron::Relation, posts
+  end
 end
