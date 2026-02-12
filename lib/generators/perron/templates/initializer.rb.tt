@@ -5,6 +5,13 @@ Perron.configure do |config|
   # The build mode for Perron. Can be :standalone (SSG, default) or :integrated (alongside your Rails app)
   # config.mode = :standalone
 
+  # Make sure to add beam_up, `bundle add beam_up`
+  # Perron.configure do |config|
+  #  config.deploy.provider = :netlify
+  #  config.deploy.netlify.access_token = ACCESS_TOKEN
+  #  config.deploy.netlify.site_id = SITE_ID
+  # end
+
   # Enable Live Reload with DOM Morphing in development
   # config.live_reload = true
 
