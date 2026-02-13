@@ -7,13 +7,12 @@ namespace :perron do
 
     provider_config[:provider] = provider
 
-    Rake::Task["perron:build"].invoke
-
     BeamUp.deploy!(
       Perron.configuration.output,
-      provider_config
+      provider_config.merge(
+        before_actions: ["bundle exec rake perron:build"],
+        after_actions: ["bundle exec rake perron:clobber"]
+      )
     )
-
-    Rake::Task["perron:clobber"].invoke
   end
 end

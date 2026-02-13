@@ -8,8 +8,8 @@ Perron.configure do |config|
   # Make sure to add beam_up, `bundle add beam_up`
   # Perron.configure do |config|
   #  config.deploy.provider = :netlify
-  #  config.deploy.netlify.access_token = ACCESS_TOKEN
-  #  config.deploy.netlify.site_id = SITE_ID
+  #  config.deploy.netlify.access_token = "ACCESS_TOKEN"
+  #  config.deploy.netlify.site_id = "SITE_ID"
   # end
 
   # Enable Live Reload with DOM Morphing in development
