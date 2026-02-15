@@ -23,6 +23,13 @@ module Perron
 
     def collection(name) = Collection.new(name)
 
+    def find_collection(name)
+      collection_path = File.join(Perron.configuration.input, name)
+      return nil unless File.exist?(collection_path) && File.directory?(collection_path)
+
+      Collection.new(name)
+    end
+
     def data(name = nil)
       Perron.deprecator.deprecation_warning(:data, "Use Content::Data::ClassName instead, e.g. `Content::Data::Users.all`")
 
