@@ -42,7 +42,8 @@ module Perron
       def paths
         Set.new.tap do |paths|
           Perron::Site::Builder::AdditionalRoutes.new(paths).get
-          Perron::Site.collections.each { Perron::Site::Builder::Paths.new(it, paths).get }
+          Perron::Site::Builder::Paths.new(paths).get
+          # Perron::Site.collections.each { Perron::Site::Builder::Paths.new(it, paths).get }
         end
       end
 

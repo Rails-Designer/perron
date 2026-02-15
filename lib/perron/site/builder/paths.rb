@@ -4,21 +4,22 @@ module Perron
   module Site
     class Builder
       class Paths
-        def initialize(collection, paths)
-          @collection, @paths = collection, paths
+        def initialize(paths)
+          @paths = paths
         end
 
         def get
-          @paths << routes.public_send(index_path) if routes.respond_to?(index_path)
+          buildable_routes.each do |route|
+            puts "Processing route: #{route.name} -> #{route.defaults[:controller]}##{route.defaults[:action]}"
 
-          if routes.respond_to?(show_path)
-            @collection.send(:load_resources).select(&:buildable?).each do |resource|
-              next if resource.root?
+            if route.defaults[:action] == "index"
+              @paths << route_path(route)
+            elsif route.defaults[:action] == "show"
+              collection_for(route)&.send(:load_resources)&.select(&:buildable?)&.each do |resource|
+                next if resource.root?
 
-              @paths << routes.public_send(show_path, resource)
-
-              (resource.class.try(:nested_routes) || []).each do |nested|
-                @paths << routes.polymorphic_path([resource, nested])
+                path = route_path(route, resource)
+                @paths << path if path
               end
             end
           end
@@ -26,11 +27,35 @@ module Perron
 
         private
 
+        def buildable_routes
+          Rails.application.routes.routes.select do |route|
+            route.defaults[:controller]&.start_with?("content/") &&
+            %w[index show].include?(route.defaults[:action])
+          end
+        end
+
+        def route_path(route, resource = nil)
+          helper_name = "#{route.name}_path"
+
+          if resource
+            routes.public_send(helper_name, resource)
+          else
+            routes.public_send(helper_name)
+          end
+        rescue ActionController::UrlGenerationError
+          nil
+        end
+
+        def collection_for(route)
+          # TODO: is `last` smart here?;e
+          controller_name = route.defaults[:controller].split("/").last
+          # TODO: delete_suffix("_controller") ?
+          collection_name = controller_name.chomp("_controller")
+
+          Perron::Site.collection(collection_name)
+        end
+
         def routes = Rails.application.routes.url_helpers
-
-        def index_path = "#{@collection.name}_path"
-
-        def show_path = "#{@collection.name.singularize}_path"
       end
     end
   end
