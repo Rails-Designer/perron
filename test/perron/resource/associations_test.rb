@@ -58,7 +58,7 @@ class Perron::Resource::AssociationsTest < ActiveSupport::TestCase
   end
 
   test "belongs_to association with Data class" do
-    post = Content::Post.find("inline-erb-post")
+    post = Content::Post.find!("inline-erb-post")
 
     assert_equal "Cam", post.editor.name
   end

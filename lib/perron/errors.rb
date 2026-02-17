@@ -10,6 +10,8 @@ module Perron
 
     class DataParseError < StandardError; end
 
+    class DataSourceNotFoundError < StandardError; end
+
     class ProcessorNotFoundError < StandardError; end
 
     class InvalidProcessorError < StandardError; end

@@ -13,7 +13,7 @@ module Perron
               foreign_key = foreign_key_for(association_name, **options)
               identifier = metadata[foreign_key]
 
-              identifier ? associated_class.find(identifier) : nil
+              identifier ? associated_class.find!(identifier) : nil
             end
           end
         end

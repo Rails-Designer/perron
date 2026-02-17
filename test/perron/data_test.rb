@@ -59,6 +59,16 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
     assert_equal "Cam", user.name
   end
 
+  test ".find returns nil when missing" do
+    assert_nil Content::Data::Users.find("missing_key")
+  end
+
+  test ".find! raises DataParseError when missing" do
+    assert_raises Perron::Errors::DataSourceNotFoundError do
+      Content::Data::Users.find!("missing_key")
+    end
+  end
+
   test "loads file with a full path" do
     full_path = Rails.root.join("app", "content", "data", "users.yml").to_s
     data = Content::Data.new(full_path)
