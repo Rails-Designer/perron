@@ -19,8 +19,7 @@ module Perron
 
         puts [
           "Validation finished",
-          (" with #{@failures.count} failures" if failed?),
-          "."
+          (" with #{@failures.count} failures" if failed?)
         ].join
       end
 
