@@ -17,6 +17,14 @@ module Perron
           all.find { it[:id] == id || it["id"] == id }
         end
 
+        def find!(id)
+          data_source = all.find { it[:id] == id || it["id"] == id }
+
+          return data_source if data_source
+
+          raise Errors::DataSourceNotFoundError, "Row not found with id: #{id}"
+        end
+
         def count = all.size
 
         def first = all.first

@@ -32,9 +32,11 @@ module Perron
                         xml.guid resource.id
                         xml.link url.polymorphic_url(resource, ref: feed_configuration.ref).delete_suffix("?ref="), isPermaLink: true
                         xml.pubDate(resource.published_at&.rfc822)
+
                         if (author = author(resource)) && author.email
                           xml.author author.name ? "#{author.email} (#{author.name})" : author.email
                         end
+
                         xml.title resource.metadata.title
                         xml.description { xml.cdata(Perron::Markdown.render(resource.content)) }
                       end

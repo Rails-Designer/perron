@@ -72,16 +72,16 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
     assert_equal 4, posts.size
   end
 
-  test ".find returns resource by slug" do
-    post = Content::Post.find("sample-post")
+  test ".find! returns resource by slug" do
+    post = Content::Post.find!("sample-post")
 
     assert_instance_of Content::Post, post
     assert_equal "sample-post", post.slug
   end
 
-  test ".find raises error for non-existent slug" do
+  test ".find! raises error for non-existent slug" do
     assert_raises Perron::Errors::ResourceNotFoundError do
-      Content::Post.find("non-existent-slug")
+      Content::Post.find!("non-existent-slug")
     end
   end
 
