@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    perron (0.17.0)
+    perron (0.18.0)
       csv
       json
       mata (~> 0.8.0)
