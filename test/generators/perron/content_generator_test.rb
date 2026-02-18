@@ -60,9 +60,9 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     assert_file "app/models/content/page.rb", /class Content::Page/
     assert_file "app/controllers/content/pages_controller.rb" do |content|
       assert_match (/class Content::PagesController/), content
-      assert_match (/def root/), content
-      assert_match (/@resource = Content::Page\.root/), content
-      assert_match (/render :show/), content
+      assert_match(/  def root/, content)
+      assert_match(/    @resource = Content::Page\.root/, content)
+      assert_match(/    render :show/, content)
     end
 
     assert_file "app/content/pages/root.erb", /Find me in `app\/content\/pages\/root\.erb`/
