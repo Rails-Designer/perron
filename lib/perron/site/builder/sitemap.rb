@@ -59,7 +59,7 @@ module Perron
                 begin
                   with.lastmod resource.metadata.updated_at.iso8601
                 rescue
-                  Time.current.iso8601
+                  with.lastmod Time.current.iso8601
                 end
               end
             end
