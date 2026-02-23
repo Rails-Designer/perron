@@ -54,4 +54,11 @@ class Perron::Site::Builder::PathsTest < ActiveSupport::TestCase
     assert_includes @paths, "/blog/rails"
     assert_includes @paths, "/blog/css"
   end
+
+  test "uses collection_name when controller overrides default mapping" do
+    @paths_builder.get
+
+    assert_includes @paths, "/team", "Should include page resource"
+    assert_includes @paths, "/team/about", "Should include page resource"
+  end
 end
