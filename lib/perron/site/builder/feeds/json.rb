@@ -18,25 +18,14 @@ module Perron
           def generate
             return nil if resources.empty?
 
-            hash = Rails.application.routes.url_helpers.with_options(@configuration.default_url_options) do |url|
-              {
-                generator: "Perron (#{Perron::VERSION})",
-                version: "https://jsonfeed.org/version/1.1",
-                home_page_url: @configuration.url,
-                title: feed_configuration.title.presence || @configuration.site_name,
-                description: feed_configuration.description.presence || @configuration.site_description,
-                items: resources.map do |resource|
-                  {
-                    id: resource.id,
-                    url: url.polymorphic_url(resource, ref: feed_configuration.ref).delete_suffix("?ref="),
-                    date_published: resource.published_at&.iso8601,
-                    authors: authors(resource),
-                    title: resource.metadata.title,
-                    content_html: Perron::Markdown.render(resource.content)
-                  }
-                end
-              }
-            end
+            hash = {
+              generator: "Perron (#{Perron::VERSION})",
+              version: "https://jsonfeed.org/version/1.1",
+              home_page_url: @configuration.url,
+              title: feed_configuration.title.presence || @configuration.site_name,
+              description: feed_configuration.description.presence || @configuration.site_description,
+              items: resources.filter_map { jsonify(it) }
+            }
 
             JSON.pretty_generate hash
           end
@@ -51,7 +40,24 @@ module Perron
               .take(feed_configuration.max_items)
           end
 
-          def feed_configuration = @collection.configuration.feeds.json
+          def jsonify(resource)
+            {
+              id: resource.id,
+              url: url_for_resource(resource),
+              date_published: resource.published_at&.iso8601,
+              authors: authors(resource),
+              title: resource.metadata.title,
+              content_html: Perron::Markdown.render(resource.content)
+            }.compact
+          end
+
+          def url_for_resource(resource)
+            routes
+              .polymorphic_url(resource, **@configuration.default_url_options.merge(ref: feed_configuration.ref))
+              .delete_suffix("?ref=")
+          rescue
+            nil
+          end
 
           def authors(resource)
             author = author(resource)
@@ -60,6 +66,10 @@ module Perron
 
             [{name: author.name, email: author.email, url: author.url, avatar: author.avatar}.compact].presence
           end
+
+          def feed_configuration = @collection.configuration.feeds.json
+
+          def routes = Rails.application.routes.url_helpers
         end
       end
     end
