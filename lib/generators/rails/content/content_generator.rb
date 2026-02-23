@@ -83,7 +83,7 @@ module Rails
       def add_root_action
         return if @content_mode
         return unless should_include_root?
-        return unless File.exist?(File.join(destination_root,  "app/controllers/content/#{plural_file_name}_controller.rb"))
+        return unless File.exist?(File.join(destination_root, "app/controllers/content/#{plural_file_name}_controller.rb"))
 
         inject_into_class "app/controllers/content/#{plural_file_name}_controller.rb", "Content::#{plural_class_name}Controller" do
           <<~RUBY.indent(2)
