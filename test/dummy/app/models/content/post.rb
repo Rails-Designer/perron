@@ -1,4 +1,10 @@
 class Content::Post < Perron::Resource
+  CATEGORIES = {
+    ruby: { title: "Ruby", description: "Ruby articles" },
+    rails: { title: "Rails", description: "Rails articles" },
+    css: { title: "CSS", description: "CSS articles" }
+  }
+
   configure do |config|
     config.sitemap.enabled = false
 

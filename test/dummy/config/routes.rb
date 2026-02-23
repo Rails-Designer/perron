@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :posts, path: "blog", module: :content, only: %w[index show] do
     resource :template, path: "template.rb", module: :posts, only: %w[show]
   end
+  get "/blog/:id", to: "content/posts/categories#show", constraints: {id: /#{Content::Post::CATEGORIES.keys.join("|")}/}, as: :posts_category
   resources :products, path: "/", module: :content, only: %w[index show]
 
   resources :similar_products, path: "/", module: :content, only: %w[index show]

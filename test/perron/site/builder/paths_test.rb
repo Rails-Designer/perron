@@ -29,24 +29,29 @@ class Perron::Site::Builder::PathsTest < ActiveSupport::TestCase
   test "only includes buildable resources" do
     @paths_builder.get
 
-    buildable_post_count = Content::Post.all.select(&:buildable?).count
-
-    assert_equal buildable_post_count, 4
+    assert_equal Content::Post.all.select(&:buildable?).count, 4
   end
 
   test "adds nested template paths" do
     @paths_builder.get
 
-    Content::Post.all.select(&:buildable?).each do |post|
-      assert_includes @paths, "/blog/#{post.to_param}/template.rb"
-    end
+    assert_includes @paths, "/blog/sample-post/template.rb"
+    assert_includes @paths, "/blog/another-post/template.rb"
+    assert_includes @paths, "/blog/no-author/template.rb"
   end
 
   test "adds custom markdown paths" do
     @paths_builder.get
 
-    Content::Author.all.select(&:buildable?).each do |product|
-      assert_includes @paths, "/authors/#{product.to_param}.html"
-    end
+    assert_includes @paths, "/authors/rails-designer.html"
+    assert_includes @paths, "/authors/not-rails-designer.html"
+  end
+
+  test "adds constraint-based category paths" do
+    @paths_builder.get
+
+    assert_includes @paths, "/blog/ruby"
+    assert_includes @paths, "/blog/rails"
+    assert_includes @paths, "/blog/css"
   end
 end

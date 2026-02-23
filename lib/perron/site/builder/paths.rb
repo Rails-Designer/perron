@@ -53,6 +53,9 @@ module Perron
         end
 
         def resources_for(route)
+          constraint_resources = constraint_resources_from(route)
+          return constraint_resources if constraint_resources.any?
+
           collection = collection_for(route)
           return [] unless collection
 
@@ -63,20 +66,75 @@ module Perron
         end
 
         def collection_for(route)
-          controller_name = route.defaults[:controller].split("/").last
-          collection_name = controller_name.chomp("_controller")
-          collection = Perron::Site.find_collection(collection_name)
-
+          collection = standard_collection(route)
           return collection if collection
 
-          parent_controller = route.defaults[:controller].split("/")[-2]
-          return nil unless parent_controller
+          collection = parent_collection(route)
+          return collection if collection
 
-          parent_collection_name = parent_controller.chomp("_controller")
-          Perron::Site.find_collection(parent_collection_name)
+          constraint_collection(route)
         end
 
         def routes = Rails.application.routes.url_helpers
+
+        private
+
+        def standard_collection(route)
+          collection_name = route.defaults[:controller].split("/").last.chomp("_controller")
+
+          Perron::Site.find_collection(collection_name)
+        end
+
+        def parent_collection(route)
+          parent_controller = route.defaults[:controller].split("/")[-2]
+          return nil unless parent_controller
+
+          Perron::Site.find_collection(parent_controller.chomp("_controller"))
+        end
+
+        def constraint_collection(route)
+          constraint = route.path.requirements[:id]
+          return nil unless constraint.is_a?(Regexp)
+          return nil unless constraint.source.include?("|")
+
+          values = constraint.source.split("|")
+          return nil unless values.all? { it.match?(/\A\w+\z/) }
+
+          ConstraintCollection.new(values)
+        end
+
+        def constraint_resources_from(route)
+          constraint = route.path.requirements[:id]
+          return [] unless constraint.is_a?(Regexp)
+          return [] unless constraint.source.include?("|")
+
+          values = constraint.source.split("|")
+          return [] unless values.all? { it.match?(/\A\w+\z/) }
+
+          values.map { ConstraintResource.new(it) }
+        end
+
+        class ConstraintCollection
+          def initialize(values)
+            @values = values
+          end
+
+          def load_resources
+            @values.map { ConstraintResource.new(it) }
+          end
+        end
+
+        class ConstraintResource
+          def initialize(value)
+            @value = value
+          end
+
+          def to_param = @value
+
+          def buildable? = true
+
+          def root? = false
+        end
       end
     end
   end
