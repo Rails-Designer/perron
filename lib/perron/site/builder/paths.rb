@@ -80,9 +80,12 @@ module Perron
         private
 
         def standard_collection(route)
-          collection_name = route.defaults[:controller].split("/").last.chomp("_controller")
+          controller_class = "#{route.defaults[:controller]}_controller".classify.constantize
+          collection_name = controller_class.respond_to?(:collection_name) ? controller_class.collection_name : route.defaults[:controller].split("/").last.chomp("_controller")
 
           Perron::Site.find_collection(collection_name)
+        rescue NameError
+          Perron::Site.find_collection(route.defaults[:controller].split("/").last.chomp("_controller"))
         end
 
         def parent_collection(route)
