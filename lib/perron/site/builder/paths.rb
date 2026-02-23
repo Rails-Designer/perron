@@ -25,7 +25,13 @@ module Perron
 
         def paths_for(route)
           case route.defaults[:action]
-          when "index" then [routes.public_send("#{route.name}_path")]
+          when "index"
+            required_params = route.required_keys - [:controller, :action]
+            if required_params.any?
+              raise "Route `#{route.name}` (#{route.path.spec}) is an index route but requires parameters #{required_params}. Perron doesn't know how to generate these parameters."
+            end
+
+            [routes.public_send("#{route.name}_path")]
           when "show" then show_paths_for(route)
           else []
           end
