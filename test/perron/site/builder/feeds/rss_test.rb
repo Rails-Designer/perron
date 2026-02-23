@@ -83,6 +83,16 @@ class Perron::Site::Builder::Feeds::RssTest < ActiveSupport::TestCase
     end
   end
 
+  test "sets permaLink=false to guid" do
+    @posts.configuration.feeds.rss.stub(:ref, "perron.railsdesigner.com") do
+      @posts.configuration.feeds.rss.stub(:max_items, 1) do
+        rss = Nokogiri::XML(@builder.generate).remove_namespaces!
+
+        assert rss.at_xpath("//item/guid").attributes["isPermaLink"].value, false
+      end
+    end
+  end
+
   test "sets a `ref` param to the link" do
     @posts.configuration.feeds.rss.stub(:ref, "perron.railsdesigner.com") do
       @posts.configuration.feeds.rss.stub(:max_items, 1) do

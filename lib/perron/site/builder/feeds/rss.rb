@@ -26,20 +26,22 @@ module Perron
                   xml.description feed_configuration.description.presence || @configuration.site_description
                   xml.link @configuration.url
 
-                  Rails.application.routes.url_helpers.with_options(@configuration.default_url_options) do |url|
-                    resources.each do |resource|
-                      xml.item do
-                        xml.guid resource.id
-                        xml.link url.polymorphic_url(resource, ref: feed_configuration.ref).delete_suffix("?ref="), isPermaLink: true
-                        xml.pubDate(resource.published_at&.rfc822)
+                  resources.each do |resource|
+                    xml.item do
+                      xml.guid resource.id, isPermaLink: false
 
-                        if (author = author(resource)) && author.email
-                          xml.author author.name ? "#{author.email} (#{author.name})" : author.email
-                        end
-
-                        xml.title resource.metadata.title
-                        xml.description { xml.cdata(Perron::Markdown.render(resource.content)) }
+                      if (resource_url = url_for_resource(resource))
+                        xml.link resource_url
                       end
+
+                      xml.pubDate(resource.published_at&.rfc822)
+
+                      if (author = author(resource)) && author.email
+                        xml.author author.name ? "#{author.email} (#{author.name})" : author.email
+                      end
+
+                      xml.title resource.metadata.title
+                      xml.description { xml.cdata(Perron::Markdown.render(resource.content)) }
                     end
                   end
                 end
@@ -57,7 +59,17 @@ module Perron
               .take(feed_configuration.max_items)
           end
 
+          def url_for_resource(resource)
+            routes
+              .polymorphic_url(resource, **@configuration.default_url_options.merge(ref: feed_configuration.ref))
+              .delete_suffix("?ref=")
+          rescue
+            nil
+          end
+
           def feed_configuration = @collection.configuration.feeds.rss
+
+          def routes = Rails.application.routes.url_helpers
         end
       end
     end
