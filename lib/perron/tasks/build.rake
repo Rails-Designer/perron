@@ -2,8 +2,9 @@ namespace :perron do
   desc "Generate static HTML files from Perron collections"
   task build: :environment do
     unless Rails.env.production?
-      puts "WARNING: Not running in production mode. Unpublished content will be included in the build."
-      puts "  Run with: RAILS_ENV=production bin/rails perron:build"
+      puts "⚠️  Not running in production mode. Unpublished content will be included in the build."
+      puts " └─> Run in production mode using: RAILS_ENV=production bin/rails perron:build"
+      puts ""
     end
 
     Perron::Site.build
