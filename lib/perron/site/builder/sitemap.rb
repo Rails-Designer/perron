@@ -56,10 +56,8 @@ module Perron
                 with.loc resource.root? ? url.root_url : url.polymorphic_url(resource)
                 with.priority priority
                 with.changefreq change_frequency
-                begin
+                if resource.metadata.updated_at.present?
                   with.lastmod resource.metadata.updated_at.iso8601
-                rescue
-                  with.lastmod Time.current.iso8601
                 end
               end
             end
