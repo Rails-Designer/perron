@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   resource :search, module: :perron, only: %w[show]
 
+  get "version.json", to: "content/versions#show", as: :version
+
   resources :authors, module: :content, only: %w[show] do
     get ":id.html", to: "authors#show", as: :html, on: :collection
   end

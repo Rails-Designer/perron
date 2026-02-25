@@ -34,7 +34,16 @@ class Perron::Site::Builder::SitemapTest < ActiveSupport::TestCase
 
     assert_includes urls, "http://#{host}/"
     assert_includes urls, "http://#{host}/about/"
-    refute_includes urls, "http://#{host}/blog/"
+    assert_includes urls, "http://#{host}/custom-set-slug/"
+    assert_includes urls, "http://#{host}/invalid/"
+    assert_includes urls, "http://#{host}/team/"
+    assert_includes urls, "http://#{host}/version.json"
+    assert_includes urls, "http://#{host}/authors/rails-designer.html"
+    assert_includes urls, "http://#{host}/authors/not-rails-designer.html"
+    assert_includes urls, "http://#{host}/blog/"
+    assert_includes urls, "http://#{host}/blog/another-post/template.rb"
+
+    refute_includes urls, "http://#{host}/features/"
   end
 
   test "sitemap uses resource updated_at as lastmod when present" do
@@ -42,8 +51,9 @@ class Perron::Site::Builder::SitemapTest < ActiveSupport::TestCase
     Perron::Site::Builder::Sitemap.new(Rails.root.join("output")).generate
 
     sitemap = Nokogiri::XML(File.read("test/dummy/output/sitemap.xml")).tap(&:remove_namespaces!)
+    host = Perron.configuration.default_url_options[:host]
 
-    sample_post_lastmod = sitemap.xpath("//url[loc[contains(text(),'sample-post')]]/lastmod").text
+    sample_post_lastmod = sitemap.xpath("//url[loc[text()='http://#{host}/blog/sample-post/']]/lastmod").text
     assert_equal "2023-05-15", sample_post_lastmod
   end
 
