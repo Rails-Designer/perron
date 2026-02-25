@@ -12,15 +12,20 @@ module Perron
 
             config.feeds = Options.new
 
-            config.feeds.rss = ActiveSupport::OrderedOptions.new
-            config.feeds.rss.enabled = false
-            config.feeds.rss.path = "feeds/#{collection.name.demodulize.parameterize}.xml"
-            config.feeds.rss.max_items = 20
+            config.feeds.atom = ActiveSupport::OrderedOptions.new
+            config.feeds.atom.enabled = false
+            config.feeds.atom.path = "feeds/#{collection.name.demodulize.parameterize}.xml"
+            config.feeds.atom.max_items = 20
 
             config.feeds.json = ActiveSupport::OrderedOptions.new
             config.feeds.json.enabled = false
             config.feeds.json.path = "feeds/#{collection.name.demodulize.parameterize}.json"
             config.feeds.json.max_items = 20
+
+            config.feeds.rss = ActiveSupport::OrderedOptions.new
+            config.feeds.rss.enabled = false
+            config.feeds.rss.path = "feeds/#{collection.name.demodulize.parameterize}.xml"
+            config.feeds.rss.max_items = 20
 
             config.related_posts = ActiveSupport::OrderedOptions.new
             config.related_posts.enabled = false

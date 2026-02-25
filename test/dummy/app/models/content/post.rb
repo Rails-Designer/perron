@@ -8,13 +8,18 @@ class Content::Post < Perron::Resource
   configure do |config|
     config.sitemap.enabled = false
 
-    config.feeds.rss.author = {
-      name: "RSS Config Author",
+    config.feeds.atom.author = {
+      name: "Atom Config Author",
       email: "support@railsdesigner.com"
     }
 
     config.feeds.json.author = {
       name: "JSON Config Author",
+      email: "support@railsdesigner.com"
+    }
+
+    config.feeds.rss.author = {
+      name: "RSS Config Author",
       email: "support@railsdesigner.com"
     }
 
