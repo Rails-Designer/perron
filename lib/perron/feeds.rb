@@ -32,8 +32,9 @@ module Perron
     private
 
     MIME_TYPES = {
-      rss: "application/rss+xml",
-      json: "application/json"
+      atom: "application/atom+xml",
+      json: "application/json",
+      rss: "application/rss+xml"
     }
   end
 end
