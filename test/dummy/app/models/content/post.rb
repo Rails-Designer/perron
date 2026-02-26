@@ -6,8 +6,6 @@ class Content::Post < Perron::Resource
   }
 
   configure do |config|
-    config.sitemap.enabled = false
-
     config.feeds.atom.author = {
       name: "Atom Config Author",
       email: "support@railsdesigner.com"
