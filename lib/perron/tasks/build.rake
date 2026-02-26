@@ -1,13 +1,12 @@
 namespace :perron do
-  task :set_production_env do
-    unless ENV["RAILS_ENV"]
-      ENV["RAILS_ENV"] = "production"
-      puts "RAILS_ENV not set, defaulting to production"
-    end
-  end
-
   desc "Generate static HTML files from Perron collections"
-  task build: [:set_production_env, :environment] do
+  task build: :environment do
+    unless Rails.env.production?
+      puts "⚠️  Not running in production mode. Unpublished content will be included in the build."
+      puts " └─> Run in production mode using: RAILS_ENV=production bin/rails perron:build"
+      puts ""
+    end
+
     Perron::Site.build
   end
 end
