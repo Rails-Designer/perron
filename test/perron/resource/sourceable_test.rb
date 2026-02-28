@@ -1,4 +1,5 @@
 require "test_helper"
+require "support/data_api_source"
 
 class Perron::Resource::SourceableTest < ActiveSupport::TestCase
   setup do
@@ -73,5 +74,39 @@ class Perron::Resource::SourceableTest < ActiveSupport::TestCase
     resource = Content::Product.new(test_file.to_s)
 
     assert resource.source_backed?
+  end
+
+  test ".sources with custom class uses class.all method" do
+    test_class = Class.new(Perron::Resource) do
+      sources products: { class: DataApiSource }
+
+      def self.source_template(sources)
+        "test template"
+      end
+    end
+
+    combinations = test_class.send(:combinations)
+
+    assert_equal 2, combinations.length
+    assert_equal "product-1", combinations.first.first.id
+    assert_equal "product-2", combinations.last.first.id
+  end
+
+  test ".sources with custom class and scope combines both" do
+    test_class = Class.new(Perron::Resource) do
+      sources products: {
+        class: DataApiSource,
+        scope: -> (products) { products.select(&:active) }
+      }
+
+      def self.source_template(sources)
+        "test template"
+      end
+    end
+
+    combinations = test_class.send(:combinations)
+
+    assert_equal 1, combinations.length
+    assert_equal "product-1", combinations.first.first.id
   end
 end

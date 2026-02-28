@@ -15,6 +15,18 @@ module Perron
           @source_definitions || {}
         end
 
+        def resolve(name)
+          definition = source_definitions[name]
+
+          data = if definition[:class]
+            definition[:class].all
+          else
+            Perron::DataSource.new(name.to_s).to_a
+          end
+
+          definition[:scope] ? definition[:scope].call(data) : data
+        end
+
         def source_names = source_definitions.keys
 
         def generate_from_sources!
@@ -36,11 +48,20 @@ module Perron
         def parsed(*arguments)
           return {} if arguments.empty?
 
-          arguments.flat_map { it.is_a?(Hash) ? it.to_a : [[it, {primary_key: :id}]] }.to_h
+          arguments.flat_map do |argument|
+            case argument
+            when Hash
+              argument.to_a
+            when Proc
+              [[SecureRandom.hex(8).to_sym, {scope: argument, primary_key: :id}]]
+            else
+              [[argument, {primary_key: :id}]]
+            end
+          end.to_h
         end
 
         def combinations
-          datasets = source_names.map { Perron::DataSource.new(it.to_s) }
+          datasets = source_names.map { resolve it }
 
           datasets.first.product(*datasets[1..])
         end
@@ -72,7 +93,8 @@ module Perron
             singular_name = name.to_s.singularize
             identifier = frontmatter["#{singular_name}_#{primary_key}"]
 
-            hash[name] = Perron::DataSource.new(name.to_s).find { it.public_send(primary_key).to_s == identifier.to_s }
+            dataset = self.class.send(:resolve, name)
+            hash[name] = dataset.find { it.public_send(primary_key).to_s == identifier.to_s }
           end
 
           Source.new(data)
