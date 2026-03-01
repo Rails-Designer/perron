@@ -80,7 +80,7 @@ class Perron::Resource::SourceableTest < ActiveSupport::TestCase
     test_class = Class.new(Perron::Resource) do
       sources products: { class: DataApiSource }
 
-      def self.source_template(sources)
+      def self.source_template(source)
         "test template"
       end
     end
@@ -99,7 +99,7 @@ class Perron::Resource::SourceableTest < ActiveSupport::TestCase
         scope: -> (products) { products.select(&:active) }
       }
 
-      def self.source_template(sources)
+      def self.source_template(source)
         "test template"
       end
     end

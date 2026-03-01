@@ -68,9 +68,9 @@ module Perron
 
         def content_with(combo)
           data = source_names.each.with_index.to_h { |name, index| [name, combo[index]] }
-          sources = Source.new(data)
+          source = Source.new(data)
 
-          source_template(sources)
+          source_template(source)
         end
 
         def filename_with(combo)
@@ -86,8 +86,8 @@ module Perron
 
       def source_backed? = self.class.source_backed?
 
-      def sources
-        @sources ||= begin
+      def source
+        @source ||= begin
           data = self.class.source_definitions.each_with_object({}) do |(name, options), hash|
             primary_key = options[:primary_key]
             singular_name = name.to_s.singularize
@@ -100,8 +100,9 @@ module Perron
           Source.new(data)
         end
       end
+      alias_method :sources, :source
 
-      def source_template(sources)
+      def source_template(source)
         raise NotImplementedError, "#{self.class.name} must implement #source_template"
       end
 
