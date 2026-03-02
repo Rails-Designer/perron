@@ -44,7 +44,7 @@ class ContentGeneratorTest < Rails::Generators::TestCase
 
   test "--new with title creates named content file" do
     FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
-    File.write(File.join(destination_root, "app", "content", "posts", "template.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+    File.write(File.join(destination_root, "app", "content", "posts", "title.md.tt"), "---\ntitle: <%= @title %>\n---\n")
 
     run_generator ["post", "--new=First Post"]
 
@@ -56,7 +56,7 @@ class ContentGeneratorTest < Rails::Generators::TestCase
 
   test "--new with strftime template creates timestamped file" do
     FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
-    File.write(File.join(destination_root, "app", "content", "posts", "%s-template.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+    File.write(File.join(destination_root, "app", "content", "posts", "%s-title.md.tt"), "---\ntitle: <%= @title %>\n---\n")
 
     freeze_time do
       run_generator ["post", "--new=My Post"]
@@ -66,9 +66,9 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     end
   end
 
-  test "--new with day template creates day-prefixed file" do
+  test "--new with day title creates day-prefixed file" do
     FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
-    File.write(File.join(destination_root, "app", "content", "posts", "%d-template.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+    File.write(File.join(destination_root, "app", "content", "posts", "%d-title.md.tt"), "---\ntitle: <%= @title %>\n---\n")
 
     freeze_time do
       run_generator ["post", "--new=Daily Note"]
@@ -76,6 +76,39 @@ class ContentGeneratorTest < Rails::Generators::TestCase
       day = Time.current.strftime("%d")
       assert_file "app/content/posts/#{day}-daily-note.md", /---\ntitle: Daily Note\n---\n/
     end
+  end
+
+  test "--new with timestamp-only template creates file without title" do
+    FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
+    File.write(File.join(destination_root, "app", "content", "posts", "%s.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+
+    freeze_time do
+      run_generator ["post", "--new=My Post"]
+
+      timestamp = Time.current.strftime("%s")
+      assert_file "app/content/posts/#{timestamp}.md", /---\ntitle: My Post\n---\n/
+    end
+  end
+
+  test "--new with title word gets title replacement" do
+    FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
+    File.write(File.join(destination_root, "app", "content", "posts", "%s-title.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+
+    freeze_time do
+      run_generator ["post", "--new=My Post"]
+
+      timestamp = Time.current.strftime("%s")
+      assert_file "app/content/posts/#{timestamp}-my-post.md", /---\ntitle: My Post\n---\n/
+    end
+  end
+
+  test "--new with no title word and no strftime uses filename as-is" do
+    FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
+    File.write(File.join(destination_root, "app", "content", "posts", "draft.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+
+    run_generator ["post", "--new=My Post"]
+
+    assert_file "app/content/posts/draft.md", /---\ntitle: My Post\n---\n/
   end
 
   test "pages generates root action and route by default" do

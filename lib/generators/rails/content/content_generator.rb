@@ -131,7 +131,7 @@ module Rails
       def pages_controller? = plural_file_name == "pages"
 
       def template_file
-        @template_file ||= Dir.glob(File.join(content_directory, "*template.*.tt")).first
+        @template_file ||= Dir.glob(File.join(content_directory, "*.tt")).first
       end
 
       def filename_from_template
@@ -141,7 +141,11 @@ module Rails
           name = File.basename(template_file, ".tt")
           name = Time.current.strftime(name)
 
-          name.sub("template", @content_title ? @content_title.parameterize : "untitled")
+          if name.include?("title")
+            name.sub("title", @content_title ? @content_title.parameterize : "untitled")
+          else
+            name
+          end
         end
       end
 
