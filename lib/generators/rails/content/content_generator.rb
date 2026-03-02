@@ -131,17 +131,17 @@ module Rails
       def pages_controller? = plural_file_name == "pages"
 
       def template_file
-        @template_file ||= Dir.glob(File.join(content_directory, "{YYYY-MM-DD-,}template.*.tt")).first
+        @template_file ||= Dir.glob(File.join(content_directory, "*template.*.tt")).first
       end
 
       def filename_from_template
         @filename_from_template ||= begin
           return "untitled.md" unless template_file
 
-          File.basename(template_file, ".tt").tap do |name|
-            name.gsub!("YYYY-MM-DD", Time.current.strftime("%Y-%m-%d"))
-            name.sub!("template", @content_title ? @content_title.parameterize : "untitled")
-          end
+          name = File.basename(template_file, ".tt")
+          name = Time.current.strftime(name)
+
+          name.sub("template", @content_title ? @content_title.parameterize : "untitled")
         end
       end
 
