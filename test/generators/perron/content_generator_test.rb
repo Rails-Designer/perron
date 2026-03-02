@@ -54,6 +54,30 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     assert_no_file "app/controllers/content/posts_controller.rb"
   end
 
+  test "--new with strftime template creates timestamped file" do
+    FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
+    File.write(File.join(destination_root, "app", "content", "posts", "%s-template.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+
+    freeze_time do
+      run_generator ["post", "--new=My Post"]
+
+      timestamp = Time.current.strftime("%s")
+      assert_file "app/content/posts/#{timestamp}-my-post.md", /---\ntitle: My Post\n---\n/
+    end
+  end
+
+  test "--new with day template creates day-prefixed file" do
+    FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
+    File.write(File.join(destination_root, "app", "content", "posts", "%d-template.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+
+    freeze_time do
+      run_generator ["post", "--new=Daily Note"]
+
+      day = Time.current.strftime("%d")
+      assert_file "app/content/posts/#{day}-daily-note.md", /---\ntitle: Daily Note\n---\n/
+    end
+  end
+
   test "pages generates root action and route by default" do
     run_generator %w[page]
 
