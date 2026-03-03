@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "perron/output_server"
+require "perron/development_feed_server"
 require "mata"
 
 module Perron
@@ -11,6 +12,10 @@ module Perron
 
     initializer "perron.output_server" do |app|
       app.middleware.use Perron::OutputServer
+    end
+
+    initializer "perron.development_feed_server" do |app|
+      app.middleware.use Perron::DevelopmentFeedServer if Rails.env.development?
     end
 
     initializer "perron.configure_hmr", after: :load_config_initializers do |app|
