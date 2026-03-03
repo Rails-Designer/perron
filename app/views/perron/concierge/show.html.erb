@@ -3,36 +3,247 @@
   <head>
     <title>Welcome to Perron</title>
     <meta charset="utf-8">
+
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      ul { list-style: none; }
+
+      body {
+        padding: 2rem 1rem;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6;
+        color: #1f2937;
+        background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+      }
+
+      .hero {
+        max-width: 72rem;
+        margin: 0 auto 4rem;
+        padding: 3rem 0;
+
+        h1 {
+          font-size: clamp(2rem, 5vw, 3.5rem);
+          font-weight: 900;
+          text-align: center;
+          color: #111827;
+          letter-spacing: -.025em;
+        }
+
+        ul {
+          display: grid;
+          row-gap: 1rem;
+          margin: 1rem auto 0;
+          max-width: 48rem;
+          padding: 1rem;
+          background: white;
+          border-radius: .5rem;
+          border: 1px solid #e5e7eb;
+
+          li {
+            border-radius: .5rem;
+
+            p { font-weight: 600; }
+
+            div {
+              display: grid;
+              grid-template-columns: 1fr min-content;
+              margin-top: .25rem;
+              padding: .75rem 1rem;
+              background-color: rgb(248 250 252);
+              border-radius: .5rem;
+            }
+
+            code {
+              font-size: .875rem;
+              font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+              font-weight: 500;
+              color: rgb(51 65 85);
+              overflow: auto;
+              white-space: nowrap;
+              user-select: all;
+            }
+
+            input[type=submit] {
+              border: 0;
+              padding: .25rem 1rem;
+              font-size: .875rem;
+              font-weight: 300;
+              color: white;
+              background-color: rgb(249 115 22);
+              border-radius: .25rem;
+              transition: background-color 300ms ease;
+              cursor: pointer;
+
+              &:hover {
+                background-color: rgb(251 146 60);
+              }
+            }
+          }
+        }
+      }
+
+      .info {
+        display: grid;
+        gap: 2rem;
+        max-width: 6xl;
+        margin: 0 auto;
+        overflow-x: clip;
+
+        @media (min-width: 768px) {
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        li {
+          &:nth-child(odd) {
+            @media (min-width: 640px) {
+              transform: rotate(-1deg);
+            }
+          }
+
+          &:nth-child(even) {
+            @media (min-width: 640px) {
+              transform: rotate(1deg);
+            }
+          }
+        }
+
+        a {
+          display: block;
+          padding: 2rem 1.5rem;
+          text-decoration: none;
+          background: white;
+          border: 1px solid #e5e7eb;
+          border-radius: 1rem;
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / .1);
+          transition: all 300ms ease;
+
+          &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / .1);
+          }
+
+          h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+          }
+
+          p {
+            margin-top: .25rem;
+            color: #4b5563;
+            line-height: 1.7;
+
+            a {
+              color: #f97316;
+              text-decoration: none;
+              font-weight: 500;
+              transition: color 200ms ease;
+
+              &:hover {
+                color: #ea580c;
+                text-decoration: underline;
+              }
+            }
+          }
+        }
+      }
+
+      .versions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        column-gap: 1.5rem;
+        margin-top: 2rem;
+        font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+        text-align: center;
+        color: #6b7280;
+        font-size: .75rem;
+      }
+    </style>
   </head>
 
   <body>
-    <h1>Welcome to Perron</h1>
+    <section class="hero">
+      <h1>Welcome to Perron</h1>
 
-    <ul>
-      <li>Create a collection: <code>bin/rails generate content Post</code></li>
-      <li>Create your first content: <code>bin/rails generate content Post --new "My first post"</code></li>
-      <li>Run the server: <code>bin/dev</code></li>
-      <li>Deploy your site: <code>bin/rails perron:deploy</code></li>
+      <ul>
+        <li>
+          <p>
+            Create a collection
+          </p>
+
+          <div>
+            <code>bin/rails generate content Post</code>
+
+            <%= form_with url: perron_run_command_path do |form| %>
+              <%= form.hidden_field :command, value: "bin/rails generate content Post" %>
+
+              <%= form.submit "Run" %>
+            <% end %>
+          </div>
+        </li>
+
+        <li>
+          <p>
+            Create your first content
+          </p>
+
+          <div>
+            <code>bin/rails generate content Post --new "My first post"</code>
+
+            <%= form_with url: perron_run_command_path do |form| %>
+              <%= form.hidden_field :command, value: 'bin/rails generate content Post --new "My first post"' %>
+
+              <%= form.submit "Run" %>
+            <% end %>
+          </div>
+        </li>
+
+        <li>
+          <p>
+            Run the server, and visit <code>https://localhost:3000/posts/</code>
+          </p>
+
+          <div>
+            <code>bin/dev</code>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <ul class="info">
+      <li>
+        <a href="https://perron.railsdesigner.com/docs/">
+          <h2>Documentation</h2>
+
+          <p>Visit the docs for more</p>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://perron.railsdesigner.com/library/">
+          <h2>Library</h2>
+
+          <p>Check out the library for snippets, components and templates</p>
+        </a>
+      </li>
+
+      <li>
+        <a href="https://github.com/Rails-Designer/perron">
+          <h2>GitHub</h2>
+
+          <p>Check out Perron's source</p>
+        </a>
+      </li>
     </ul>
 
-    <ul>
-      <li>
-        <h2>Docs</h2>
+    <div class="versions">
+      <span>Ruby <%= RUBY_VERSION %></span>
 
-        <p>Visit the docs for more details: <a href="https://perron.railsdesigner.com">perron.railsdesigner.com</a></p>
-      </li>
+      <span>Rails <%= Rails.version %></span>
 
-      <li>
-        <h2>Library</h2>
-
-        <p>Check out the library for resources: <a href="https://perron.railsdesigner.com/libray/">perron.railsdesigner.com/libray/</a></p>
-      </li>
-
-      <li>
-        <h2>GitHub</h2>
-
-        <p>Check out Perron's source: <a href="https://github.com/Rails-Designer/perron">github.com/Rails-Designer/perron</a></p>
-      </li>
-    </ul>
+      <span>Perron <%= Perron::VERSION %></span>
+    </div>
   </body>
 </html>

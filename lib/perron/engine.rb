@@ -27,6 +27,10 @@ module Perron
     initializer "perron.concierge", before: :add_builtin_route do |app|
       app.config.after_initialize do
         app.routes.append do
+          namespace :perron do
+            post :run_command, to: "concierge#run_command"
+          end
+
           root to: "perron/concierge#show" unless app.routes.named_routes.key?(:root)
         end
       end
