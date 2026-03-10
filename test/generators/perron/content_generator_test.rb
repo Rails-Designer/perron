@@ -15,6 +15,9 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     assert_file "app/models/content/post.rb", /class Content::Post/
     assert_file "app/controllers/content/posts_controller.rb", /class Content::PostsController/
     assert_file "app/controllers/content/posts_controller.rb", /@resource = Content::Post.find!\(params\[:id\]\)/
+    assert_file "app/controllers/content/posts_controller.rb" do |content|
+      refute_match(/\n\n\n/, content, "Controller should not have triple newlines")
+    end
 
     assert_file "app/views/content/posts/index.html.erb"
     assert_file "app/views/content/posts/show.html.erb"
@@ -27,6 +30,9 @@ class ContentGeneratorTest < Rails::Generators::TestCase
 
     assert_file "app/models/content/post.rb", /class Content::Post/
     assert_file "app/controllers/content/posts_controller.rb", /class Content::PostsController/
+    assert_file "app/controllers/content/posts_controller.rb" do |content|
+      refute_match(/\n\n\n/, content, "Controller should not have triple newlines")
+    end
 
     assert_file "app/views/content/posts/show.html.erb"
 
@@ -188,6 +194,29 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     assert_file "app/content/data/products.yml"
 
     assert_file "app/models/content/product.rb", /sources :countries, :products/
+  end
+
+  test "--inline flag skips show view and renders inline" do
+    run_generator %w[post --inline]
+
+    assert_file "app/models/content/post.rb", /class Content::Post/
+    assert_file "app/controllers/content/posts_controller.rb" do |content|
+      assert_match(/render @resource\.inline/, content)
+    end
+
+    assert_file "app/views/content/posts/index.html.erb"
+    assert_no_file "app/views/content/posts/show.html.erb"
+  end
+
+  test "--inline flag with only show action" do
+    run_generator %w[post show --inline]
+
+    assert_file "app/controllers/content/posts_controller.rb" do |content|
+      assert_match(/render @resource\.inline/, content)
+    end
+
+    assert_no_file "app/views/content/posts/index.html.erb"
+    assert_no_file "app/views/content/posts/show.html.erb"
   end
 
   private
