@@ -13,6 +13,7 @@ module Rails
         desc: "Create a new content file from template instead of generating scaffold"
       class_option :data, type: :array, default: [], banner: "source1(.ext) source2(.ext)",
         desc: "Specify data sources with optional extensions (defaults to .yml)"
+      class_option :inline, type: :boolean, default: false, desc: "Render show action inline instead of using a view template"
 
       argument :actions, type: :array, default: %w[index show], banner: "actions", desc: "Specify which actions to generate (index/show)"
 
@@ -53,6 +54,8 @@ module Rails
         empty_directory view_directory
 
         actions.each do |action|
+          next if action == "show" && options[:inline]
+
           template "#{action}.html.erb.tt", File.join(view_directory, "#{action}.html.erb")
         end
       end
