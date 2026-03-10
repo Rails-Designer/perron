@@ -5,14 +5,15 @@ require "perron/html_processor/lazy_load_images"
 
 module Perron
   class HtmlProcessor
-    def initialize(html, processors: [])
+    def initialize(html, processors: [], resource: nil)
       @html = html
+      @resource = resource
       @processors = processors.map { find_by(it) }
     end
 
     def process
       Nokogiri::HTML::DocumentFragment.parse(@html).tap do |document|
-        @processors.each { it.new(document).process }
+        @processors.each { it.new(document, resource: @resource).process }
       end.to_html
     end
 
