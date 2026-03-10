@@ -17,15 +17,17 @@ class Perron::FeedsTest < ActionDispatch::IntegrationTest
     document = rendered_document
 
     assert_select document, 'link[rel="alternate"][type="application/rss+xml"][title="Posts RSS Feed"][href*="feeds/posts.xml"]', count: 1
-    assert_select document, 'link[rel="alternate"][type="application/atom+xml"][title="Posts ATOM Feed"][href*="feeds/posts.xml"]', count: 1
-    assert_select document, 'link[rel="alternate"][type="application/rss+xml"][href*="feeds/pages.xml"]', count: 1
+    assert_select document, 'link[rel="alternate"][type="application/atom+xml"][title="Posts Atom Feed"][href*="feeds/posts.atom"]', count: 1
+    assert_select document, 'link[rel="alternate"][type="application/rss+xml"][title="Pages RSS Feed"][href*="feeds/pages.xml"]', count: 1
+
     assert_select document, 'link[href*="posts.json"]', count: 0
   end
 
   test "renders only specified collections using :only option" do
     document = rendered_document(only: [:posts])
 
-    assert_select document, 'link[href*="feeds/posts.xml"]', count: 2, message: "Renders for both RSS and Atom feeds"
+    assert_select document, 'link[href*="feeds/posts.xml"]', count: 1, message: "Renders one RSS feeds"
+    assert_select document, 'link[href*="feeds/posts.atom"]', count: 1, message: "Renders one Atom feed"
     assert_select document, 'link[href*="feeds/pages.xml"]', count: 0, message: "Pages feed should be excluded"
   end
 

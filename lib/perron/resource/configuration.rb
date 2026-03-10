@@ -14,7 +14,7 @@ module Perron
 
             config.feeds.atom = ActiveSupport::OrderedOptions.new
             config.feeds.atom.enabled = false
-            config.feeds.atom.path = "feeds/#{collection.name.demodulize.parameterize}.xml"
+            config.feeds.atom.path = "feeds/#{collection.name.demodulize.parameterize}.atom"
             config.feeds.atom.max_items = 20
 
             config.feeds.json = ActiveSupport::OrderedOptions.new

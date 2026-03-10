@@ -19,7 +19,7 @@ module Perron
             next unless feed.enabled && feed.path && MIME_TYPES.key?(type)
 
             absolute_url = URI.join(url.root_url, feed.path).to_s
-            title = "#{collection.name.humanize} #{type.to_s.upcase} Feed"
+            title = "#{collection.name.humanize} #{type.to_s.humanize} Feed"
 
             html_tags << tag(:link, rel: "alternate", type: MIME_TYPES[type], title: title, href: absolute_url)
           end
