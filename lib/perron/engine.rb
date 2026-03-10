@@ -43,6 +43,14 @@ module Perron
       app.routes.finalize!
     end
 
+    initializer "perron.inflections" do
+      ActiveSupport::Inflector.inflections(:en) do |inflect|
+        inflect.acronym "RSS"
+        inflect.acronym "Atom"
+        inflect.acronym "Json"
+      end
+    end
+
     rake_tasks do
       load File.expand_path("../tasks/build.rake", __FILE__)
       load File.expand_path("../tasks/clobber.rake", __FILE__)
