@@ -15,6 +15,8 @@ module Perron
 
       @config.output = "output"
 
+      @config.output_server_strict = false
+
       @config.mode = :standalone
 
       @config.live_reload = false

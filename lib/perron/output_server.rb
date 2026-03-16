@@ -8,6 +8,7 @@ module Perron
 
     def call(environment)
       return @app.call(environment) if disabled?
+      return not_found if !static_file(environment) && Perron.configuration.output_server_strict
 
       static_file(environment).then do |file|
         file ? serve(file) : @app.call(environment)
@@ -38,6 +39,14 @@ module Perron
         },
 
         [injected_content]
+      ]
+    end
+
+    def not_found
+      [
+        404,
+        {"Content-Type" => "text/plain"},
+        ["Not Found"]
       ]
     end
 
