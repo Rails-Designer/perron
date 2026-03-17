@@ -35,6 +35,8 @@ module Perron
 
       @config.markdown_options = {}
 
+      @config.default_processors = []
+
       @config.search_scope = []
 
       @config.sitemap = ActiveSupport::OrderedOptions.new
