@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <generator>Perron (<%= Perron::VERSION %>)</generator>
+    <link><%= @configuration.url %></link>
+    <title><%= config.title.presence || @configuration.site_name %></title>
+    <description><%= config.description.presence || @configuration.site_description %></description>
+
+    <% resources.each do |resource| %>
+    <item>
+      <guid isPermaLink="false"><%= resource.id %></guid>
+
+      <% resource_url = url_for_resource(resource) %>
+      <% if resource_url %>
+        <link><%= resource_url %></link>
+      <% end %>
+
+      <pubDate><%= resource.published_at&.rfc822 %></pubDate>
+      <% author = author(resource); if author && author.email %>
+        <author><%= author.name ? "#{author.email} (#{author.name})" : author.email %></author>
+      <% end %>
+      <title><%= resource.metadata.title %></title>
+
+      <description><![CDATA[<%= Perron::Markdown.render(resource.content) %>]]></description>
+    </item>
+    <% end %>
+  </channel>
+</rss>

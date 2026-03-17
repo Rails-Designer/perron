@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "nokogiri"
 require "perron/site/builder/feeds/author"
 require "perron/site/builder/feeds/template"
 
@@ -20,39 +19,10 @@ module Perron
           def generate
             return if resources.empty?
 
-            if (template = find_template("rss"))
-              return render(template, feed_configuration)
-            end
+            template = find_template("rss")
+            return unless template
 
-            Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
-              xml.rss(:version => "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom") do
-                xml.channel do
-                  xml.generator "Perron (#{Perron::VERSION})"
-                  xml.title feed_configuration.title.presence || @configuration.site_name
-                  xml.description feed_configuration.description.presence || @configuration.site_description
-                  xml.link @configuration.url
-
-                  resources.each do |resource|
-                    xml.item do
-                      xml.guid resource.id, isPermaLink: false
-
-                      if (resource_url = url_for_resource(resource))
-                        xml.link resource_url
-                      end
-
-                      xml.pubDate(resource.published_at&.rfc822)
-
-                      if (author = author(resource)) && author.email
-                        xml.author author.name ? "#{author.email} (#{author.name})" : author.email
-                      end
-
-                      xml.title resource.metadata.title
-                      xml.description { xml.cdata(Perron::Markdown.render(resource.content)) }
-                    end
-                  end
-                end
-              end
-            end.to_xml
+            render(template, feed_configuration)
           end
 
           private
@@ -64,18 +34,6 @@ module Perron
               .reverse
               .take(feed_configuration.max_items)
           end
-
-          def url_for_resource(resource)
-            routes
-              .polymorphic_url(resource, **@configuration.default_url_options.merge(ref: feed_configuration.ref))
-              .delete_suffix("?ref=")
-          rescue
-            nil
-          end
-
-          def feed_configuration = @collection.configuration.feeds.rss
-
-          def routes = Rails.application.routes.url_helpers
         end
       end
     end

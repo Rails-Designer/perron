@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "json"
 require "perron/site/builder/feeds/author"
 require "perron/site/builder/feeds/template"
 
@@ -18,64 +17,23 @@ module Perron
           end
 
           def generate
-            return nil if resources.empty?
+            return if resources.empty?
 
-            if (template = find_template("json"))
-              return render(template, feed_configuration)
-            end
+            template = find_template("json")
+            return unless template
 
-            hash = {
-              generator: "Perron (#{Perron::VERSION})",
-              version: "https://jsonfeed.org/version/1.1",
-              home_page_url: @configuration.url,
-              title: feed_configuration.title.presence || @configuration.site_name,
-              description: feed_configuration.description.presence || @configuration.site_description,
-              items: resources.filter_map { jsonify(it) }
-            }
-
-            JSON.pretty_generate hash
+            render(template, feed_configuration)
           end
 
           private
 
           def resources
-            @resources ||= @collection.resources
+            @resource ||= @collection.resources
               .reject { it.metadata.feed == false }
               .sort_by { it.metadata.published_at || it.metadata.updated_at || Time.current }
               .reverse
               .take(feed_configuration.max_items)
           end
-
-          def jsonify(resource)
-            {
-              id: resource.id,
-              url: url_for_resource(resource),
-              date_published: resource.published_at&.iso8601,
-              authors: authors(resource),
-              title: resource.metadata.title,
-              content_html: Perron::Markdown.render(resource.content)
-            }.compact
-          end
-
-          def url_for_resource(resource)
-            routes
-              .polymorphic_url(resource, **@configuration.default_url_options.merge(ref: feed_configuration.ref))
-              .delete_suffix("?ref=")
-          rescue
-            nil
-          end
-
-          def authors(resource)
-            author = author(resource)
-
-            return nil unless author&.name
-
-            [{name: author.name, email: author.email, url: author.url, avatar: author.avatar}.compact].presence
-          end
-
-          def feed_configuration = @collection.configuration.feeds.json
-
-          def routes = Rails.application.routes.url_helpers
         end
       end
     end
