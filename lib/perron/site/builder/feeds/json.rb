@@ -2,6 +2,7 @@
 
 require "json"
 require "perron/site/builder/feeds/author"
+require "perron/site/builder/feeds/template"
 
 module Perron
   module Site
@@ -9,6 +10,7 @@ module Perron
       class Feeds
         class Json
           include Feeds::Author
+          include Feeds::Template
 
           def initialize(collection:)
             @collection = collection
@@ -17,6 +19,10 @@ module Perron
 
           def generate
             return nil if resources.empty?
+
+            if (template = find_template("json"))
+              return render(template, feed_configuration)
+            end
 
             hash = {
               generator: "Perron (#{Perron::VERSION})",

@@ -2,6 +2,7 @@
 
 require "nokogiri"
 require "perron/site/builder/feeds/author"
+require "perron/site/builder/feeds/template"
 
 module Perron
   module Site
@@ -9,6 +10,7 @@ module Perron
       class Feeds
         class Atom
           include Feeds::Author
+          include Feeds::Template
 
           def initialize(collection:)
             @collection = collection
@@ -17,6 +19,10 @@ module Perron
 
           def generate
             return if resources.empty?
+
+            if (template = find_template("atom"))
+              return render(template, feed_configuration)
+            end
 
             Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
               xml.feed(xmlns: "http://www.w3.org/2005/Atom") do
