@@ -1,0 +1,19 @@
+<%= {
+  generator: "Perron (#{Perron::VERSION})",
+  version: "https://jsonfeed.org/version/1.1",
+  home_page_url: @configuration.url,
+  title: config.title.presence || @configuration.site_name,
+  description: config.description.presence || @configuration.site_description,
+
+  items: resources.map { |resource|
+    item_author = author.call(resource)
+    {
+      id: resource.id,
+      url: url_for_resource.call(resource),
+      date_published: resource.published_at&.iso8601,
+      title: resource.metadata.title,
+      authors: (item_author && item_author.name ? [{ name: item_author.name, email: item_author.email, url: item_author.url, avatar: item_author.avatar }.compact] : nil),
+      content_html: Perron::Markdown.render(resource.content)
+    }.compact
+  }
+}.to_json %>
