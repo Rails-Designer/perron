@@ -7,6 +7,8 @@ module Perron
 
       included do
         def published?
+          return ENV["VIEW_UNPUBLISHED"] == "true" if ENV["VIEW_UNPUBLISHED"]
+
           return true if Perron.configuration.view_unpublished
 
           return false if frontmatter.draft == true
