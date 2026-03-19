@@ -13,7 +13,7 @@
       date_published: resource.published_at&.iso8601,
       title: resource.metadata.title,
       authors: (item_author && item_author.name ? [{ name: item_author.name, email: item_author.email, url: item_author.url, avatar: item_author.avatar }.compact] : nil),
-      content_html: Perron::Markdown.render(resource.content)
+      content_html: Perron::Markdown.render(resource.content, processors: ["absolute_urls"])
     }.compact
   }
 }.to_json %>

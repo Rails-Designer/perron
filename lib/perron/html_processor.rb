@@ -2,6 +2,7 @@
 
 require "perron/html_processor/target_blank"
 require "perron/html_processor/lazy_load_images"
+require "perron/html_processor/absolute_urls"
 
 module Perron
   class HtmlProcessor
@@ -21,7 +22,8 @@ module Perron
 
     BUILT_IN = {
       "target_blank" => Perron::HtmlProcessor::TargetBlank,
-      "lazy_load_images" => Perron::HtmlProcessor::LazyLoadImages
+      "lazy_load_images" => Perron::HtmlProcessor::LazyLoadImages,
+      "absolute_urls" => Perron::HtmlProcessor::AbsoluteUrls
     }.tap do |processors|
       require "rouge"
       require "perron/html_processor/syntax_highlight"

@@ -31,9 +31,9 @@
 
     <% base_url = url_for_resource(resource) %>
     <% if base_url %>
-      <content type="html" xml:base="<%= base_url %>"><![CDATA[<%= Perron::Markdown.render(resource.content) %>]]></content>
+      <content type="html" xml:base="<%= base_url %>"><![CDATA[<%= Perron::Markdown.render(resource.content, processors: ["absolute_urls"]) %>]]></content>
     <% else %>
-      <content type="html"><![CDATA[<%= Perron::Markdown.render(resource.content) %>]]></content>
+      <content type="html"><![CDATA[<%= Perron::Markdown.render(resource.content, processors: ["absolute_urls"]) %>]]></content>
     <% end %>
 
     <% resource.metadata.tags&.each do |tag| %>
