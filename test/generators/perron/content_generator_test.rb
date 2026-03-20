@@ -132,6 +132,16 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /root to: "content\/pages#root"/
   end
 
+  test "destroy removes files without crashing" do
+    run_generator %w[page]
+    run_generator %w[page], behavior: :revoke
+
+    assert_no_file "app/models/content/page.rb"
+    assert_no_file "app/controllers/content/pages_controller.rb"
+    assert_no_file "app/views/content/pages"
+    assert_no_file "app/content/pages/root.erb"
+  end
+
   test "pages with --no-include-root skips root generation" do
     run_generator %w[page --no-include-root]
 
