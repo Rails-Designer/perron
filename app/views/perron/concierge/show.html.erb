@@ -4,9 +4,18 @@
     <title>Welcome to Perron</title>
     <meta charset="utf-8">
 
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/icon.png" sizes="512x512">
+
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       ul { list-style: none; }
+
+      a {
+        color: #1f2937;
+
+        &:hover: { text-decoration: none; }
+      }
 
       body {
         padding: 2rem 1rem;
@@ -64,6 +73,12 @@
               user-select: all;
             }
 
+            svg {
+              width: 1.125rem;
+              aspect-ratio: 1/1;
+              color: rgb(100 116 139);
+            }
+
             input[type=submit] {
               border: 0;
               padding: .25rem 1rem;
@@ -115,7 +130,6 @@
           background: white;
           border: 1px solid #e5e7eb;
           border-radius: 1rem;
-          box-shadow: 0 4px 6px -1px rgb(0 0 0 / .1);
           transition: all 300ms ease;
 
           &:hover {
@@ -179,7 +193,11 @@
             <%= form_with url: perron_run_command_path do |form| %>
               <%= form.hidden_field :command, value: "bin/rails generate content Post" %>
 
-              <%= form.submit "Run" %>
+              <% if defined?(Content::Post) %>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+              <% else %>
+                <%= form.submit "Run" %>
+              <% end %>
             <% end %>
           </div>
         </li>
@@ -195,14 +213,18 @@
             <%= form_with url: perron_run_command_path do |form| %>
               <%= form.hidden_field :command, value: 'bin/rails generate content Post --new "My first post"' %>
 
-              <%= form.submit "Run" %>
+              <% if File.file?("app/content/posts/untitled.md") %>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+              <% else %>
+                <%= form.submit "Run" %>
+              <% end %>
             <% end %>
           </div>
         </li>
 
         <li>
           <p>
-            Run the server, and visit <code>https://localhost:3000/posts/</code>
+            Run the server, and visit <code><a href="/posts/">http://localhost:3000/posts/</a></code>
           </p>
 
           <div>
