@@ -16,5 +16,8 @@ append_to_file "Gemfile", <<~RUBY
   # gem "redcarpet"
 RUBY
 
+copy_file "#{__dir__}/assets/icon.png", "public/icon.png", force: true
+copy_file "#{__dir__}/assets/icon.svg", "public/icon.svg", force: true
+
 say "Add output folder to .gitignore"
 append_to_file ".gitignore", "/#{Perron.configuration.output}/\n"
