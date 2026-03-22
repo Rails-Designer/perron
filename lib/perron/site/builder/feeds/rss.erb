@@ -21,7 +21,7 @@
       <% end %>
       <title><%= resource.metadata.title %></title>
 
-      <description><![CDATA[<%= Perron::Markdown.render(resource.content) %>]]></description>
+      <description><![CDATA[<%= Perron::Markdown.render(resource.content, processors: ["absolute_urls"]) %>]]></description>
     </item>
     <% end %>
   </channel>

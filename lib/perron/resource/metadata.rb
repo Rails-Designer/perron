@@ -25,6 +25,8 @@ module Perron
 
         to[:canonical_url] ||= canonical_url
 
+        to[:image] = absolute_url(to[:image]) if to[:image]
+
         to[:og_image] ||= to[:image]
         to[:twitter_image] ||= to[:og_image]
 
@@ -52,11 +54,18 @@ module Perron
         begin
           Rails.application.routes.url_helpers.polymorphic_url(
             @resource,
-          **Perron.configuration.default_url_options
+            **Perron.configuration.default_url_options
           )
         rescue
           false
         end
+      end
+
+      def absolute_url(path)
+        return path if path.blank?
+        return path if path.start_with?("http://", "https://", "//")
+
+        Perron.configuration.url.delete_suffix("/") + path
       end
 
       def site_data
