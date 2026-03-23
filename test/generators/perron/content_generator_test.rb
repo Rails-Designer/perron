@@ -185,7 +185,7 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     assert_file "app/content/data/products.yml"
 
     assert_file "app/models/content/product.rb", /sources :countries, :products/
-    assert_file "app/models/content/product.rb", /def self\.source_template\(sources\)/
+    assert_file "app/models/content/product.rb", /def self\.source_template\(source\)/
   end
 
   test "--data flag creates data source files with custom extensions" do
