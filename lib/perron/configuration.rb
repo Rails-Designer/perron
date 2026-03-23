@@ -19,6 +19,9 @@ module Perron
 
       @config.mode = :standalone
 
+      @config.parallel_rendering = false
+      @config.build_threads = nil
+
       @config.live_reload = false
       @config.live_reload_watch_paths = %w[app/content app/views app/assets]
       @config.live_reload_skip_paths = %w[app/assets/builds]

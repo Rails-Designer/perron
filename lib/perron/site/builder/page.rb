@@ -6,11 +6,17 @@ module Perron
   module Site
     class Builder
       class Page
-        def initialize(path)
-          @output_path, @path = Rails.root.join(Perron.configuration.output), path
+        Result = Struct.new(:success, :path, :error, :duration, keyword_init: true)
+
+        def initialize(path, benchmark: nil)
+          @output_path = Rails.root.join(Perron.configuration.output)
+          @path = path
+          @benchmark = benchmark
         end
 
         def render
+          start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
           action = route_info[:action]
           request = ActionDispatch::Request.new(env)
           response = ActionDispatch::Response.new
@@ -19,14 +25,26 @@ module Perron
 
           controller.dispatch(action, request, response)
 
-          return puts "  ❌ ERROR: Request failed for '#{@path}' (Status: #{response.status})" unless response.successful?
+          unless response.successful?
+            return record_result(success: false, error: "Request failed (Status: #{response.status})", start_time: start_time)
+          end
 
           save_html(response.body)
+
+          record_result(success: true, start_time: start_time)
         rescue => error
-          puts "  ❌ ERROR: Failed to generate page for '#{@path}'. Details: #{error.class} - #{error.message}\n#{error.backtrace.first(3).join("\n")}"
+          record_result(success: false, error: "#{error.class} - #{error.message}", start_time: start_time)
         end
 
         private
+
+        def record_result(success:, start_time:, error: nil)
+          duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
+
+          @benchmark&.record_page(@path, duration)
+
+          Result.new(success: success, path: @path, error: error, duration: duration)
+        end
 
         def save_html(html)
           prefixless_path = @path.delete_prefix("/")
