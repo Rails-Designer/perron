@@ -120,16 +120,53 @@ class ContentGeneratorTest < Rails::Generators::TestCase
   test "pages generates root action and route by default" do
     run_generator %w[page]
 
+    assert_file "config/routes.rb", /root to: "content\/pages#root"/
     assert_file "app/models/content/page.rb", /class Content::Page/
     assert_file "app/controllers/content/pages_controller.rb" do |content|
-      assert_match (/class Content::PagesController/), content
-      assert_match(/  def root/, content)
-      assert_match(/    @resource = Content::Page\.root/, content)
-      assert_match(/    render :show/, content)
+      expected = <<~CONTROLLER
+        class Content::PagesController < ApplicationController
+          def root
+            @resource = Content::Page.root
+
+            render :show
+          end
+
+          def index
+            @resources = Content::Page.all
+          end
+
+          def show
+            @resource = Content::Page.find!(params[:id])
+          end
+        end
+      CONTROLLER
+
+      assert_equal expected, content, "Controller should have properly formatted root action"
     end
 
     assert_file "app/content/pages/root.erb", /Find me in `app\/content\/pages\/root\.erb`/
-    assert_file "config/routes.rb", /root to: "content\/pages#root"/
+  end
+
+  test "pages with show action only generates root and show" do
+    run_generator %w[page show]
+
+    assert_file "app/controllers/content/pages_controller.rb" do |content|
+      expected = <<~CONTROLLER
+        class Content::PagesController < ApplicationController
+          def root
+            @resource = Content::Page.root
+
+            render :show
+          end
+
+          def show
+            @resource = Content::Page.find!(params[:id])
+          end
+        end
+      CONTROLLER
+
+      assert_equal expected, content, "Controller should have properly formatted root and show actions"
+    end
   end
 
   test "destroy removes files without crashing" do
@@ -159,7 +196,25 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     run_generator %w[post --include-root]
 
     assert_file "app/controllers/content/posts_controller.rb" do |content|
-      assert_match (/def root/), content
+      expected = <<~CONTROLLER
+        class Content::PostsController < ApplicationController
+          def root
+            @resource = Content::Post.root
+
+            render :show
+          end
+
+          def index
+            @resources = Content::Post.all
+          end
+
+          def show
+            @resource = Content::Post.find!(params[:id])
+          end
+        end
+      CONTROLLER
+
+      assert_equal expected, content, "Controller should have properly formatted root action"
     end
 
     assert_file "app/content/posts/root.erb"
