@@ -90,15 +90,9 @@ module Rails
         controller_file = "app/controllers/content/#{plural_file_name}_controller.rb"
         return unless File.exist?(File.join(destination_root, controller_file))
 
-        inject_into_file controller_file, after: "class Content::#{plural_class_name}Controller < ApplicationController\n" do
-          <<-RUBY.strip.indent(2)
-            def root
-              @resource = Content::#{class_name}.root
+        root_action = "  def root\n    @resource = Content::#{class_name}.root\n\n    render :show\n  end\n\n"
 
-              render :show
-            end
-          RUBY
-        end
+        inject_into_file controller_file, root_action, after: "class Content::#{plural_class_name}Controller < ApplicationController\n"
       end
 
       def create_root_content_file
