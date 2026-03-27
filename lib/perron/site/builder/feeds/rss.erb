@@ -10,14 +10,14 @@
     <item>
       <guid isPermaLink="false"><%= resource.id %></guid>
 
-      <% resource_url = url_for_resource(resource) %>
+      <% resource_url = url_for_resource.call(resource) %>
       <% if resource_url %>
         <link><%= resource_url %></link>
       <% end %>
 
       <pubDate><%= resource.published_at&.rfc822 %></pubDate>
-      <% author = author(resource); if author && author.email %>
-        <author><%= author.name ? "#{author.email} (#{author.name})" : author.email %></author>
+      <% entry_author = author.call(resource); if entry_author && entry_author.email %>
+        <author><%= entry_author.name ? "#{entry_author.email} (#{entry_author.name})" : entry_author.email %></author>
       <% end %>
       <title><%= resource.metadata.title %></title>
 

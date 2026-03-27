@@ -157,4 +157,33 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
 
     assert output.start_with?("<?xml"), "Should generate XML when no custom template"
   end
+
+  test "Atom feed renders URLs as actual URLs, not method signatures" do
+    posts = Perron::Site.collection("posts")
+
+    posts.configuration.feeds.atom.enabled = true
+    posts.configuration.feeds.atom.path = "feed.atom"
+
+    atom = Perron::Site::Builder::Feeds::Atom.new(collection: posts)
+    output = atom.generate
+
+    refute_includes output, "#<Method:", "Should not contain method signatures"
+    refute_includes output, "current_feed_url", "Should not contain method name in output"
+    assert_includes output, "http://", "Should contain actual URL"
+  end
+
+  test "Atom feed id and self link contain actual feed URL" do
+    posts = Perron::Site.collection("posts")
+
+    posts.configuration.feeds.atom.enabled = true
+    posts.configuration.feeds.atom.path = "feed.atom"
+
+    atom = Perron::Site::Builder::Feeds::Atom.new(collection: posts)
+    output = atom.generate
+
+    feed_url = "http://localhost:3000/feed.atom"
+
+    assert_match(/<id>#{Regexp.escape(feed_url)}<\/id>/, output, "Feed id should contain actual URL")
+    assert_match(/<link href="#{Regexp.escape(feed_url)}"[^>]*rel="self"/, output, "Self link should contain actual URL")
+  end
 end

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <generator uri="<%= @configuration.url %>" version="<%= Perron::VERSION %>">Perron</generator>
-  <id><%= current_feed_url %></id>
+  <id><%= current_feed_url.call %></id>
   <title><%= config.title.presence || @configuration.site_name %></title>
   <subtitle><%= config.description.presence || @configuration.site_description %></subtitle>
-  <link href="<%= current_feed_url %>" rel="self" type="application/atom+xml"/>
+  <link href="<%= current_feed_url.call %>" rel="self" type="application/atom+xml"/>
   <link href="<%= @configuration.url %>" rel="alternate" type="text/html"/>
   <updated><%= resources.first&.published_at&.iso8601 || Time.current.iso8601 %></updated>
 
@@ -16,20 +16,20 @@
 
   <% resources.each do |resource| %>
   <entry>
-    <id><%= url_for_resource(resource) || "#{@configuration.url}/posts/#{resource.id}" %></id>
+    <id><%= url_for_resource.call(resource) || "#{@configuration.url}/posts/#{resource.id}" %></id>
     <title><%= resource.metadata.title %></title>
-    <link href="<%= url_for_resource(resource) %>" rel="alternate" type="text/html"/>
+    <link href="<%= url_for_resource.call(resource) %>" rel="alternate" type="text/html"/>
     <published><%= resource.published_at&.iso8601 %></published>
     <updated><%= (resource.metadata.updated_at || resource.published_at)&.iso8601 %></updated>
 
-    <% entry_author = author(resource); if entry_author %>
+    <% entry_author = author.call(resource); if entry_author %>
       <author>
         <% if entry_author.name %><name><%= entry_author.name %></name><% end %>
         <% if entry_author.email %><email><%= entry_author.email %></email><% end %>
       </author>
     <% end %>
 
-    <% base_url = url_for_resource(resource) %>
+    <% base_url = url_for_resource.call(resource) %>
     <% if base_url %>
       <content type="html" xml:base="<%= base_url %>"><![CDATA[<%= Perron::Markdown.render(resource.content, processors: ["absolute_urls"]) %>]]></content>
     <% else %>
