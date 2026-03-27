@@ -186,4 +186,10 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
     assert_match(/<id>#{Regexp.escape(feed_url)}<\/id>/, output, "Feed id should contain actual URL")
     assert_match(/<link href="#{Regexp.escape(feed_url)}"[^>]*rel="self"/, output, "Self link should contain actual URL")
   end
+
+  teardown do
+    Content::Post.configure do |config|
+      config.feeds.atom.path = "feeds/posts.atom"
+    end
+  end
 end
