@@ -11,7 +11,7 @@ module Perron
     end
 
     initializer "perron.output_server" do |app|
-      app.middleware.use Perron::OutputServer
+      app.middleware.use Perron::OutputServer if Rails.env.development?
     end
 
     initializer "perron.development_feed_server" do |app|
