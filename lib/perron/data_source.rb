@@ -59,16 +59,6 @@ module Perron
         Item.new(item, identifier: @identifier)
       end
     end
-    # def records
-    #   content = rendered_from(@file_path)
-    #   data = parsed_from(content, @file_path)
-
-    #   unless data.is_a?(Array)
-    #     raise Errors::DataParseError, "Data in `#{@file_path}` must be an array of objects."
-    #   end
-
-    #   data.map { Item.new(it, identifier: @identifier) }
-    # end
 
     def rendered_from(path)
       raw_content = File.read(path)
@@ -86,16 +76,6 @@ module Perron
 
       send(parser_method, content, path)
     end
-    # def parsed_from(content, path)
-    #   extension = File.extname(path)
-    #   parser_method = PARSER_METHODS.fetch(extension) do
-    #     raise Errors::UnsupportedDataFormatError, "Unsupported data format: #{extension}"
-    #   end
-
-    #   send(parser_method, content)
-    # rescue Psych::SyntaxError, JSON::ParserError, CSV::MalformedCSVError => error
-    #   raise Errors::DataParseError, "Failed to parse data format in `#{path}`: (#{error.class}) #{error.message}"
-    # end
 
     def render_erb(content) = ERB.new(content).result(HelperContext.instance.get_binding)
 
@@ -107,9 +87,6 @@ module Perron
 
       raise Errors::DataParseError, "Invalid YAML syntax in `#{path}`#{line_info}#{column_info}: #{error.problem}"
     end
-    # def parse_yaml(content)
-    #   YAML.safe_load(content, permitted_classes: [Symbol, Time], aliases: true)
-    # end
 
     def parse_json(content, path)
       JSON.parse(content, symbolize_names: true)
@@ -119,9 +96,6 @@ module Perron
 
       raise Errors::DataParseError, "Invalid JSON syntax in `#{path}`#{line_info}: #{error.message}"
     end
-    # def parse_json(content)
-    #   JSON.parse(content, symbolize_names: true)
-    # end
 
     def parse_csv(content, path)
       expected_headers = nil
@@ -148,8 +122,5 @@ module Perron
 
       raise Errors::DataParseError, "Malformed CSV in `#{path}`#{line_info}: #{error.message}"
     end
-    # def parse_csv(content)
-    #   CSV.new(content, headers: true, header_converters: :symbol).to_a.map(&:to_h)
-    # end
   end
 end

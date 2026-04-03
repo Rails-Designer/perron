@@ -63,7 +63,14 @@ module Perron
         def combinations
           datasets = source_names.map { resolve it }
 
-          datasets.first.product(*datasets[1..])
+          datasets.first.product(*datasets[1..]).each do |combo|
+            combo.each_with_index do |item, index|
+              name = source_names[index]
+              primary_key = source_definitions[name][:primary_key] || :id
+
+              raise Errors::DataParseError, "Primary key `#{primary_key}` is nil for row in source `#{name}`" if item.public_send(primary_key).nil?
+            end
+          end
         end
 
         def content_with(combo)
