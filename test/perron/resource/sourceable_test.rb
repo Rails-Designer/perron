@@ -12,6 +12,7 @@ class Perron::Resource::SourceableTest < ActiveSupport::TestCase
 
   test ".sources sets source names and definitions" do
     assert_equal [:countries, :products], Content::Product.source_names
+
     assert_equal :id, Content::Product.source_definitions[:countries][:primary_key]
     assert_equal :code, Content::Product.source_definitions[:products][:primary_key]
   end
@@ -47,6 +48,7 @@ class Perron::Resource::SourceableTest < ActiveSupport::TestCase
   test "#sources loads source data from frontmatter" do
     FileUtils.mkdir_p(@output_dir)
     test_file = @output_dir.join("test.erb")
+
     File.write(test_file, <<~CONTENT)
       ---
       product_code: iphone-15
@@ -106,7 +108,24 @@ class Perron::Resource::SourceableTest < ActiveSupport::TestCase
 
     combinations = test_class.send(:combinations)
 
-    assert_equal 1, combinations.length
+assert_equal 1, combinations.length
     assert_equal "product-1", combinations.first.first.id
+  end
+
+  test "raises DataParseError for CSV source with nil primary key" do
+    test_class = Class.new(Perron::Resource) do
+      sources :products_with_missing
+
+      def self.source_template(source)
+        "test template"
+      end
+    end
+
+    error = assert_raises Perron::Errors::DataParseError do
+      test_class.send(:combinations)
+    end
+
+    assert_includes error.message, "Primary key"
+    assert_includes error.message, "id"
   end
 end
