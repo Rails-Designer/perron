@@ -20,6 +20,20 @@ module Perron
       super(records)
     end
 
+    def self.all
+      identifier = name.to_s.split("::").drop(2).map { it.underscore }.join("/")
+      identifier = name.demodulize.underscore if identifier.empty?
+
+      return cached(identifier) if Perron.configuration.cache_data_sources
+
+      new(identifier)
+    end
+
+    def self.cached(identifier)
+      @_data_sources ||= {}
+      @_data_sources[identifier] ||= new(identifier)
+    end
+
     def each(&block) = @records.each(&block)
 
     def count = @records.count

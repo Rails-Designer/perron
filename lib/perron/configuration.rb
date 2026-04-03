@@ -39,6 +39,8 @@ module Perron
 
       @config.search_scope = []
 
+      @config.cache_data_sources = false
+
       @config.sitemap = ActiveSupport::OrderedOptions.new
       @config.sitemap.enabled = false
       @config.sitemap.priority = 0.5
