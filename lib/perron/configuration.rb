@@ -15,7 +15,7 @@ module Perron
 
       @config.output = "output"
 
-      @config.output_server_strict = false
+      @config.output_server_strict = true
 
       @config.mode = :standalone
 
