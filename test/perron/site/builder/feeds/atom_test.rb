@@ -13,7 +13,7 @@ class Perron::Site::Builder::Feeds::AtomTest < ActiveSupport::TestCase
       atom = Nokogiri::XML(@builder.generate).remove_namespaces!
 
       assert_equal "Perron", atom.at_xpath("//generator").text
-      assert_equal "http://localhost:3000/", atom.at_xpath("//generator").attributes["uri"].value
+      assert_equal "https://perron.railsdesigner.com/", atom.at_xpath("//generator").attributes["uri"].value
       assert_equal Perron::VERSION, atom.at_xpath("//generator").attributes["version"].value
       assert_equal "Dummy App", atom.at_xpath("//title").text
       assert_equal "", atom.at_xpath("//subtitle").text
