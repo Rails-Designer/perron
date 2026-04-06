@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <generator uri="<%= @configuration.url %>" version="<%= Perron::VERSION %>">Perron</generator>
+  <generator uri="https://perron.railsdesigner.com/" version="<%= Perron::VERSION %>">Perron</generator>
   <id><%= current_feed_url.call %></id>
   <title><%= config.title.presence || @configuration.site_name %></title>
   <subtitle><%= config.description.presence || @configuration.site_description %></subtitle>
