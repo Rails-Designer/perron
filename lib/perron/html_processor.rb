@@ -24,13 +24,7 @@ module Perron
       "target_blank" => Perron::HtmlProcessor::TargetBlank,
       "lazy_load_images" => Perron::HtmlProcessor::LazyLoadImages,
       "absolute_urls" => Perron::HtmlProcessor::AbsoluteUrls
-    }.tap do |processors|
-      require "rouge"
-      require "perron/html_processor/syntax_highlight"
-
-      processors["syntax_highlight"] = Perron::HtmlProcessor::SyntaxHighlight
-    rescue LoadError
-    end
+    }
 
     def find_by(identifier)
       case identifier
@@ -50,7 +44,6 @@ module Perron
 
       return processor if processor
 
-      raise Perron::Errors::ProcessorNotFoundError, "The `syntax_highlight` processor requires `rouge`. Run `bundle add rouge` to add it to your Gemfile." if name.inquiry.syntax_highlight?
       raise Perron::Errors::ProcessorNotFoundError, "Could not find processor `#{name}`. It is not a Perron-included processor and the constant `#{name.camelize}` could not be found."
     end
   end
