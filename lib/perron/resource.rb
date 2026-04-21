@@ -117,6 +117,8 @@ module Perron
     end
 
     def erb_processing?
+      return false if metadata.erb == false
+
       @file_path.ends_with?(".erb") || metadata.erb == true
     end
   end
