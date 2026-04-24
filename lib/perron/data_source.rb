@@ -66,11 +66,13 @@ module Perron
       end
 
       data.map.with_index do |item, index|
-        unless item.is_a?(Hash)
-          raise Errors::DataParseError, "Item at index #{index} in `#{@file_path}` must be a hash/object, got #{item.class}"
+        if item.is_a?(Hash)
+          Item.new(item, identifier: @identifier)
+        elsif item.is_a?(String)
+          item
+        else
+          raise Errors::DataParseError, "Item at index #{index} in `#{@file_path}` must be a hash/object or string, got #{item.class}"
         end
-
-        Item.new(item, identifier: @identifier)
       end
     end
 
