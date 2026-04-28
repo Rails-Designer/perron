@@ -266,4 +266,10 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
 
     assert_includes error.message, "Invalid YAML syntax"
   end
+
+  test "loads YAML file with flat array of strings" do
+    data = Content::Data.new("services")
+
+    assert_equal ["Custom design based on our templates", "Copywriting services", "Dedicated project manager"], data.to_a
+  end
 end
