@@ -52,6 +52,7 @@ module Perron
 
       Dir.glob("#{@collection_path}/**/*.*")
         .select { allowed_extensions.include?(File.extname(it)) }
+        .reject { File.basename(it, ".*").downcase == "readme" }
         .map { resource_class.new(it) }
     end
   end
