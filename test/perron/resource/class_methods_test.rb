@@ -10,7 +10,7 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
 
   test ".count returns the number of resources" do
     assert_equal 4, Content::Post.count
-    assert_equal 4, Content::Page.count
+    assert_equal 5, Content::Page.count
   end
 
   test ".first returns the first resource" do
