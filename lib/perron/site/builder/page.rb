@@ -11,13 +11,15 @@ module Perron
         end
 
         def render
-          action = route_info[:action]
+          info = route_info
+          return puts "  ❌ ERROR: No route matches '#{@path}'" unless info
+
           request = ActionDispatch::Request.new(env)
           response = ActionDispatch::Response.new
 
-          request.path_parameters = route_info
+          request.path_parameters = info
 
-          controller.dispatch(action, request, response)
+          controller.dispatch(info[:action], request, response)
 
           return puts "  ❌ ERROR: Request failed for '#{@path}' (Status: #{response.status})" unless response.successful?
 
@@ -41,7 +43,20 @@ module Perron
         end
 
         def route_info
-          @route_info ||= Rails.application.routes.recognize_path(@path)
+          @route_info ||= recognize_path_with_pagination_fallback(@path)
+        end
+
+        def recognize_path_with_pagination_fallback(path)
+          Rails.application.routes.recognize_path(path)
+        rescue ActionController::RoutingError
+          return nil unless (match = path.match(/\/(.+)\/page\/(\d+)\//))
+
+          base_path = "/#{match[1]}"
+          page_number = match[2].to_i
+
+          Rails.application.routes.recognize_path(base_path).tap do |route_info|
+            route_info[:page] = page_number
+          end
         end
 
         def env = Rack::MockRequest.env_for(@path, "HTTP_HOST" => Perron.configuration.default_url_options[:host])

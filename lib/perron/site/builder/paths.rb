@@ -28,10 +28,28 @@ module Perron
               raise "Route `#{route.name}` (#{route.path.spec}) is an index route but requires parameters #{required_params}. Perron doesn't know how to generate these parameters."
             end
 
-            [routes.public_send("#{route.name}_path")]
+            base_path = routes.public_send("#{route.name}_path")
+            collection = collection_for(route)
+            return [base_path] unless collection
+
+            pagination = collection.configuration.pagination
+            return [base_path] unless pagination.per_page
+
+            total = collection.all.count
+            total_pages = (total.to_f / pagination.per_page).ceil
+            return [base_path] if total_pages <= 1
+
+            [base_path] + (2..total_pages).map do |page_number|
+              build_paginated_path(route, page_number, pagination.path_template)
+            end
           when "show" then show_paths_for(route)
           else []
           end
+        end
+
+        def build_paginated_path(route, page_number, path_template)
+          routes.public_send("#{route.name}_path")
+            .sub(/\/$/, "") + path_template.sub(":page", page_number.to_s)
         end
 
         def show_paths_for(route)
