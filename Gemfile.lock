@@ -5,6 +5,7 @@ PATH
       csv
       json
       mata (~> 0.8.0)
+      parallel (~> 1.24)
       psych
       rails (>= 7.2.0)
 
