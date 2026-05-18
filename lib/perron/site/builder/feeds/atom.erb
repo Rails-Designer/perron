@@ -16,7 +16,7 @@
 
   <% resources.each do |resource| %>
   <entry>
-    <id><%= url_for_resource.call(resource) || "#{@configuration.url}/posts/#{resource.id}" %></id>
+    <id><%= url_for_resource.call(resource) %></id>
     <title><%= resource.metadata.title %></title>
     <link href="<%= url_for_resource.call(resource) %>" rel="alternate" type="text/html"/>
     <published><%= resource.published_at&.iso8601 %></published>
