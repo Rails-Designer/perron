@@ -36,7 +36,11 @@ module Perron
       def validate_collection(collection)
         collection.resources.each do |resource|
           resource.validate ? success : failed(resource)
+        rescue Psych::SyntaxError => error
+          render_yaml error, resource.file_path
         end
+      rescue Psych::SyntaxError => error
+        render_yaml error, "unknown"
       end
 
       def success = print "#{GREEN}.#{RESET}"
@@ -44,13 +48,22 @@ module Perron
       def failed(resource)
         print "#{RED}F#{RESET}"
 
-        errors = []
+        @failures << Failure.new(
+          identifier: resource.file_path,
+          errors: resource.errors.respond_to?(:full_messages) ? resource.errors.full_messages : []
+        )
+      end
 
-        if resource.respond_to?(:errors) && resource.errors.respond_to?(:full_messages) && resource.errors.any?
-          errors = resource.errors.full_messages
-        end
+      def render_yaml(error, identifier)
+        print "#{RED}F#{RESET}"
 
-        @failures << Failure.new(identifier: resource.file_path, errors: errors)
+        line_info = error.line ? " at line #{error.line}" : ""
+        column_info = error.column ? ", column #{error.column}" : ""
+
+        @failures << Failure.new(
+          identifier: identifier,
+          errors: ["Invalid YAML#{line_info}#{column_info}: #{error.problem}"]
+        )
       end
 
       def failures_report
