@@ -22,6 +22,8 @@ module Perron
 
         def order(attribute, direction = :asc) = all.order(attribute, direction)
 
+        def in_order_of(attribute, values, filter: true) = all.in_order_of(attribute, values, filter:)
+
         def first(n = nil)
           n ? all.first(n) : all[0]
         end
