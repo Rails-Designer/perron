@@ -44,6 +44,10 @@ module Perron
 
         def root = all.find(&:root?)
 
+        def destroy_all
+          all.each(&:destroy)
+        end
+
         def model_name
           @model_name ||= ActiveModel::Name.new(self, nil, name.demodulize.to_s)
         end

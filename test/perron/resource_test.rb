@@ -145,4 +145,16 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
 
     assert_equal :not_found, result[:status]
   end
+
+  test "#destroy deletes the resource file and returns self" do
+    test_file = "test/dummy/app/content/zombies/destroy-test-zombie.md"
+    File.write(test_file, "---\ntitle: Test Zombie\n---\nTest content")
+
+    zombie = Content::Zombie.new(test_file)
+
+    result = zombie.destroy
+
+    assert_equal zombie, result
+    assert_not File.exist?(test_file)
+  end
 end
