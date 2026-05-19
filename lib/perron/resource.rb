@@ -96,6 +96,10 @@ module Perron
       slug == "/"
     end
 
+    def destroy
+      File.delete(@file_path) and self
+    end
+
     private
 
     ID_LENGTH = 8
