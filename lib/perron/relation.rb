@@ -47,5 +47,20 @@ module Perron
         end
       end
     end
+
+    def in_order_of(attribute, values, filter: true)
+      return Relation.new([]) if values.empty?
+
+      indexed = values.each_with_index.to_h
+
+      resources = if filter
+        select { indexed.key?(it.public_send(attribute)) }
+          .sort_by { indexed[it.public_send(attribute)] }
+      else
+        sort_by { indexed[it.public_send(attribute)] || Float::INFINITY }
+      end
+
+      Relation.new(resources)
+    end
   end
 end

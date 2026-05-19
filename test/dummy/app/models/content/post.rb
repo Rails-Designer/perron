@@ -28,7 +28,7 @@ class Content::Post < Perron::Resource
   belongs_to :author
   belongs_to :editor, class_name: "Content::Data::Editors"
 
-  delegate :title, to: :metadata
+  delegate :title, :category, to: :metadata
 
   scope :ordered, -> { order(:slug) }
   scope :limited, -> { limit(2) }
