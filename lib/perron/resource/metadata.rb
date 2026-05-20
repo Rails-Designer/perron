@@ -3,22 +3,28 @@
 module Perron
   class Resource
     class Metadata
-      def initialize(resource:, frontmatter:, collection:)
+      def initialize(resource:, frontmatter:, collection:, controller_metadata: {})
         @resource = resource
         @frontmatter = frontmatter&.deep_symbolize_keys || {}
         @collection = collection
+        @controller_metadata = controller_metadata
         @config = Perron.configuration
       end
 
       def data
         @data ||= ActiveSupport::OrderedOptions
           .new
-          .merge(apply_fallbacks_and_defaults(to: merged_site_collection_resource_frontmatter))
+          .merge(apply_fallbacks_and_defaults(to: merged_metadata))
       end
 
       private
 
-      def merged_site_collection_resource_frontmatter = site_data.merge(collection_data).merge(@frontmatter)
+      def merged_metadata
+        site_data
+          .merge(collection_data)
+          .merge(@controller_metadata)
+          .merge(@frontmatter)
+      end
 
       def apply_fallbacks_and_defaults(to:)
         to[:title] ||= @config.site_name || Rails.application.name.underscore.camelize
