@@ -8,6 +8,7 @@ module Perron
 
     def call(environment)
       return @app.call(environment) if disabled?
+      return not_found if !static_file(environment) && Perron.configuration.output_server_strict
 
       static_file(environment).then do |file|
         file ? serve(file) : @app.call(environment)
@@ -27,20 +28,33 @@ module Perron
 
     def serve(file_path)
       content = File.read(file_path)
+      injected_content = inject_preview_indicator(content)
 
       [
         200,
 
         {
           "Content-Type" => "text/html; charset=utf-8",
-          "Content-Length" => content.bytesize.to_s
+          "Content-Length" => injected_content.bytesize.to_s
         },
 
-        [content]
+        [injected_content]
+      ]
+    end
+
+    def not_found
+      [
+        404,
+        {"Content-Type" => "text/plain"},
+        ["Not Found"]
       ]
     end
 
     def enabled? = Dir.exist?(output_path)
+
+    def inject_preview_indicator(content)
+      content.gsub(/<title>(.*?)<\/title>/i, "<title>[PREVIEW] \\1</title>")
+    end
 
     def output_path
       @output_path ||= Rails.root.join(Perron.configuration.output)

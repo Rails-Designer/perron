@@ -13,6 +13,7 @@ module Rails
         desc: "Create a new content file from template instead of generating scaffold"
       class_option :data, type: :array, default: [], banner: "source1(.ext) source2(.ext)",
         desc: "Specify data sources with optional extensions (defaults to .yml)"
+      class_option :inline, type: :boolean, default: false, desc: "Render show action inline instead of using a view template"
 
       argument :actions, type: :array, default: %w[index show], banner: "actions", desc: "Specify which actions to generate (index/show)"
 
@@ -53,6 +54,8 @@ module Rails
         empty_directory view_directory
 
         actions.each do |action|
+          next if action == "show" && options[:inline]
+
           template "#{action}.html.erb.tt", File.join(view_directory, "#{action}.html.erb")
         end
       end
@@ -84,15 +87,12 @@ module Rails
         return if @content_mode
         return unless should_include_root?
 
-        inject_into_class "app/controllers/content/#{plural_file_name}_controller.rb", "Content::#{plural_class_name}Controller" do
-          <<~RUBY
-            def root
-              @resource = Content::#{class_name}.root
+        controller_file = "app/controllers/content/#{plural_file_name}_controller.rb"
+        return unless File.exist?(File.join(destination_root, controller_file))
 
-              render :show
-            end
-          RUBY
-        end
+        root_action = "  def root\n    @resource = Content::#{class_name}.root\n\n    render :show\n  end\n\n"
+
+        inject_into_file controller_file, root_action, after: "class Content::#{plural_class_name}Controller < ApplicationController\n"
       end
 
       def create_root_content_file
@@ -129,16 +129,20 @@ module Rails
       def pages_controller? = plural_file_name == "pages"
 
       def template_file
-        @template_file ||= Dir.glob(File.join(content_directory, "{YYYY-MM-DD-,}template.*.tt")).first
+        @template_file ||= Dir.glob(File.join(content_directory, "*.tt")).first
       end
 
       def filename_from_template
         @filename_from_template ||= begin
           return "untitled.md" unless template_file
 
-          File.basename(template_file, ".tt").tap do |name|
-            name.gsub!("YYYY-MM-DD", Time.current.strftime("%Y-%m-%d"))
-            name.sub!("template", @content_title ? @content_title.parameterize : "untitled")
+          name = File.basename(template_file, ".tt")
+          name = Time.current.strftime(name)
+
+          if name.include?("title")
+            name.sub("title", @content_title ? @content_title.parameterize : "untitled")
+          else
+            name
           end
         end
       end

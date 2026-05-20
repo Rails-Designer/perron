@@ -2,17 +2,19 @@
 
 require "perron/html_processor/target_blank"
 require "perron/html_processor/lazy_load_images"
+require "perron/html_processor/absolute_urls"
 
 module Perron
   class HtmlProcessor
-    def initialize(html, processors: [])
+    def initialize(html, processors: [], resource: nil)
       @html = html
+      @resource = resource
       @processors = processors.map { find_by(it) }
     end
 
     def process
       Nokogiri::HTML::DocumentFragment.parse(@html).tap do |document|
-        @processors.each { it.new(document).process }
+        @processors.each { it.new(document, resource: @resource).process }
       end.to_html
     end
 
@@ -20,14 +22,9 @@ module Perron
 
     BUILT_IN = {
       "target_blank" => Perron::HtmlProcessor::TargetBlank,
-      "lazy_load_images" => Perron::HtmlProcessor::LazyLoadImages
-    }.tap do |processors|
-      require "rouge"
-      require "perron/html_processor/syntax_highlight"
-
-      processors["syntax_highlight"] = Perron::HtmlProcessor::SyntaxHighlight
-    rescue LoadError
-    end
+      "lazy_load_images" => Perron::HtmlProcessor::LazyLoadImages,
+      "absolute_urls" => Perron::HtmlProcessor::AbsoluteUrls
+    }
 
     def find_by(identifier)
       case identifier
@@ -47,7 +44,6 @@ module Perron
 
       return processor if processor
 
-      raise Perron::Errors::ProcessorNotFoundError, "The `syntax_highlight` processor requires `rouge`. Run `bundle add rouge` to add it to your Gemfile." if name.inquiry.syntax_highlight?
       raise Perron::Errors::ProcessorNotFoundError, "Could not find processor `#{name}`. It is not a Perron-included processor and the constant `#{name.camelize}` could not be found."
     end
   end

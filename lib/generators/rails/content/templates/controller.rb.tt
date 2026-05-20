@@ -3,11 +3,17 @@ class Content::<%= plural_class_name %>Controller < ApplicationController
   def index
     @resources = Content::<%= class_name %>.all
   end
+<%- if actions.include?("show") -%>
 
+<%- end -%>
 <%- end -%>
 <%- if actions.include?("show") -%>
   def show
     @resource = Content::<%= class_name %>.find!(params[:id])
+<%- if options[:inline] -%>
+
+    render @resource.inline
+<%- end -%>
   end
 <%- end -%>
 end

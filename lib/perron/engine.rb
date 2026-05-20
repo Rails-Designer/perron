@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "perron/output_server"
+require "perron/development_feed_server"
 require "mata"
 
 module Perron
@@ -10,7 +11,11 @@ module Perron
     end
 
     initializer "perron.output_server" do |app|
-      app.middleware.use Perron::OutputServer
+      app.middleware.use Perron::OutputServer if Rails.env.development?
+    end
+
+    initializer "perron.development_feed_server" do |app|
+      app.middleware.use Perron::DevelopmentFeedServer if Rails.env.development?
     end
 
     initializer "perron.configure_hmr", after: :load_config_initializers do |app|
@@ -24,9 +29,34 @@ module Perron
       end
     end
 
+    initializer "perron.concierge", before: :add_builtin_route do |app|
+      if Rails.env.development?
+        app.config.after_initialize do
+          app.routes.append do
+            namespace :perron do
+              post :run_command, to: "concierge#run_command"
+            end
+
+            root to: "perron/concierge#show" unless app.routes.named_routes.key?(:root)
+          end
+        end
+
+        app.routes.finalize!
+      end
+    end
+
+    initializer "perron.inflections" do
+      ActiveSupport::Inflector.inflections(:en) do |inflect|
+        inflect.acronym "RSS"
+        inflect.acronym "Atom"
+        inflect.acronym "Json"
+      end
+    end
+
     rake_tasks do
       load File.expand_path("../tasks/build.rake", __FILE__)
       load File.expand_path("../tasks/clobber.rake", __FILE__)
+      load File.expand_path("../tasks/install.rake", __FILE__)
       load File.expand_path("../tasks/sync_sources.rake", __FILE__)
       load File.expand_path("../tasks/validate.rake", __FILE__)
       load File.expand_path("../tasks/deploy.rake", __FILE__)

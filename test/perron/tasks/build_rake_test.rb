@@ -3,35 +3,43 @@ require "rake"
 
 class BuildTest < ActiveSupport::TestCase
   setup do
-    unless Rake::Task.task_defined?("perron:set_production_env")
+    unless Rake::Task.task_defined?("perron:build")
       Rake::Task.define_task("assets:precompile")
       Rake::Task.define_task(:environment)
 
       load File.expand_path("../../../lib/perron/tasks/build.rake", __dir__)
     end
 
-    @original_rails_env = ENV["RAILS_ENV"]
+    @original_rails_env = Rails.env
   end
 
   teardown do
-    ENV["RAILS_ENV"] = @original_rails_env
+    Rails.env = @original_rails_env
 
-    Rake::Task["perron:set_production_env"].reenable
+    Rake::Task["perron:build"].reenable
   end
 
-  test "defaults RAILS_ENV to production when not set" do
-    ENV.delete("RAILS_ENV")
+  test "warns when not running in production" do
+    Rails.env = "development"
 
-    Rake::Task["perron:set_production_env"].invoke
+    output = capture_io do
+      Perron::Site.stub(:build, nil) do
+        Rake::Task["perron:build"].invoke
+      end
+    end.first
 
-    assert_equal "production", ENV["RAILS_ENV"]
+    assert_match "RAILS_ENV=production bin/rails perron:build", output
   end
 
-  test "does not override RAILS_ENV when already set" do
-    ENV["RAILS_ENV"] = "staging"
+  test "does not warn when running in production" do
+    Rails.env = "production"
 
-    Rake::Task["perron:set_production_env"].invoke
+    output = capture_io do
+      Perron::Site.stub(:build, nil) do
+        Rake::Task["perron:build"].invoke
+      end
+    end.first
 
-    assert_equal "staging", ENV["RAILS_ENV"]
+    assert_empty output
   end
 end

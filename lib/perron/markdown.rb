@@ -5,9 +5,9 @@ require "perron/html_processor"
 module Perron
   class Markdown
     class << self
-      def render(text, processors: [])
+      def render(text, processors: [], resource: nil)
         parser.parse(text)
-          .then { Perron::HtmlProcessor.new(it, processors: processors).process }
+          .then { Perron::HtmlProcessor.new(it, processors: processors, resource: resource).process }
           .html_safe
       end
 

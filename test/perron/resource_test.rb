@@ -54,6 +54,15 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
     assert_match "And one more paragraph for good measure", content
   end
 
+  test "#content skips ERB processing when frontmatter sets `erb: false` on an .erb file" do
+    no_erb_page = Content::Page.new("test/dummy/app/content/pages/no-erb.erb")
+
+    content = no_erb_page.content
+
+    # ERB tags should be preserved verbatim instead of evaluated.
+    assert_match(/<%=\s*'this should not be evaluated'\s*%>/, content)
+  end
+
   test "#metadata returns metadata hash" do
     assert_kind_of Hash, @page.metadata
   end

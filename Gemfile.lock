@@ -1,8 +1,12 @@
 PATH
   remote: .
   specs:
+<<<<<<< HEAD
     perron (0.17.0)
       beam_up
+=======
+    perron (1.0.0)
+>>>>>>> main
       csv
       json
       mata (~> 0.8.0)

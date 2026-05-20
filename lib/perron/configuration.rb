@@ -15,6 +15,8 @@ module Perron
 
       @config.output = "output"
 
+      @config.output_server_strict = true
+
       @config.mode = :standalone
 
       @config.live_reload = false
@@ -35,7 +37,11 @@ module Perron
 
       @config.markdown_options = {}
 
+      @config.default_processors = []
+
       @config.search_scope = []
+
+      @config.cache_data_sources = false
 
       @config.sitemap = ActiveSupport::OrderedOptions.new
       @config.sitemap.enabled = false

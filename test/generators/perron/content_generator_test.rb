@@ -15,6 +15,9 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     assert_file "app/models/content/post.rb", /class Content::Post/
     assert_file "app/controllers/content/posts_controller.rb", /class Content::PostsController/
     assert_file "app/controllers/content/posts_controller.rb", /@resource = Content::Post.find!\(params\[:id\]\)/
+    assert_file "app/controllers/content/posts_controller.rb" do |content|
+      refute_match(/\n\n\n/, content, "Controller should not have triple newlines")
+    end
 
     assert_file "app/views/content/posts/index.html.erb"
     assert_file "app/views/content/posts/show.html.erb"
@@ -27,6 +30,9 @@ class ContentGeneratorTest < Rails::Generators::TestCase
 
     assert_file "app/models/content/post.rb", /class Content::Post/
     assert_file "app/controllers/content/posts_controller.rb", /class Content::PostsController/
+    assert_file "app/controllers/content/posts_controller.rb" do |content|
+      refute_match(/\n\n\n/, content, "Controller should not have triple newlines")
+    end
 
     assert_file "app/views/content/posts/show.html.erb"
 
@@ -44,7 +50,7 @@ class ContentGeneratorTest < Rails::Generators::TestCase
 
   test "--new with title creates named content file" do
     FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
-    File.write(File.join(destination_root, "app", "content", "posts", "template.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+    File.write(File.join(destination_root, "app", "content", "posts", "title.md.tt"), "---\ntitle: <%= @title %>\n---\n")
 
     run_generator ["post", "--new=First Post"]
 
@@ -54,19 +60,123 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     assert_no_file "app/controllers/content/posts_controller.rb"
   end
 
+  test "--new with strftime template creates timestamped file" do
+    FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
+    File.write(File.join(destination_root, "app", "content", "posts", "%s-title.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+
+    freeze_time do
+      run_generator ["post", "--new=My Post"]
+
+      timestamp = Time.current.strftime("%s")
+      assert_file "app/content/posts/#{timestamp}-my-post.md", /---\ntitle: My Post\n---\n/
+    end
+  end
+
+  test "--new with day title creates day-prefixed file" do
+    FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
+    File.write(File.join(destination_root, "app", "content", "posts", "%d-title.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+
+    freeze_time do
+      run_generator ["post", "--new=Daily Note"]
+
+      day = Time.current.strftime("%d")
+      assert_file "app/content/posts/#{day}-daily-note.md", /---\ntitle: Daily Note\n---\n/
+    end
+  end
+
+  test "--new with timestamp-only template creates file without title" do
+    FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
+    File.write(File.join(destination_root, "app", "content", "posts", "%s.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+
+    freeze_time do
+      run_generator ["post", "--new=My Post"]
+
+      timestamp = Time.current.strftime("%s")
+      assert_file "app/content/posts/#{timestamp}.md", /---\ntitle: My Post\n---\n/
+    end
+  end
+
+  test "--new with title word gets title replacement" do
+    FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
+    File.write(File.join(destination_root, "app", "content", "posts", "%s-title.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+
+    freeze_time do
+      run_generator ["post", "--new=My Post"]
+
+      timestamp = Time.current.strftime("%s")
+      assert_file "app/content/posts/#{timestamp}-my-post.md", /---\ntitle: My Post\n---\n/
+    end
+  end
+
+  test "--new with no title word and no strftime uses filename as-is" do
+    FileUtils.mkdir_p(File.join(destination_root, "app", "content", "posts"))
+    File.write(File.join(destination_root, "app", "content", "posts", "draft.md.tt"), "---\ntitle: <%= @title %>\n---\n")
+
+    run_generator ["post", "--new=My Post"]
+
+    assert_file "app/content/posts/draft.md", /---\ntitle: My Post\n---\n/
+  end
+
   test "pages generates root action and route by default" do
     run_generator %w[page]
 
+    assert_file "config/routes.rb", /root to: "content\/pages#root"/
     assert_file "app/models/content/page.rb", /class Content::Page/
     assert_file "app/controllers/content/pages_controller.rb" do |content|
-      assert_match (/class Content::PagesController/), content
-      assert_match (/def root/), content
-      assert_match (/@resource = Content::Page\.root/), content
-      assert_match (/render :show/), content
+      expected = <<~CONTROLLER
+        class Content::PagesController < ApplicationController
+          def root
+            @resource = Content::Page.root
+
+            render :show
+          end
+
+          def index
+            @resources = Content::Page.all
+          end
+
+          def show
+            @resource = Content::Page.find!(params[:id])
+          end
+        end
+      CONTROLLER
+
+      assert_equal expected, content, "Controller should have properly formatted root action"
     end
 
     assert_file "app/content/pages/root.erb", /Find me in `app\/content\/pages\/root\.erb`/
-    assert_file "config/routes.rb", /root to: "content\/pages#root"/
+  end
+
+  test "pages with show action only generates root and show" do
+    run_generator %w[page show]
+
+    assert_file "app/controllers/content/pages_controller.rb" do |content|
+      expected = <<~CONTROLLER
+        class Content::PagesController < ApplicationController
+          def root
+            @resource = Content::Page.root
+
+            render :show
+          end
+
+          def show
+            @resource = Content::Page.find!(params[:id])
+          end
+        end
+      CONTROLLER
+
+      assert_equal expected, content, "Controller should have properly formatted root and show actions"
+    end
+  end
+
+  test "destroy removes files without crashing" do
+    run_generator %w[page]
+    run_generator %w[page], behavior: :revoke
+
+    assert_no_file "app/models/content/page.rb"
+    assert_no_file "app/controllers/content/pages_controller.rb"
+    assert_no_file "app/views/content/pages"
+    assert_no_file "app/content/pages/root.erb"
   end
 
   test "pages with --no-include-root skips root generation" do
@@ -86,7 +196,25 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     run_generator %w[post --include-root]
 
     assert_file "app/controllers/content/posts_controller.rb" do |content|
-      assert_match (/def root/), content
+      expected = <<~CONTROLLER
+        class Content::PostsController < ApplicationController
+          def root
+            @resource = Content::Post.root
+
+            render :show
+          end
+
+          def index
+            @resources = Content::Post.all
+          end
+
+          def show
+            @resource = Content::Post.find!(params[:id])
+          end
+        end
+      CONTROLLER
+
+      assert_equal expected, content, "Controller should have properly formatted root action"
     end
 
     assert_file "app/content/posts/root.erb"
@@ -112,7 +240,7 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     assert_file "app/content/data/products.yml"
 
     assert_file "app/models/content/product.rb", /sources :countries, :products/
-    assert_file "app/models/content/product.rb", /def self\.source_template\(sources\)/
+    assert_file "app/models/content/product.rb", /def self\.source_template\(source\)/
   end
 
   test "--data flag creates data source files with custom extensions" do
@@ -131,6 +259,29 @@ class ContentGeneratorTest < Rails::Generators::TestCase
     assert_file "app/content/data/products.yml"
 
     assert_file "app/models/content/product.rb", /sources :countries, :products/
+  end
+
+  test "--inline flag skips show view and renders inline" do
+    run_generator %w[post --inline]
+
+    assert_file "app/models/content/post.rb", /class Content::Post/
+    assert_file "app/controllers/content/posts_controller.rb" do |content|
+      assert_match(/render @resource\.inline/, content)
+    end
+
+    assert_file "app/views/content/posts/index.html.erb"
+    assert_no_file "app/views/content/posts/show.html.erb"
+  end
+
+  test "--inline flag with only show action" do
+    run_generator %w[post show --inline]
+
+    assert_file "app/controllers/content/posts_controller.rb" do |content|
+      assert_match(/render @resource\.inline/, content)
+    end
+
+    assert_no_file "app/views/content/posts/index.html.erb"
+    assert_no_file "app/views/content/posts/show.html.erb"
   end
 
   private

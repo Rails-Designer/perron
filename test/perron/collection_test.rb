@@ -43,7 +43,7 @@ class Perron::Site::CollectionTest < ActiveSupport::TestCase
 
       resource = resources.first
       slug = resource.slug
-      found_resource = @posts.find(slug, Content::Post)
+      found_resource = @posts.find!(slug, Content::Post)
 
       assert_equal resource.id, found_resource.id
     end
@@ -51,7 +51,7 @@ class Perron::Site::CollectionTest < ActiveSupport::TestCase
 
   test "#find raises error when resource with slug doesn't exist" do
     assert_raises Perron::Errors::ResourceNotFoundError do
-      @posts.find("nonexistent-slug", Content::Post)
+      @posts.find!("nonexistent-slug", Content::Post)
     end
   end
 end

@@ -58,8 +58,20 @@ class Perron::Resource::AssociationsTest < ActiveSupport::TestCase
   end
 
   test "belongs_to association with Data class" do
-    post = Content::Post.find("inline-erb-post")
+    post = Content::Post.find!("inline-erb-post")
 
     assert_equal "Cam", post.editor.name
+  end
+
+  test "has_many returns a Perron::Relation" do
+    posts = @author.posts
+
+    assert_kind_of Perron::Relation, posts
+  end
+
+  test "has_many result supports chaining scopes" do
+    posts = @author.posts.ordered
+
+    assert_kind_of Perron::Relation, posts
   end
 end

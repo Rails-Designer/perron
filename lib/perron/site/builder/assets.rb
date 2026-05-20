@@ -11,7 +11,7 @@ module Perron
         def prepare
           puts "📦 Precompiling and copying assets…"
 
-          success = system("bundle exec rails assets:precompile", out: File::NULL, err: File::NULL)
+          success = system("bundle exec rails assets:precompile", out: File::NULL)
 
           unless success
             puts "❌ ERROR: Asset precompilation failed"

@@ -12,6 +12,7 @@ Options:
     --force-plural                  Use plural form for model name and class
     --[no-]include-root             Include root action and route
                                     (default: true for pages, false otherwise)
+    --inline                        Render show action inline instead of using view template
 
 Examples:
     Generate basic content scaffold:
@@ -28,6 +29,17 @@ Examples:
 
     Adds route:
         resources :posts, module: :content, only: %w[index show]
+
+    Generate inline show action:
+        rails generate content Post --inline
+
+    Creates controller with inline rendering:
+        def show
+          @resource = Content::Post.find!(params[:id])
+          render @resource.inline
+        end
+
+    Skips creating app/views/content/posts/show.html.erb
 
     Generate pages scaffold with root:
         rails generate content Page
@@ -48,16 +60,21 @@ Examples:
     Creates data source files in app/content/data/ and adds
     .sources and .template_source class methods to the model.
 
-    Adds .sources and .template_source class methods to model.
-
     Create new content file from template:
         rails generate content Post --new
         rails generate content Post --new "My First Post"
 
     Creates a new content file in app/content/posts/ using:
-        1. YYYY-MM-DD-template.*.tt (if exists, with date prefix)
-        2. template.*.tt (if exists, without date prefix)
+        1. Template file with strftime patterns (e.g., %Y-%m-%d-title.md.tt)
+        2. Template file without strftime patterns (e.g., template.md.tt)
         3. Empty file with frontmatter dashes (if no template)
+
+    Template filename examples:
+        %Y-%m-%d-title.md.tt    → 2026-03-10-my-post.md
+        %s-title.md.tt          → 1741737600-my-post.md
+        %d-title.md.tt          → 10-my-post.md
+        title.md.tt             → my-post.md
+        %Y-%m.md.tt             → 2026-03.md
 
     Template files support ERB:
         ---

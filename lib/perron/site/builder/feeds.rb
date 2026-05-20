@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require "perron/site/builder/feeds/rss"
+require "perron/site/builder/feeds/atom"
 require "perron/site/builder/feeds/json"
+require "perron/site/builder/feeds/rss"
 
 module Perron
   module Site
@@ -17,12 +18,16 @@ module Perron
 
             config = collection.configuration.feeds
 
-            if config.rss.enabled
-              create_file at: config.rss.path, with: Rss.new(collection: collection).generate
+            if config.atom.enabled
+              create_file at: config.atom.path, with: Atom.new(collection: collection).generate
             end
 
             if config.json.enabled
               create_file at: config.json.path, with: Json.new(collection: collection).generate
+            end
+
+            if config.rss.enabled
+              create_file at: config.rss.path, with: Rss.new(collection: collection).generate
             end
           end
         end

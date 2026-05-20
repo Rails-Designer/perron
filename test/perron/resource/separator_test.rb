@@ -35,4 +35,46 @@ class Perron::Site::Resource::SeparatorTest < ActiveSupport::TestCase
     assert_equal "Content with empty frontmatter", separator.content
     assert_empty separator.frontmatter.to_h
   end
+
+  def test_parses_inline_array_syntax
+    content = <<~CONTENT
+      ---
+      authors: [alice, bob]
+      ---
+      Content
+    CONTENT
+    separator = Perron::Resource::Separator.new(content)
+    assert_equal ["alice", "bob"], separator.frontmatter.authors
+  end
+
+  def test_parses_yaml_list_syntax
+    content = <<~CONTENT
+      ---
+      authors:
+        - alice
+        - bob
+      ---
+      Content
+    CONTENT
+    separator = Perron::Resource::Separator.new(content)
+    assert_equal ["alice", "bob"], separator.frontmatter.authors
+  end
+
+  def test_parses_mixed_types_in_frontmatter
+    content = <<~CONTENT
+      ---
+      title: Hello
+      tags: [ruby, yaml]
+      categories:
+        - tech
+        - tutorial
+      ---
+      Content
+    CONTENT
+    separator = Perron::Resource::Separator.new(content)
+
+    assert_equal "Hello", separator.frontmatter.title
+    assert_equal ["ruby", "yaml"], separator.frontmatter.tags
+    assert_equal ["tech", "tutorial"], separator.frontmatter.categories
+  end
 end

@@ -17,6 +17,7 @@ require "perron/resource/searchable"
 require "perron/resource/separator"
 require "perron/resource/sourceable"
 require "perron/resource/sweeper"
+require "perron/resource/adjacency"
 require "perron/resource/table_of_content"
 
 module Perron
@@ -34,6 +35,7 @@ module Perron
     include Previewable
     include Scopes
     include Sweeper
+    include Adjacency
     include TableOfContent
 
     attr_reader :file_path, :id
@@ -115,6 +117,8 @@ module Perron
     end
 
     def erb_processing?
+      return false if metadata.erb == false
+
       @file_path.ends_with?(".erb") || metadata.erb == true
     end
   end

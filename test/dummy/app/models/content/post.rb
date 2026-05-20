@@ -1,14 +1,23 @@
 class Content::Post < Perron::Resource
-  configure do |config|
-    config.sitemap.enabled = false
+  CATEGORIES = {
+    ruby: { title: "Ruby", description: "Ruby articles" },
+    rails: { title: "Rails", description: "Rails articles" },
+    css: { title: "CSS", description: "CSS articles" }
+  }
 
-    config.feeds.rss.author = {
-      name: "RSS Config Author",
+  configure do |config|
+    config.feeds.atom.author = {
+      name: "Atom Config Author",
       email: "support@railsdesigner.com"
     }
 
     config.feeds.json.author = {
       name: "JSON Config Author",
+      email: "support@railsdesigner.com"
+    }
+
+    config.feeds.rss.author = {
+      name: "RSS Config Author",
       email: "support@railsdesigner.com"
     }
 

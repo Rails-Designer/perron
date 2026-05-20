@@ -1,20 +1,20 @@
 class Content::Product < Perron::Resource
   sources :countries, products: { primary_key: :code }
 
-  def self.source_template(sources)
+  def self.source_template(source)
     <<~TEMPLATE
     ---
-    product_code: #{sources.products.code}
-    country_id: #{sources.countries.id}
-    title: #{sources.products.name} in #{sources.countries.name}
-    slug: #{sources.products.slug}-#{sources.countries.code.downcase}
+    product_code: #{source.products.code}
+    country_id: #{source.countries.id}
+    title: #{source.products.name} in #{source.countries.name}
+    slug: #{source.products.slug}-#{source.countries.code.downcase}
     ---
 
-    # #{sources.products.name}
+    # #{source.products.name}
 
-    Available in #{sources.countries.name} (#{sources.countries.code}) for $#{sources.products.price}.
+    Available in #{source.countries.name} (#{source.countries.code}) for $#{source.products.price}.
 
-    Product code: #{sources.products.code}
+    Product code: #{source.products.code}
     TEMPLATE
   end
 end
