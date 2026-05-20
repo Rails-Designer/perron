@@ -29,9 +29,7 @@ module Perron
       load File.expand_path("../tasks/clobber.rake", __FILE__)
       load File.expand_path("../tasks/sync_sources.rake", __FILE__)
       load File.expand_path("../tasks/validate.rake", __FILE__)
-      if defined?(BeamUp)
-        load File.expand_path("../tasks/deploy.rake", __FILE__)
-      end
+      load File.expand_path("../tasks/deploy.rake", __FILE__)
     end
   end
 end

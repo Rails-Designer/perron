@@ -14,6 +14,10 @@ module Perron
       template "README.md.tt", "app/content/data/README.md"
     end
 
+    def create_deploy_config
+      template "deploy.yml.tt", "config/deploy.yml"
+    end
+
     def add_markdown_gems
       append_to_file "Gemfile", <<~RUBY
 

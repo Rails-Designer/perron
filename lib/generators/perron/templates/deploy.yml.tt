@@ -1,0 +1,14 @@
+# Deploy configuration for Perron
+# See: https://perron.railsdesigner.com/docs/deploy/
+
+# Uncomment and configure your provider:
+# provider: netlify
+
+# netlify:
+#   api_token: your_token_here
+#   site_id: your_site_id
+
+before_actions:
+  - bundle exec rake perron:build
+after_actions:
+  - bundle exec rake perron:clobber

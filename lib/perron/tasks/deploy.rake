@@ -1,18 +1,19 @@
+require "beam_up"
+
 namespace :perron do
   desc "Deploy static site using Beam Up"
   task deploy: :environment do
-    config = Perron.configuration.deploy
-    provider = config.provider.to_s
-    provider_config = config.send(provider).to_h
+    config = Rails.root.join("config/deploy.yml")
 
-    provider_config[:provider] = provider
+    unless config.exist?
+      puts "config/deploy.yml not found. Read more https://perron.railsdesigner.com/docs/deploy/"
+
+      exit 1
+    end
 
     BeamUp.deploy!(
       Perron.configuration.output,
-      provider_config.merge(
-        before_actions: ["bundle exec rake perron:build"],
-        after_actions: ["bundle exec rake perron:clobber"]
-      )
+      config_file: "config/deploy.yml"
     )
   end
 end
