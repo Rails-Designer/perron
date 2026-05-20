@@ -9,6 +9,6 @@
 #   site_id: your_site_id
 
 before_actions:
-  - bundle exec rake perron:build
+  - RAILS_ENV=production bundle exec rake perron:build
 after_actions:
   - bundle exec rake perron:clobber
