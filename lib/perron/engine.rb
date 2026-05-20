@@ -59,6 +59,7 @@ module Perron
       load File.expand_path("../tasks/install.rake", __FILE__)
       load File.expand_path("../tasks/sync_sources.rake", __FILE__)
       load File.expand_path("../tasks/validate.rake", __FILE__)
+      load File.expand_path("../tasks/deploy.rake", __FILE__)
     end
   end
 end

@@ -67,6 +67,22 @@ module Perron
       @additional_routes || (mode.integrated? ? [] : %w[root_path])
     end
 
+    def deploy
+      @deploy ||= ActiveSupport::OrderedOptions.new.tap do |config|
+        def config.method_missing(method_name, *args, &block)
+          if method_name.to_s.end_with?("=")
+            super
+          else
+            self[method_name] ||= ActiveSupport::OrderedOptions.new
+          end
+        end
+
+        def config.respond_to_missing?(method_name, include_private = false)
+          !method_name.to_s.end_with?("=") || super
+        end
+      end
+    end
+
     attr_writer :additional_routes
 
     def url
