@@ -101,4 +101,27 @@ class Perron::RelationTest < ActiveSupport::TestCase
     assert_equal 2, slugs.size
     assert_equal "another-post", slugs.first
   end
+
+  test "#in_order_of filters and sorts by values (filter: true by default)" do
+    result = @posts.in_order_of(:category, %w[tutorial news])
+
+    assert_instance_of Perron::Relation, result
+    assert_equal 2, result.size
+    assert_equal "tutorial", result.first.category
+    assert_equal "news", result.second.category
+  end
+
+  test "#in_order_of sorts all records with filter: false" do
+    result = @posts.in_order_of(:category, %w[tutorial], filter: false)
+
+    assert_equal 4, result.size
+    assert_equal "tutorial", result.first.category
+  end
+
+  test "#in_order_of returns empty relation for empty values" do
+    result = @posts.in_order_of(:category, [])
+
+    assert_instance_of Perron::Relation, result
+    assert_equal 0, result.size
+  end
 end
