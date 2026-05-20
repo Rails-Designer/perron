@@ -53,6 +53,9 @@ module Perron
 
       @config.metadata = ActiveSupport::OrderedOptions.new
       @config.metadata.title_separator = " — "
+
+      @config.before_build = nil
+      @config.after_build = nil
     end
 
     def input = Rails.root.join("app", "content")
