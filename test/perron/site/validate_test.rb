@@ -17,8 +17,8 @@ class Perron::Site::ValidateTest < ActiveSupport::TestCase
 
     output = capture_io { validator.validate }
 
-    assert_match /Invalid YAML/, output.join
-    assert_match /line 2/, output.join
+    assert_match(/Invalid YAML/, output.join)
+    assert_match(/line 2/, output.join)
   ensure
     File.delete(syntax_error_file) if File.exist?(syntax_error_file)
   end
@@ -28,6 +28,6 @@ class Perron::Site::ValidateTest < ActiveSupport::TestCase
 
     output = capture_io { validator.validate }
 
-    assert_match /failures/, output.join
+    assert_match(/failures/, output.join)
   end
 end
