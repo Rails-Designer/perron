@@ -1,0 +1,124 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+
+RAILS_BIN = File.expand_path("bin/rails", Dir.pwd)
+
+USAGE = <<~USAGE
+  Usage: perron <command> [options]
+
+  Commands:
+    perron new APPNAME    Create a new Perron-powered Rails app
+    perron generate NAME  Scaffold a new content type (actions: index show)
+    perron validate       Validate all content resources
+    perron sync_sources   Sync all source-backed resources (pass NAME to sync specific)
+    perron build          Build static site (defaults to RAILS_ENV=production)
+    perron clobber        Remove built output
+    perron deploy         Deploy static site
+
+  Examples:
+    perron new my-site
+    perron generate Post show index
+    perron destroy Post
+    perron sync_sources Tool
+USAGE
+
+def ensure_rails!
+  return if File.exist?(RAILS_BIN)
+
+  warn "Error: bin/rails not found in #{Dir.pwd}"
+  warn "Make sure you are running from your Perron project directory."
+
+  exit 1
+end
+
+def new_command
+  app_name = ARGV.shift
+
+  unless app_name
+    warn "Error: app name required"
+
+    puts USAGE
+
+    exit 1
+  end
+
+  ENV["LOCATION"] = File.expand_path("lib/perron/install/template.rb", Dir.pwd)
+
+  exec RAILS_BIN, "app:template"
+end
+
+def generate_command
+  ensure_rails!
+
+  exec RAILS_BIN, "generate", "content", *ARGV
+end
+
+def destroy_command
+  ensure_rails!
+
+  exec RAILS_BIN, "destroy", "content", *ARGV
+end
+
+def validate_command
+  ensure_rails!
+
+  exec RAILS_BIN, "perron:validate"
+end
+
+def sync_sources_command
+  ensure_rails!
+
+  exec RAILS_BIN, "perron:sync_sources", *ARGV
+end
+
+def build_command
+  ensure_rails!
+
+  ENV["RAILS_ENV"] ||= "production"
+
+  exec RAILS_BIN, "perron:build"
+end
+
+def clobber_command
+  ensure_rails!
+
+  exec RAILS_BIN, "perron:clobber"
+end
+
+def deploy_command
+  ensure_rails!
+
+  exec RAILS_BIN, "perron:deploy"
+end
+
+if ARGV.empty?
+  puts USAGE
+
+  exit 0
+end
+
+command = ARGV.shift
+
+if command == "generate" && (ARGV.include?("-h") || ARGV.include?("--help"))
+  ensure_rails!
+
+  exec RAILS_BIN, "generate", "content", "-h"
+end
+
+case command
+when "new" then new_command
+when "generate" then generate_command
+when "destroy" then destroy_command
+when "validate" then validate_command
+when "sync_sources" then sync_sources_command
+when "build" then build_command
+when "clobber" then clobber_command
+when "deploy" then deploy_command
+else
+  warn "Unknown command: #{command}"
+
+  puts USAGE
+
+  exit 1
+end

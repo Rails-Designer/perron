@@ -3,6 +3,11 @@ say "Install Perron in your Rails app"
 say "Create Perron initializer"
 copy_file "#{__dir__}/install/initializer.rb", "config/initializers/perron.rb"
 
+say "Create perron binstub"
+copy_file "#{__dir__}/install/perron.tt", "bin/perron", force: true
+
+run "chmod +x bin/perron"
+
 say "Create content data directory"
 copy_file "#{__dir__}/install/README.md", "app/content/data/README.md"
 
