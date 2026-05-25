@@ -20,7 +20,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rails", ">= 7.2.0"
   spec.add_dependency "mata", "~> 0.8.0"
-  spec.add_dependency "beam_up"
 
   spec.add_runtime_dependency "csv"
   spec.add_runtime_dependency "json"

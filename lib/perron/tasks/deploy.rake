@@ -1,4 +1,15 @@
-require "beam_up"
+begin
+  require "beam_up"
+rescue LoadError
+  abort <<~MSG
+    Beam Up is required for the deploy task to run.
+
+    Add it to your Gemfile:
+      gem "beam_up"
+
+    See for more: https://perron.railsdesigner.com/docs/deploy/
+  MSG
+end
 
 namespace :perron do
   desc "Deploy static site using Beam Up"
