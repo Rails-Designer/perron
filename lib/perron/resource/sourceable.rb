@@ -5,6 +5,11 @@ module Perron
     module Sourceable
       extend ActiveSupport::Concern
 
+      MODES = {
+        single: ->(dataset) { dataset.zip },
+        combinations: ->(dataset) { dataset.to_a.combination(2).to_a }
+      }
+
       class_methods do
         def sources(*arguments)
           @source_definitions = parsed(*arguments)
@@ -32,7 +37,7 @@ module Perron
         def generate_from_sources!
           return unless source_backed?
 
-          combinations.each do |combo|
+          derive.each do |combo|
             content = content_with combo
             filename = filename_with combo
 
@@ -48,7 +53,7 @@ module Perron
         def parsed(*arguments)
           return {} if arguments.empty?
 
-          arguments.flat_map do |argument|
+          definitions = arguments.flat_map do |argument|
             case argument
             when Hash
               argument.to_a
@@ -58,11 +63,39 @@ module Perron
               [[argument, {primary_key: :id}]]
             end
           end.to_h
+
+          if definitions.values.any? { it[:mode] }
+            raise ArgumentError, "mode is only supported for single-source definitions" if definitions.size > 1
+          end
+
+          definitions
         end
 
-        def combinations
+        def derive
           datasets = source_names.map { resolve it }
 
+          if single_source_with_mode?
+            derive_from_single_source(datasets.first)
+          else
+            derive_from_multiple_sources(datasets)
+          end
+        end
+
+        def derive_from_single_source(dataset)
+          source_name = source_names.first
+          mode = source_definitions[source_name][:mode] || :single
+          method = MODES[mode.to_sym] || raise(ArgumentError, "Unknown mode: #{mode}")
+
+          method.call(dataset).each do |combo|
+            primary_key = source_definitions[source_name][:primary_key] || :id
+
+            combo.each do |item|
+              raise Errors::DataParseError, "Primary key `#{primary_key}` is nil for row" if item.public_send(primary_key).nil?
+            end
+          end
+        end
+
+        def derive_from_multiple_sources(datasets)
           datasets.first.product(*datasets[1..]).each do |combo|
             combo.each_with_index do |item, index|
               name = source_names[index]
@@ -74,18 +107,37 @@ module Perron
         end
 
         def content_with(combo)
-          data = source_names.each.with_index.to_h { |name, index| [name, combo[index]] }
+          data = if single_source_with_mode?
+            source_name = source_names.first
+            names = source_definitions[source_name][:as]&.map(&:to_sym) || (1..combo.size).map { :"#{source_name}_#{it}" }
+
+            combo.each_with_index.to_h { |item, index| [names[index], item] }
+          else
+            source_names.each_with_index.to_h { |name, index| [name, combo[index]] }
+          end
+
           source = Source.new(data)
 
           source_template(source)
         end
 
         def filename_with(combo)
-          source_names.each_with_index.map do |name, index|
-            primary_key = source_definitions[name][:primary_key]
+          if single_source_with_mode?
+            source_name = source_names.first
+            primary_key = source_definitions[source_name][:primary_key] || :id
 
-            combo[index].public_send(primary_key)
-          end.join("-")
+            combo.map { it.public_send(primary_key) }.join("-")
+          else
+            source_names.each_with_index.map do |name, index|
+              primary_key = source_definitions[name][:primary_key]
+
+              combo[index].public_send(primary_key)
+            end.join("-")
+          end
+        end
+
+        def single_source_with_mode?
+          source_names.one? && source_definitions[source_names.first][:mode]
         end
 
         def output_dir = Perron.configuration.input.join(model_name.collection)
