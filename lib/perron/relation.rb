@@ -2,9 +2,12 @@
 
 module Perron
   class Relation < Array
-    def initialize(resources = [])
-      super
+    def initialize(resources = [], model_class = nil)
+      super(resources)
+
+      @model_class = model_class
     end
+    attr_reader :model_class
 
     def where(**conditions)
       filtered = select do |resource|
@@ -19,12 +22,12 @@ module Perron
         end
       end
 
-      Relation.new(filtered)
+      Relation.new(filtered, @model_class)
     end
 
-    def limit(count) = Relation.new(first(count))
+    def limit(count) = Relation.new(first(count), @model_class)
 
-    def offset(count) = Relation.new(drop(count))
+    def offset(count) = Relation.new(drop(count), @model_class)
 
     def order(attribute, direction = :asc)
       if attribute.is_a?(Hash)
@@ -33,7 +36,7 @@ module Perron
 
       sorted = sort_by { it.public_send(attribute) }
 
-      Relation.new((direction == :desc) ? sorted.reverse : sorted)
+      Relation.new((direction == :desc) ? sorted.reverse : sorted, @model_class)
     end
 
     def pluck(*attributes)

@@ -31,6 +31,9 @@ module Perron
             config.related_posts.enabled = false
             config.related_posts.max = 5
 
+            config.pagination = ActiveSupport::OrderedOptions.new
+            config.pagination.path_template = "/page/:page/"
+
             config.sitemap = ActiveSupport::OrderedOptions.new
             config.sitemap.exclude = false
           end
