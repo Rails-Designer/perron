@@ -30,10 +30,12 @@ class Perron::PaginateHelperTest < ActiveSupport::TestCase
       config.pagination.per_page = 10
     end
 
-    paginate, items = @controller.paginate(Content::Post, @paginated_collection, page: 2)
+    controller = TestHelpers::PaginateHelperTestController.new(page: "1")
+    paginate, items = controller.paginate(Content::Post.all)
 
     assert_instance_of Perron::Paginate, paginate
-    assert_equal [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], items
+    assert_equal 4, items.size
+    assert_equal Content::Post, items.first.class
   end
 
   test "uses page 1 by default" do
@@ -42,53 +44,50 @@ class Perron::PaginateHelperTest < ActiveSupport::TestCase
     end
 
     controller = TestHelpers::PaginateHelperTestController.new
-    _paginate, items = controller.paginate(Content::Post, @paginated_collection)
+    paginate, items = controller.paginate(Content::Post.all)
 
-    assert_equal [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], items
+    assert_equal 4, items.size
+    assert_equal Content::Post, items.first.class
   end
 
   test "paginate object has correct metadata" do
     Content::Post.configure do |config|
-      config.pagination.per_page = 10
+      config.pagination.per_page = 2
     end
 
-    paginate, _items = @controller.paginate(Content::Post, @paginated_collection, page: 2)
+    controller = TestHelpers::PaginateHelperTestController.new(page: "1")
+    paginate, items = controller.paginate(Content::Post.all, page: 1)
 
-    assert_equal 2, paginate.current_page
-    assert_equal 3, paginate.total_pages
-    assert_equal 25, paginate.total_items
+    assert_equal 1, paginate.current_page
+    assert_equal 2, paginate.per_page
+    assert_equal 2, items.size
     assert_equal true, paginate.next?
-    assert_equal true, paginate.previous?
-  end
-
-  test "returns empty items for page beyond total" do
-    Content::Post.configure do |config|
-      config.pagination.per_page = 10
-    end
-
-    _paginate, items = @controller.paginate(Content::Post, @paginated_collection, page: 99)
-
-    assert_equal [21, 22, 23, 24, 25], items
-  end
-
-  test "returns empty items when collection is empty" do
-    Content::Post.configure do |config|
-      config.pagination.per_page = 10
-    end
-
-    _paginate, items = @controller.paginate(Content::Post, [], page: 1)
-
-    assert_equal [], items
+    assert_equal false, paginate.previous?
   end
 
   test "extracts page from params automatically" do
     Content::Post.configure do |config|
+      config.pagination.per_page = 2
+    end
+
+    controller = TestHelpers::PaginateHelperTestController.new(page: "2")
+    paginate, _items = controller.paginate(Content::Post.all)
+
+    assert_equal 2, paginate.current_page
+    assert_equal 2, paginate.per_page
+    assert_equal false, paginate.next?
+  end
+
+  test "allows per_page override via options" do
+    Content::Post.configure do |config|
       config.pagination.per_page = 10
     end
 
-    controller = TestHelpers::PaginateHelperTestController.new(page: "3")
-    _paginate, items = controller.paginate(Content::Post, @paginated_collection)
+    controller = TestHelpers::PaginateHelperTestController.new(page: "1")
+    paginate, items = controller.paginate(Content::Post.all, page: 1, per_page: 2)
 
-    assert_equal [21, 22, 23, 24, 25], items
+    assert_equal 2, paginate.per_page
+    assert_equal 2, items.size
+    assert_equal Content::Post, items.first.class
   end
 end

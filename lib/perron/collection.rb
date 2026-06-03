@@ -16,7 +16,7 @@ module Perron
     end
 
     def all(resource_class = "Content::#{name.classify}".safe_constantize)
-      Perron::Relation.new(load_resources(resource_class).select(&:published?))
+      Perron::Relation.new(load_resources(resource_class).select(&:published?), resource_class)
     end
     alias_method :resources, :all
 
