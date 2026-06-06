@@ -151,4 +151,13 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
     assert_instance_of Perron::Relation, posts
     assert_equal 2, posts.size
   end
+
+  test ".destroy_all deletes all resource files and returns array of deleted resources" do
+    existing_count = Content::Zombie.count
+
+    deleted = Content::Zombie.destroy_all
+
+    assert_equal existing_count, deleted.size
+    assert_equal 0, Content::Zombie.count
+  end
 end
