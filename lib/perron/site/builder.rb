@@ -37,8 +37,6 @@ module Perron
         output_preview_urls
 
         puts "\n✅ Build complete"
-      rescue
-        raise
       ensure
         run_hook(:after_build)
       end

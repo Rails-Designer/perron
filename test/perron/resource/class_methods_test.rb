@@ -152,7 +152,12 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
     assert_equal 2, posts.size
   end
 
-  test ".destroy_all deletes all resource files and returns array of deleted resources" do
+test ".destroy_all deletes all resource files and returns array of deleted resources" do
+    zombie_dir = "test/dummy/app/content/zombies"
+    FileUtils.mkdir_p(zombie_dir)
+    File.write("#{zombie_dir}/a.md", "---\ntitle: Zombie\n---\nContent")
+    File.write("#{zombie_dir}/b.md", "---\ntitle: Zombie\n---\nContent")
+
     existing_count = Content::Zombie.count
 
     deleted = Content::Zombie.destroy_all

@@ -148,6 +148,7 @@ class Perron::Site::ResourceTest < ActiveSupport::TestCase
 
   test "#destroy deletes the resource file and returns self" do
     test_file = "test/dummy/app/content/zombies/destroy-test-zombie.md"
+    FileUtils.mkdir_p(File.dirname(test_file))
     File.write(test_file, "---\ntitle: Test Zombie\n---\nTest content")
 
     zombie = Content::Zombie.new(test_file)

@@ -103,8 +103,8 @@ module Perron
       end
     end
 
-    def respond_to_missing?(method_name)
-      @config.respond_to?(method_name) || super
+    def respond_to_missing?(method_name, ...)
+      @config.respond_to?(method_name, ...) || super
     end
   end
 end
