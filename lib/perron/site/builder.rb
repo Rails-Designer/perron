@@ -16,6 +16,8 @@ module Perron
       end
 
       def build
+        run_hook(:before_build)
+
         if Perron.configuration.mode.standalone?
           puts "🧹 Cleaning previous build…"
 
@@ -35,6 +37,10 @@ module Perron
         output_preview_urls
 
         puts "\n✅ Build complete"
+      rescue
+        raise
+      ensure
+        run_hook(:after_build)
       end
 
       private
@@ -56,6 +62,26 @@ module Perron
           previewable_resources.each do |resource|
             puts "   #{Rails.application.routes.url_helpers.polymorphic_url(resource, **Perron.configuration.default_url_options)}"
           end
+        end
+      end
+
+      def run_hook(name)
+        return unless (hook = Perron.configuration.public_send(name))
+
+        context = Context.new(
+          output_path: @output_path.to_s,
+          mode: Perron.configuration.mode
+        )
+
+        hook.call(context)
+      end
+
+      class Context
+        attr_reader :output_path, :mode
+
+        def initialize(output_path:, mode:)
+          @output_path = output_path
+          @mode = mode
         end
       end
     end
