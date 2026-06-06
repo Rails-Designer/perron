@@ -28,7 +28,7 @@ class BuildTest < ActiveSupport::TestCase
       end
     end.first
 
-    assert_match "RAILS_ENV=production bin/rails perron:build", output
+    assert_match "bin/perron build", output
   end
 
   test "does not warn when running in production" do

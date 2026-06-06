@@ -3,7 +3,7 @@ namespace :perron do
   task build: :environment do
     unless Rails.env.production?
       puts "⚠️  Not running in production mode. Unpublished content will be included in the build."
-      puts " └─> Run in production mode using: RAILS_ENV=production bin/rails perron:build"
+      puts " └─> Run in production mode using: bin/perron build"
       puts ""
     end
 

@@ -8,6 +8,7 @@ class InstallTaskTest < ActiveSupport::TestCase
     FileUtils.mkdir_p(@tmpdir)
     FileUtils.mkdir_p("#{@tmpdir}/config/initializers")
     FileUtils.mkdir_p("#{@tmpdir}/app/content/data")
+    FileUtils.mkdir_p("#{@tmpdir}/bin")
 
     File.write("#{@tmpdir}/Gemfile", "source 'https://rubygems.org'\n")
     File.write("#{@tmpdir}/.gitignore", "")
@@ -18,6 +19,12 @@ class InstallTaskTest < ActiveSupport::TestCase
 
     assert File.exist?("#{@tmpdir}/config/initializers/perron.rb")
     assert_match(/Perron.configure do |config|/, File.read("#{@tmpdir}/config/initializers/perron.rb"))
+  end
+
+  def test_creates_perron_binstub
+    run_template
+
+    assert File.exist?("#{@tmpdir}/bin/perron")
   end
 
   def test_creates_data_folder_with_readme
@@ -52,6 +59,8 @@ class InstallTaskTest < ActiveSupport::TestCase
     Dir.chdir(@tmpdir) do
       FileUtils.cp("#{@install_dir}/initializer.rb.tt", 'config/initializers/perron.rb')
       FileUtils.cp("#{@install_dir}/README.md.tt", 'app/content/data/README.md')
+      FileUtils.cp("#{@install_dir}/perron.tt", 'bin/perron')
+      FileUtils.chmod("+x", 'bin/perron')
       File.open("Gemfile", "a") do |file|
         file.write <<~RUBY
 

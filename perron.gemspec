@@ -15,6 +15,8 @@ Gem::Specification.new do |spec|
   spec.metadata["source_code_uri"] = "https://github.com/Rails-Designer/perron/"
 
   spec.files = Dir["{bin,app,lib}/**/*", "Rakefile", "README.md", "perron.gemspec", "Gemfile", "Gemfile.lock"]
+  spec.bindir = "exe"
+  spec.executables = ["perron"]
 
   spec.required_ruby_version = ">= 3.4.0"
 
