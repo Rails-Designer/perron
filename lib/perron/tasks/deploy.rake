@@ -53,18 +53,9 @@ namespace :perron do
         MSG
       end
 
-      provider = arguments[:provider]
+      path = BeamUp.init!(arguments[:provider], config_file: "config/deploy.yml")
 
-      unless provider
-        puts "Usage: rake perron:deploy:init[provider]"
-        puts "Available: #{BeamUp::PROVIDERS.keys.reject { it == "transporter" }.sort.join(", ")}"
-
-        exit 1
-      end
-
-      path = BeamUp.init!(provider, config_file: "config/deploy.yml")
-
-      puts "Configured #{provider} in #{path}"
+      puts "Configured Beam Up in #{path}"
     end
   end
 end
