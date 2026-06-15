@@ -14,6 +14,15 @@ namespace :perron do
       MSG
     end
 
+    config = Rails.root.join("config/deploy.yml")
+
+    unless config.exist?
+      template = File.expand_path("../install/deploy.yml", __dir__)
+      FileUtils.cp(template, config)
+
+      puts "Created config/deploy.yml"
+    end
+
     beamed = BeamUp.with_progress do
       BeamUp.deploy!(
         Perron.configuration.output,
