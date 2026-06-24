@@ -14,8 +14,6 @@ class Perron::Resource::PaginationConfigTest < ActiveSupport::TestCase
   end
 
   test "pagination defaults to nil per_page (disabled)" do
-    Content::Post.instance_variable_set(:@configuration, nil)
-
     assert_nil Content::Post.configuration.pagination.per_page
   end
 
@@ -36,8 +34,6 @@ class Perron::Resource::PaginationConfigTest < ActiveSupport::TestCase
   end
 
   test "path_template defaults to /page/:page/" do
-    Content::Post.instance_variable_set(:@configuration, nil)
-
     assert_equal "/page/:page/", Content::Post.configuration.pagination.path_template
   end
 

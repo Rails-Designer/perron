@@ -189,6 +189,9 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
 
   teardown do
     Content::Post.configure do |config|
+      config.feeds.rss.enabled = false
+      config.feeds.atom.enabled = false
+      config.feeds.json.enabled = false
       config.feeds.atom.path = "feeds/posts.atom"
     end
   end

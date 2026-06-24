@@ -44,7 +44,7 @@ class Perron::PaginateHelperTest < ActiveSupport::TestCase
     end
 
     controller = TestHelpers::PaginateHelperTestController.new
-    paginate, items = controller.paginate(Content::Post.all)
+    _, items = controller.paginate(Content::Post.all)
 
     assert_equal 4, items.size
     assert_equal Content::Post, items.first.class

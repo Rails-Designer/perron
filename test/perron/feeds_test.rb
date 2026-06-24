@@ -10,6 +10,7 @@ class Perron::FeedsTest < ActionDispatch::IntegrationTest
   teardown do
     Content::Post.configure { it.feeds.rss.enabled = false }
     Content::Post.configure { it.feeds.atom.enabled = false }
+    Content::Post.configure { it.feeds.json.enabled = false }
     Content::Page.configure { it.feeds.rss.enabled = false }
   end
 
