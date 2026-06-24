@@ -103,7 +103,7 @@ GIT
 PATH
   remote: ..
   specs:
-    perron (1.0.0)
+    perron (1.1.0)
       csv
       json
       mata (~> 0.10.0)
