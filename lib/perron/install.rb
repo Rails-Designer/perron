@@ -7,7 +7,7 @@ say "Create content data directory"
 copy_file "#{__dir__}/install/README.md", "app/content/data/README.md"
 
 say "Create deploy configuration"
-copy_file "#{__dir__}/install/deploy.yml", "config/deploy.yml"
+copy_file "#{__dir__}/install/deploy.yml.erb", "config/deploy.yml.erb"
 
 say "Add Markdown gem options to Gemfile"
 append_to_file "Gemfile", <<~RUBY
