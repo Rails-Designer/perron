@@ -1,13 +1,12 @@
 # Deploy configuration for Perron
 # Requires Beam Up (`bundle add beam_up`)
-# See also: https://perron.railsdesigner.com/docs/deploy/
+# See also: https://perron.railsdesigner.com/docs/deploy/#deploy-task
 
 # Uncomment and configure your provider:
-# provider: netlify
+# provider: seal_static
 
-# netlify:
-#   api_token: your_token_here
-#   site_id: your_site_id
+# seal_static:
+#   api_key: your_key_here
 
 before_actions:
   - RAILS_ENV=production bundle exec rails perron:build

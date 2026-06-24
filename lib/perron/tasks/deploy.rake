@@ -14,19 +14,19 @@ namespace :perron do
       MSG
     end
 
-    config = Rails.root.join("config/deploy.yml")
+    config_file = "config/deploy.yml" if Rails.root.join("config/deploy.yml").exist?
+    config_file = "config/deploy.yml.erb" if Rails.root.join("config/deploy.yml.erb").exist?
 
-    unless config.exist?
-      template = File.expand_path("../install/deploy.yml", __dir__)
-      FileUtils.cp(template, config)
-
-      puts "Created config/deploy.yml"
+    if config_file.nil?
+      FileUtils.cp(File.expand_path("../install/deploy.yml.erb", __dir__), Rails.root.join("config/deploy.yml.erb"))
+      config_file = "config/deploy.yml.erb"
+      puts "Created config/deploy.yml.erb"
     end
 
     beamed = BeamUp.with_progress do
       BeamUp.deploy!(
         Perron.configuration.output,
-        config_file: "config/deploy.yml"
+        config_file: config_file
       )
     end
 
@@ -50,7 +50,14 @@ namespace :perron do
         MSG
       end
 
-      path = BeamUp.init!(arguments[:provider], config_file: "config/deploy.yml")
+      config_file = "config/deploy.yml" if Rails.root.join("config/deploy.yml").exist?
+      config_file = "config/deploy.yml.erb" if Rails.root.join("config/deploy.yml.erb").exist?
+
+      if config_file.nil?
+        config_file = "config/deploy.yml.erb"
+      end
+
+      path = BeamUp.init!(arguments[:provider], config_file: config_file)
 
       puts "Configured Beam Up in #{path}"
     end
