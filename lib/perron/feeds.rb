@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
+require "perron/feeds/split"
+
 module Perron
   class Feeds
     include ActionView::Helpers::TagHelper
+    include Perron::Feeds::Split
 
     def render(options = {})
       html_tags = []
@@ -22,6 +25,16 @@ module Perron
             title = "#{collection.name.humanize} #{type.to_s.humanize} Feed"
 
             html_tags << tag(:link, rel: "alternate", type: MIME_TYPES[type], title: title, href: absolute_url)
+
+            next unless feed[:split_by]
+
+            split_values(collection.resources, feed[:split_by][:extractor]).each do |value|
+              split_path = split_path_for(feed, value)
+              split_url = URI.join(url.root_url, split_path).to_s
+              split_title = "#{collection.name.humanize}: #{value.to_s.humanize} #{type.to_s.humanize} Feed"
+
+              html_tags << tag(:link, rel: "alternate", type: MIME_TYPES[type], title: split_title, href: split_url)
+            end
           end
         end
       end

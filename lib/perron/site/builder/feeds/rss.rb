@@ -11,8 +11,10 @@ module Perron
           include Feeds::Author
           include Feeds::Template
 
-          def initialize(collection:)
+          def initialize(collection:, resources: nil, feed_config: nil)
             @collection = collection
+            @resources = resources
+            @feed_config = feed_config
             @configuration = Perron.configuration
           end
 
@@ -28,11 +30,15 @@ module Perron
           private
 
           def resources
-            @resource ||= @collection.resources
+            (@resources || @collection.resources)
               .reject { it.metadata.feed == false }
               .sort_by { it.metadata.published_at || it.metadata.updated_at || Time.current }
               .reverse
               .take(feed_configuration.max_items)
+          end
+
+          def feed_configuration
+            @feed_config || super
           end
         end
       end
