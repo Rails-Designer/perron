@@ -37,12 +37,14 @@ module Perron
         def generate_from_sources!
           return unless source_backed?
 
+          extension = source_definitions.values.first&.dig(:extension) || "erb"
+
           derive.each do |combo|
             content = content_with combo
             filename = filename_with combo
 
             FileUtils.mkdir_p(output_dir)
-            File.write(output_dir.join("#{filename}.erb"), content)
+            File.write(output_dir.join("#{filename}.#{extension}"), content)
           end
         end
 

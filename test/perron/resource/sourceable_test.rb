@@ -7,7 +7,8 @@ class Perron::Resource::SourceableTest < ActiveSupport::TestCase
   end
 
   teardown do
-    [Rails.root.join("app/content/products"), Rails.root.join("app/content/comparisons")].each do |dir|
+    [Rails.root.join("app/content/products"), Rails.root.join("app/content/comparisons"),
+     Rails.root.join("app/content/md_products"), Rails.root.join("app/content/md_comparisons")].each do |dir|
       FileUtils.rm_rf(dir) if dir.exist?
     end
   end
@@ -243,7 +244,7 @@ assert_equal 1, combinations.length
     assert_match(/Price difference: \$-100/, content)
   end
 
-test ".source with mode: :combinations and :as option uses custom names" do
+  test ".source with mode: :combinations and :as option uses custom names" do
     test_class = Class.new(Perron::Resource) do
       source comparisons: { primary_key: :code, mode: :combinations, as: [:left, :right] }
 
@@ -263,5 +264,44 @@ test ".source with mode: :combinations and :as option uses custom names" do
     assert_includes data.keys, :right
     refute_includes data.keys, :comparisons_1
     refute_includes data.keys, :comparisons_2
+  end
+
+  test ".generate_from_sources! with extension: :md creates .md files" do
+    test_class = Class.new(Perron::Resource) do
+      source products: { primary_key: :id, extension: :md }
+
+      def self.source_template(source)
+        "test"
+      end
+    end
+
+    Content.const_set(:MdProduct, test_class)
+
+    test_class.generate_from_sources!
+
+    assert_path_exists Rails.root.join("app/content/md_products/1.md")
+    assert_path_exists Rails.root.join("app/content/md_products/2.md")
+  ensure
+    Content.send(:remove_const, :MdProduct) rescue nil
+  end
+
+  test ".generate_from_sources! with extension and mode: :combinations creates .md files" do
+    test_class = Class.new(Perron::Resource) do
+      source comparisons: { primary_key: :code, mode: :combinations, extension: :md }
+
+      def self.source_template(source)
+        "test"
+      end
+    end
+
+    Content.const_set(:MdComparison, test_class)
+
+    test_class.generate_from_sources!
+
+    assert_path_exists Rails.root.join("app/content/md_comparisons/a-b.md")
+    assert_path_exists Rails.root.join("app/content/md_comparisons/a-c.md")
+    assert_path_exists Rails.root.join("app/content/md_comparisons/b-c.md")
+  ensure
+    Content.send(:remove_const, :MdComparison) rescue nil
   end
 end
