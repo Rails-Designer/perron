@@ -12,17 +12,17 @@ module Perron
 
             config.feeds = Options.new
 
-            config.feeds.atom = ActiveSupport::OrderedOptions.new
+            config.feeds.atom = FeedTypeConfig.new
             config.feeds.atom.enabled = false
             config.feeds.atom.path = "feeds/#{collection.name.demodulize.parameterize}.atom"
             config.feeds.atom.max_items = 20
 
-            config.feeds.json = ActiveSupport::OrderedOptions.new
+            config.feeds.json = FeedTypeConfig.new
             config.feeds.json.enabled = false
             config.feeds.json.path = "feeds/#{collection.name.demodulize.parameterize}.json"
             config.feeds.json.max_items = 20
 
-            config.feeds.rss = ActiveSupport::OrderedOptions.new
+            config.feeds.rss = FeedTypeConfig.new
             config.feeds.rss.enabled = false
             config.feeds.rss.path = "feeds/#{collection.name.demodulize.parameterize}.xml"
             config.feeds.rss.max_items = 20
@@ -58,6 +58,15 @@ module Perron
         end
       end
       private_constant :Options
+
+      class FeedTypeConfig < ActiveSupport::OrderedOptions
+        def split_by(method_or_lambda = nil, path: nil, &block)
+          extractor = method_or_lambda || block
+
+          self[:split_by] = {extractor: extractor}
+          self[:split_by][:path] = path if path
+        end
+      end
     end
   end
 end

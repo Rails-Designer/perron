@@ -8,9 +8,14 @@ class Perron::FeedsTest < ActionDispatch::IntegrationTest
   end
 
   teardown do
-    Content::Post.configure { it.feeds.rss.enabled = false }
-    Content::Post.configure { it.feeds.atom.enabled = false }
-    Content::Post.configure { it.feeds.json.enabled = false }
+    Content::Post.configure do |config|
+      config.feeds.rss.enabled = false
+      config.feeds.atom.enabled = false
+      config.feeds.json.enabled = false
+
+      config.feeds.atom[:split_by] = nil
+    end
+
     Content::Page.configure { it.feeds.rss.enabled = false }
   end
 
@@ -37,6 +42,32 @@ class Perron::FeedsTest < ActionDispatch::IntegrationTest
 
     assert_select document, 'link[href*="feeds/pages.xml"]', count: 1
     assert_select document, 'link[href*="feeds/posts.xml"]', count: 0, message: "Posts feed should be excluded"
+  end
+
+  test "renders split feed link tags when split_by is configured" do
+    Content::Post.configure { it.feeds.atom.split_by :category }
+
+    document = rendered_document
+
+    assert_select document, 'link[rel="alternate"][type="application/atom+xml"][href*="feeds/posts.atom"]', count: 1
+    assert_select document, 'link[rel="alternate"][type="application/atom+xml"][href*="feeds/posts/category/news.atom"][title*="News"]', count: 1
+    assert_select document, 'link[rel="alternate"][type="application/atom+xml"][href*="feeds/posts/category/tutorial.atom"][title*="Tutorial"]', count: 1
+  end
+
+  test "does not render split feed links when split_by is not configured" do
+    document = rendered_document
+
+    assert_select document, 'link[href*="category/"]', count: 0
+  end
+
+  test "renders split feed link tags respect :only and :except options" do
+    Content::Post.configure { it.feeds.atom.split_by :category }
+
+    document = rendered_document(only: [:posts])
+    assert_select document, 'link[href*="feeds/posts/category/"]', count: 2
+
+    document = rendered_document(only: [:pages])
+    assert_select document, 'link[href*="feeds/posts/category/"]', count: 0
   end
 
   test "returns an empty document if no matching feeds are found" do

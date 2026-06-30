@@ -23,7 +23,20 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
 
     %w[rss.erb atom.erb json.erb].each do |file|
       path = Rails.root.join("app/views/content/posts/#{file}")
+
       FileUtils.rm_f(path)
+    end
+
+    Content::Post.configure do |config|
+      config.feeds.rss.enabled = false
+      config.feeds.atom.enabled = false
+      config.feeds.json.enabled = false
+
+      config.feeds.atom.path = "feeds/posts.atom"
+
+      config.feeds.atom[:split_by] = nil
+      config.feeds.rss[:split_by] = nil
+      config.feeds.json[:split_by] = nil
     end
   end
 
@@ -147,6 +160,70 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
     assert_equal "posts:4:default", output
   end
 
+  test "generates split feeds grouped by metadata field" do
+    Content::Post.configure do |config|
+      config.feeds.atom.enabled = true
+      config.feeds.atom.path = "feeds/posts.atom"
+      config.feeds.atom.split_by :category
+    end
+
+    File.write(Rails.root.join("app/views/content/posts/atom.erb"), "<%= resources.count %>")
+
+    Perron::Site::Builder::Feeds.new(@output_path).generate
+
+    main_feed = @output_path.join("feeds/posts.atom")
+    news_feed = @output_path.join("feeds/posts/category/news.atom")
+    tutorial_feed = @output_path.join("feeds/posts/category/tutorial.atom")
+
+    assert File.exist?(main_feed)
+    assert_equal "4", File.read(main_feed)
+
+    assert File.exist?(news_feed)
+    assert_equal "1", File.read(news_feed)
+
+    assert File.exist?(tutorial_feed)
+    assert_equal "1", File.read(tutorial_feed)
+  end
+
+  test "split feed uses custom path template when provided" do
+    Content::Post.configure do |config|
+      config.feeds.atom.enabled = true
+      config.feeds.atom.path = "feeds/posts.atom"
+
+      config.feeds.atom.split_by :category, path: "feeds/by-cat/:value.atom"
+    end
+
+    File.write(Rails.root.join("app/views/content/posts/atom.erb"), "<%= config.path %>")
+
+    Perron::Site::Builder::Feeds.new(@output_path).generate
+
+    news_feed = @output_path.join("feeds/by-cat/news.atom")
+    tutorial_feed = @output_path.join("feeds/by-cat/tutorial.atom")
+
+    assert File.exist?(news_feed), "News split feed at custom path should exist"
+    assert File.exist?(tutorial_feed), "Tutorial split feed at custom path should exist"
+    assert_equal "feeds/by-cat/news.atom", File.read(news_feed)
+    assert_equal "feeds/by-cat/tutorial.atom", File.read(tutorial_feed)
+  end
+
+  test "split feed does not create files for resources without the split field" do
+    Content::Post.configure do |config|
+      config.feeds.atom.enabled = true
+      config.feeds.atom.path = "feeds/posts.atom"
+
+      config.feeds.atom.split_by :category
+    end
+
+    Perron::Site::Builder::Feeds.new(@output_path).generate
+
+    feeds_dir = @output_path.join("feeds/posts/category")
+    generated_categories = Dir.glob("#{feeds_dir}/*.atom").map { |f| File.basename(f, ".atom") }
+
+    assert_includes generated_categories, "news"
+    assert_includes generated_categories, "tutorial"
+    refute_includes generated_categories, "custom"
+  end
+
   test "falls back to default generation when no custom template exists" do
     posts = Perron::Site.collection('posts')
 
@@ -185,14 +262,5 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
 
     assert_match(/<id>#{Regexp.escape(feed_url)}<\/id>/, output, "Feed id should contain actual URL")
     assert_match(/<link href="#{Regexp.escape(feed_url)}"[^>]*rel="self"/, output, "Self link should contain actual URL")
-  end
-
-  teardown do
-    Content::Post.configure do |config|
-      config.feeds.rss.enabled = false
-      config.feeds.atom.enabled = false
-      config.feeds.json.enabled = false
-      config.feeds.atom.path = "feeds/posts.atom"
-    end
   end
 end
