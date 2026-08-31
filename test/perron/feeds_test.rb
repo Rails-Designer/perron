@@ -54,6 +54,15 @@ class Perron::FeedsTest < ActionDispatch::IntegrationTest
     assert_select document, 'link[rel="alternate"][type="application/atom+xml"][href*="feeds/posts/category/tutorial.atom"][title*="Tutorial"]', count: 1
   end
 
+  test "renders split feed link tags with a configured title" do
+    Content::Post.configure { it.feeds.atom.split_by :category, title: "Posts in :value" }
+
+    document = rendered_document
+
+    assert_select document, 'link[rel="alternate"][type="application/atom+xml"][href*="feeds/posts/category/news.atom"][title="Posts in News"]', count: 1
+    assert_select document, 'link[rel="alternate"][type="application/atom+xml"][href*="feeds/posts/category/tutorial.atom"][title="Posts in Tutorial"]', count: 1
+  end
+
   test "does not render split feed links when split_by is not configured" do
     document = rendered_document
 

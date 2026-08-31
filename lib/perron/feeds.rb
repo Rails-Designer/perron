@@ -31,7 +31,11 @@ module Perron
             split_values(collection.resources, feed[:split_by][:extractor]).each do |value|
               split_path = split_path_for(feed, value)
               split_url = URI.join(url.root_url, split_path).to_s
-              split_title = "#{collection.name.humanize}: #{value.to_s.humanize} #{type.to_s.humanize} Feed"
+              split_title = if (title_template = feed[:split_by][:title])
+                title_template.gsub(":value", value.to_s.humanize)
+              else
+                "#{collection.name.humanize}: #{value.to_s.humanize} #{type.to_s.humanize} Feed"
+              end
 
               html_tags << tag(:link, rel: "alternate", type: MIME_TYPES[type], title: split_title, href: split_url)
             end

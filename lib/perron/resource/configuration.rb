@@ -60,11 +60,12 @@ module Perron
       private_constant :Options
 
       class FeedTypeConfig < ActiveSupport::OrderedOptions
-        def split_by(method_or_lambda = nil, path: nil, &block)
+        def split_by(method_or_lambda = nil, path: nil, title: nil, &block)
           extractor = method_or_lambda || block
 
           self[:split_by] = {extractor: extractor}
           self[:split_by][:path] = path if path
+          self[:split_by][:title] = title if title
         end
       end
     end
