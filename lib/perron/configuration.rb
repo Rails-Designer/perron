@@ -71,6 +71,8 @@ module Perron
     end
 
     def deploy
+      Perron.deprecator.deprecation_warning(:deploy, "Perron.configuration.deploy is deprecated and its behavior will change in a future 1.x release (target: 1.3.0).")
+
       @deploy ||= ActiveSupport::OrderedOptions.new.tap do |config|
         def config.method_missing(method_name, *args, &block)
           if method_name.to_s.end_with?("=")

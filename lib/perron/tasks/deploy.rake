@@ -1,6 +1,8 @@
 namespace :perron do
   desc "Deploy static site using Beam Up"
   task deploy: :environment do
+    Perron.deprecator.deprecation_warning(:deploy, "The `perron:deploy` task is deprecated and its behavior will change in a future 1.x release (target: 1.3.0). See https://perron.railsdesigner.com/docs/deploy/ for updates.")
+
     begin
       require "beam_up"
     rescue LoadError
@@ -37,6 +39,8 @@ namespace :perron do
   namespace :deploy do
     desc "Initialize deploy configuration with Beam Up"
     task :init, [:provider] do |task, arguments|
+      Perron.deprecator.deprecation_warning(:deploy, "The `perron:deploy:init` task is deprecated and its behavior will change in a future 1.x release (target: 1.3.0). See https://perron.railsdesigner.com/docs/deploy/ for updates.")
+
       begin
         require "beam_up"
       rescue LoadError
