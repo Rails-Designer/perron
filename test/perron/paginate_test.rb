@@ -211,4 +211,14 @@ class Perron::PaginateTest < ActiveSupport::TestCase
 
     assert_equal "/page/2/", paginate.next
   end
+
+  test "raises ArgumentError for a non-positive or non-integer per_page" do
+    [0, -5, nil, 2.5].each do |bad|
+      error = assert_raises(ArgumentError) do
+        Perron::Paginate.new((1..10).to_a, page: 1, per_page: bad)
+      end
+
+      assert_match(/per_page must be a positive integer/, error.message)
+    end
+  end
 end
