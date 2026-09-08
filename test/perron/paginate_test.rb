@@ -193,4 +193,22 @@ class Perron::PaginateTest < ActiveSupport::TestCase
 
     assert_equal "/articles/?page=2", paginate.previous
   end
+
+  test "next falls back to a root-relative path when base_path is omitted" do
+    paginate = Perron::Paginate.new((1..10).to_a, page: 1, per_page: 5)
+
+    assert_equal "/page/2/", paginate.next
+  end
+
+  test "previous falls back to root when base_path is omitted" do
+    paginate = Perron::Paginate.new((1..10).to_a, page: 2, per_page: 5)
+
+    assert_equal "/", paginate.previous
+  end
+
+  test "an explicit nil base_path is treated as root" do
+    paginate = Perron::Paginate.new((1..10).to_a, page: 1, per_page: 5, base_path: nil)
+
+    assert_equal "/page/2/", paginate.next
+  end
 end

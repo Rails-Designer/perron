@@ -2,10 +2,10 @@
 
 module Perron
   class Paginate
-    def initialize(collection, page:, per_page:, base_path: nil, page_path_template: nil, use_query_params: false)
+    def initialize(collection, page:, per_page:, base_path: "/", page_path_template: nil, use_query_params: false)
       @collection = collection
       @per_page = per_page
-      @base_path = base_path
+      @base_path = base_path || "/"
       @page_path_template = page_path_template || "/page/:page/"
       @use_query_params = use_query_params
 
