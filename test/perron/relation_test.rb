@@ -124,4 +124,13 @@ class Perron::RelationTest < ActiveSupport::TestCase
     assert_instance_of Perron::Relation, result
     assert_equal 0, result.size
   end
+
+  test "#order sorts nil values last instead of raising" do
+    record = Struct.new(:id, :position)
+    relation = Perron::Relation.new([record.new(1, 30), record.new(2, nil), record.new(3, 10), record.new(4, nil)])
+
+    assert_equal [3, 1, 2, 4], relation.order(:position).map(&:id)
+    assert_equal [1, 3, 2, 4], relation.order(:position, :desc).map(&:id)
+    assert_instance_of Perron::Relation, relation.order(:position)
+  end
 end

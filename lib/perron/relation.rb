@@ -34,9 +34,11 @@ module Perron
         attribute, direction = attribute.first
       end
 
-      sorted = sort_by { it.public_send(attribute) }
+      present, missing = partition { !it.public_send(attribute).nil? }
+      present = present.sort_by { it.public_send(attribute) }
+      present = present.reverse if direction == :desc
 
-      Relation.new((direction == :desc) ? sorted.reverse : sorted, @model_class)
+      Relation.new(present + missing, @model_class)
     end
 
     def pluck(*attributes)
