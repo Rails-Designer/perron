@@ -71,7 +71,7 @@ module Perron
         return path if path.blank?
         return path if path.start_with?("http://", "https://", "//")
 
-        Perron.configuration.url.delete_suffix("/") + path
+        "#{Perron.configuration.url.delete_suffix("/")}/#{path.delete_prefix("/")}"
       end
 
       def site_data

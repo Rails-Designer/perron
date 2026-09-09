@@ -60,4 +60,13 @@ class Perron::HtmlProcessor::AbsoluteUrlsTest < ActionView::TestCase
 
     assert_dom_equal html, processed
   end
+
+  test 'inserts a slash for a relative src without a leading slash' do
+    html = '<img src="photo.jpg"><img src="nested/photo.jpg">'
+    processed = process_html(html)
+
+    assert_dom_equal '<img src="http://localhost:3000/photo.jpg">' \
+                     '<img src="http://localhost:3000/nested/photo.jpg">',
+                     processed
+  end
 end
