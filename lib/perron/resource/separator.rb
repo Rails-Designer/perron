@@ -19,12 +19,18 @@ module Perron
 
       def parsed(content)
         if content =~ /\A---\s*(.*?)\s*---\s*(.*)/m
-          @frontmatter = YAML.safe_load($1, permitted_classes: [Date, Time]) || {}
-          @content = $2.strip
-        else
-          @frontmatter = {}
-          @content = content
+          parsed_yaml = YAML.safe_load($1, permitted_classes: [Date, Time])
+
+          if parsed_yaml.nil? || parsed_yaml.is_a?(Hash)
+            @frontmatter = parsed_yaml || {}
+            @content = $2.strip
+
+            return
+          end
         end
+
+        @frontmatter = {}
+        @content = content
       end
     end
   end
