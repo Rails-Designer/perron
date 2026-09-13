@@ -4,6 +4,26 @@ module Perron
   module Site
     class Builder
       module RouteResources
+        def localizes?(route_or_name)
+          route(route_or_name) ? route(route_or_name).path.spec.to_s.include?(":locale") : false
+        end
+
+        def locale_url_options_for(route_or_name)
+          named = route(route_or_name)
+          return {} if named.blank?
+          return {} unless named.path.spec.to_s.include?(":locale")
+
+          Perron::Locales.url_options
+        end
+
+        def route(route_or_name)
+          return route_or_name if route_or_name.is_a?(ActionDispatch::Journey::Route)
+
+          named_route = route_or_name.to_s.delete_suffix("_url").delete_suffix("_path")
+
+          Rails.application.routes.named_routes[named_route.to_sym]
+        end
+
         def buildable_routes
           Rails.application.routes.routes.select do |route|
             route.defaults[:controller]&.start_with?("content/") &&

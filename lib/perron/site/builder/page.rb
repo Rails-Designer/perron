@@ -15,9 +15,14 @@ module Perron
           return puts "  ❌ ERROR: No route matches '#{@path}'" unless info
 
           request = ActionDispatch::Request.new(env)
-          response = ActionDispatch::Response.new
-
           request.path_parameters = info
+
+          matching_route = matching_route_for(request)
+          return puts "  ❌ ERROR: No route matches '#{@path}'" unless matching_route
+
+          return render_rack_route(matching_route) unless matching_route.defaults[:controller]
+
+          response = ActionDispatch::Response.new
 
           controller.dispatch(info[:action], request, response)
 
@@ -26,6 +31,33 @@ module Perron
           save_html(response.body)
         rescue => error
           puts "  ❌ ERROR: Failed to generate page for '#{@path}'. Details: #{error.class} - #{error.message}\n#{error.backtrace.first(3).join("\n")}"
+        end
+
+        private
+
+        def matching_route_for(request)
+          Rails.application.routes.router.recognize(
+            ActionDispatch::Request.new(request.env.merge("PATH_INFO" => request.path_info.chomp("/").presence || "/"))
+          ) { |route, _parameters| return route }
+
+          nil
+        end
+
+        def render_rack_route(route)
+          request = ActionDispatch::Request.new(env)
+          request.path_parameters = route.defaults
+
+          status, _headers, body = Rails.application.routes.call(request.env)
+
+          return puts "  ❌ ERROR: Request failed for '#{@path}' (Status: #{status})" unless (200...300).cover?(status)
+
+          save_html(html_from(body))
+        rescue => error
+          puts "  ❌ ERROR: Failed to generate page for '#{@path}'. Details: #{error.class} - #{error.message}\n#{error.backtrace.first(3).join("\n")}"
+        end
+
+        def html_from(body)
+          body.respond_to?(:body) ? body.body : Array(body).join
         end
 
         private

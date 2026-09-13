@@ -15,6 +15,9 @@ module Helptail
   class Application < Rails::Application
     config.load_defaults Rails::VERSION::STRING.to_f
 
+    config.i18n.available_locales = [:en, :nl]
+    config.i18n.default_locale = :en
+
     # For compatibility with applications that use this config
     config.action_controller.include_all_helpers = false
 

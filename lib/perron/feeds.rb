@@ -21,7 +21,7 @@ module Perron
           collection.configuration.feeds.each do |type, feed|
             next unless feed.enabled && feed.path && MIME_TYPES.key?(type)
 
-            absolute_url = URI.join(url.root_url, feed.path).to_s
+            absolute_url = URI.join(url.root_url, Perron::Locales.localized_path(feed.path)).to_s
             title = "#{collection.name.humanize} #{type.to_s.humanize} Feed"
 
             html_tags << tag(:link, rel: "alternate", type: MIME_TYPES[type], title: title, href: absolute_url)
@@ -29,7 +29,7 @@ module Perron
             next unless feed[:split_by]
 
             split_values(collection.resources, feed[:split_by][:extractor]).each do |value|
-              split_path = split_path_for(feed, value)
+              split_path = Perron::Locales.localized_path(split_path_for(feed, value))
               split_url = URI.join(url.root_url, split_path).to_s
               split_title = if (title_template = feed[:split_by][:title])
                 title_template.gsub(":value", value.to_s.humanize)

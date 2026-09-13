@@ -48,6 +48,9 @@ module Perron
       @config.sitemap.priority = 0.5
       @config.sitemap.change_frequency = :monthly
 
+      @config.i18n = ActiveSupport::OrderedOptions.new
+      @config.i18n.prefix_default_locale = false
+
       @config.site_name = nil
       @config.site_description = nil
 
@@ -67,7 +70,11 @@ module Perron
     def mode = @config.mode.to_s.inquiry
 
     def additional_routes
-      @additional_routes || (mode.integrated? ? [] : %w[root_path])
+      return @additional_routes if @additional_routes
+      return [] if mode.integrated?
+      return %w[root_path] unless Perron::Locales.enabled?
+
+      %w[root_path localized_root_path]
     end
 
     def deploy

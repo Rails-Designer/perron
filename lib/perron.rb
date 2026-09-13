@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require "perron/version"
+require "perron/locales"
+require "perron/localized"
 require "perron/configuration"
 require "perron/deprecator"
 require "perron/errors"

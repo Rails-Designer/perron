@@ -29,7 +29,15 @@ module Perron
 
         puts "\n📝 Generating collections…"
 
-        paths.each { render_page(it) }
+        if Perron::Locales.enabled?
+          Perron::Locales.available_locales.each do |locale|
+            I18n.with_locale(locale) do
+              paths(only: :localized).each { render_page(it) }
+            end
+          end
+        end
+
+        paths(only: :rest).each { render_page(it) }
 
         Perron::Site::Builder::Sitemap.new(@output_path).generate
         Perron::Site::Builder::Feeds.new(@output_path).generate
@@ -43,10 +51,10 @@ module Perron
 
       private
 
-      def paths
+      def paths(only: nil)
         Set.new.tap do |paths|
-          Perron::Site::Builder::AdditionalRoutes.new(paths).get
-          Perron::Site::Builder::Paths.new(paths).get
+          Perron::Site::Builder::AdditionalRoutes.new(paths, only: only).get
+          Perron::Site::Builder::Paths.new(paths, only: only).get
         end
       end
 

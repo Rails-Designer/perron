@@ -8,13 +8,26 @@ module Perron
       class Paths
         include RouteResources
 
-        def initialize(paths)
+        def initialize(paths, only: nil)
           @paths = paths
+          @only = only
         end
 
         def get
           buildable_routes.each do |route|
+            next unless route_included?(route)
+
             paths_for(route).each { @paths << it }
+          end
+        end
+
+        private
+
+        def route_included?(route)
+          case @only
+          when :localized then localizes?(route)
+          when :rest then !localizes?(route)
+          else true
           end
         end
 
@@ -28,7 +41,7 @@ module Perron
               raise "Route `#{route.name}` (#{route.path.spec}) is an index route but requires parameters #{required_params}. Perron doesn't know how to generate these parameters."
             end
 
-            base_path = routes.public_send("#{route.name}_path")
+            base_path = routes.public_send("#{route.name}_path", **locale_url_options_for(route))
             collection = collection_for(route)
             return [base_path] unless collection
 
@@ -48,13 +61,13 @@ module Perron
         end
 
         def build_paginated_path(route, page_number, path_template)
-          routes.public_send("#{route.name}_path")
+          routes.public_send("#{route.name}_path", **locale_url_options_for(route))
             .sub(/\/$/, "") + path_template.sub(":page", page_number.to_s)
         end
 
         def show_paths_for(route)
           resources_for(route).reject(&:root?).map do |resource|
-            routes.public_send("#{route.name}_path", resource)
+            routes.public_send("#{route.name}_path", resource, **locale_url_options_for(route))
           end
         end
 
@@ -76,6 +89,8 @@ module Perron
           end
 
           def to_param = @value
+
+          def translation_key = @value
 
           def buildable? = true
 

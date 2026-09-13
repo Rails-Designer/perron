@@ -1,0 +1,10 @@
+- name: "Camerijn"
+  id: cam
+  role: "beheerder"
+  bio: |
+    Camerijn is een ervaren beheerder met meer dan tienduizend jaar ervaring
+    in systeembeheer en teamleiding. Werkt volgens het principe "kalm aan
+    en netjes". Drinkt koffie, uitsluitend zwart.
+  notes: |
+    Werkt aan de nieuwe dashboardfunctie.
+    Doet alles in rustig tempo: "het komt wel weer goed".

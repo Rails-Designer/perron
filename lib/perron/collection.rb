@@ -39,21 +39,52 @@ module Perron
 
     def find_by_file_name(file_name, resource_class = Resource)
       resource_class.new(
-        Perron.configuration.allowed_extensions.lazy.map { File.join(@collection_path, [file_name, it].join(".")) }.find { File.exist?(it) }
+        Perron.configuration.allowed_extensions.lazy.map { File.join(collection_path, [file_name, it].join(".")) }.find { File.exist?(it) }
       )
     end
 
     def validate = Perron::Site::Validate.new(collections: [self]).validate
 
+    def localized?
+      Perron::Locales.available_locales.any? { File.directory?(File.join(@collection_path, it.to_s)) }
+    end
+
     private
 
     def load_resources(resource_class = "Content::#{name.classify}".safe_constantize)
       allowed_extensions = Perron.configuration.allowed_extensions.map { ".#{it}" }.to_set
+      locale_prefixes = available_locale_subdir_prefixes
 
-      Dir.glob("#{@collection_path}/**/*.*")
+      default_resources = Dir.glob("#{@collection_path}/**/*.*")
+        .select { allowed_extensions.include?(File.extname(it)) }
+        .reject { File.basename(it, ".*").downcase == "readme" }
+        .reject { |path| locale_prefixes.any? { path.start_with?(it) } }
+        .map { resource_class.new(it) }
+
+      return default_resources if !localized? || I18n.locale == I18n.default_locale
+
+      translation_paths = Dir.glob(File.join(@collection_path, I18n.locale.to_s, "**", "*.**"))
         .select { allowed_extensions.include?(File.extname(it)) }
         .reject { File.basename(it, ".*").downcase == "readme" }
         .map { resource_class.new(it) }
+
+      translation_keys = translation_paths.map(&:translation_key)
+
+      translation_paths + default_resources.reject { it.translation_key.in?(translation_keys) }
+    end
+
+    def collection_path
+      locale_paths.find { File.directory?(it) } || @collection_path
+    end
+
+    def locale_paths
+      [I18n.locale, I18n.default_locale].uniq.map { |locale| File.join(@collection_path, locale.to_s) }
+    end
+
+    def available_locale_subdir_prefixes
+      Perron::Locales.available_locales
+        .map { |locale| File.join(@collection_path, locale.to_s, "") }
+        .select { File.directory?(it.chomp("/")) }
     end
   end
 end

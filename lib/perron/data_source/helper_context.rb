@@ -13,7 +13,7 @@ module Perron
 
       def get_binding = binding
 
-      def default_url_options = Perron.configuration.default_url_options || {}
+      def default_url_options = Perron.configuration.default_url_options.merge(Perron::Locales.url_options)
     end
     private_constant :HelperContext
   end

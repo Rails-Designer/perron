@@ -61,8 +61,22 @@ module Perron
     def filename = File.basename(@file_path)
 
     def slug = Perron::Resource::Slug.new(self, frontmatter).create
+
+    def locale
+      directory = File.dirname(@file_path.to_s)
+      locale = File.basename(directory).to_s
+
+      locale.to_sym if Perron::Locales.available_locales.map(&:to_sym).include?(locale.to_sym)
+    end
     alias_method :path, :slug
     alias_method :to_param, :slug
+
+    def translation_key
+      @translation_key ||= Perron.configuration.allowed_extensions
+        .sort_by { it.length }
+        .reverse_each
+        .reduce(filename.sub(Perron::Resource::Publishable::DATE_REGEX, "")) { |stem, ext| stem.delete_suffix(".#{ext}") }
+    end
 
     def metadata
       Perron::Resource::Metadata.new(

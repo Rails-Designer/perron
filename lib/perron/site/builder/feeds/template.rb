@@ -34,7 +34,13 @@ module Perron
 
           def url_for_resource(resource)
             routes
-              .polymorphic_url(resource, **@configuration.default_url_options.merge(ref: feed_configuration.ref))
+              .polymorphic_url(
+                resource,
+                **@configuration.default_url_options.merge(
+                  {ref: feed_configuration.ref}.compact,
+                  **Perron::Locales.url_options
+                )
+              )
               .delete_suffix("?ref=")
           rescue
             nil
@@ -42,7 +48,7 @@ module Perron
 
           def current_feed_url
             path = feed_configuration.path || "feed.atom"
-            URI.join(@configuration.url, path).to_s
+            URI.join(@configuration.url, Perron::Locales.localized_path(path)).to_s
           end
 
           def routes

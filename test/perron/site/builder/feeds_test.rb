@@ -66,6 +66,7 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
 
     rss_builder_stub = Minitest::Mock.new
     rss_builder_stub.expect :generate, "rss content from stub"
+    rss_builder_stub.expect :generate, "rss content from stub"
 
     Perron::Site::Builder::Feeds::Rss.stub :new, rss_builder_stub do
       Perron::Site::Builder::Feeds.new(@output_path).generate
@@ -88,6 +89,7 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
 
     json_builder_stub = Minitest::Mock.new
 
+    json_builder_stub.expect :generate, "json content from stub"
     json_builder_stub.expect :generate, "json content from stub"
 
     Perron::Site::Builder::Feeds::Json.stub :new, json_builder_stub do

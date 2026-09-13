@@ -50,7 +50,7 @@ module Perron
 
           base_path = Rails.root.join("app", "content", "data")
 
-          SUPPORTED_EXTENSIONS.lazy.map { base_path.join("#{identifier}#{it}") }.find(&:exist?)&.to_s
+          locale_candidates(identifier, base_path).find(&:exist?)&.to_s
         end
 
         def path_for!(identifier)
@@ -60,6 +60,14 @@ module Perron
         end
 
         def directory?(identifier) = Dir.exist?(Rails.root.join("app", "content", "data", identifier))
+
+        def locale_candidates(identifier, base_path)
+          locales = [I18n.locale, I18n.default_locale].uniq
+
+          locales.flat_map { |locale|
+            SUPPORTED_EXTENSIONS.map { |extension| base_path.join("#{identifier}.#{locale}#{extension}") }
+          } + SUPPORTED_EXTENSIONS.map { |extension| base_path.join("#{identifier}#{extension}") }
+        end
       end
     end
   end

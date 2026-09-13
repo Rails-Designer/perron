@@ -22,9 +22,13 @@ module Perron
 
             config = collection.configuration.feeds
 
-            generate_feed(collection: collection, type_config: config.atom, generator_class: Atom) if config.atom.enabled
-            generate_feed(collection: collection, type_config: config.json, generator_class: Json) if config.json.enabled
-            generate_feed(collection: collection, type_config: config.rss, generator_class: Rss) if config.rss.enabled
+            collection_locales(collection).each do |locale|
+              I18n.with_locale(locale) do
+                generate_feed(collection: collection, type_config: config.atom, generator_class: Atom) if config.atom.enabled
+                generate_feed(collection: collection, type_config: config.json, generator_class: Json) if config.json.enabled
+                generate_feed(collection: collection, type_config: config.rss, generator_class: Rss) if config.rss.enabled
+              end
+            end
           end
         end
 
@@ -34,17 +38,24 @@ module Perron
           generator = generator_class.new(collection: collection)
           content = generator.generate
 
-          create_file(at: type_config.path, with: content) if content.present?
+          create_file(at: Perron::Locales.localized_path(type_config.path), with: content) if content.present?
 
           return unless type_config[:split_by]
 
           grouped_resources(collection.resources, type_config[:split_by][:extractor]).each do |value, group|
-            path = split_path_for(type_config, value)
+            path = Perron::Locales.localized_path(split_path_for(type_config, value))
             config = split_config(type_config, value, path)
             content = generator_class.new(collection: collection, resources: group, feed_config: config).generate
 
             create_file(at: path, with: content) if content.present?
           end
+        end
+
+        def collection_locales(collection)
+          return [I18n.default_locale] unless Perron::Locales.enabled?
+          return [Perron::Locales.default_locale] unless collection.localized?
+
+          Perron::Locales.available_locales
         end
 
         def split_config(type_config, value, split_path)

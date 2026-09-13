@@ -22,6 +22,7 @@ module Perron
       @tags ||= {
         title: title_tag(@data[:title]),
         canonical: link_tag(rel: "canonical", href: @data[:canonical_url]),
+        alternates: alternate_tags(@data[:alternate_urls]),
 
         description: meta_tag(name: "description", content: @data[:description]),
         article_published: meta_tag(property: "article:published_time", content: @data[:article_published_time]),
@@ -56,6 +57,12 @@ module Perron
       return if attributes[:href].blank?
 
       tag.link(**attributes)
+    end
+
+    def alternate_tags(alternate_urls)
+      return if alternate_urls.blank?
+
+      safe_join(alternate_urls.map { |locale, url| link_tag(rel: "alternate", hreflang: locale, href: url) }, "\n")
     end
 
     def meta_tag(attributes)

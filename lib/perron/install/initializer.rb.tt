@@ -8,18 +8,18 @@ Perron.configure do |config|
   # Enable Live Reload with DOM Morphing in development
   # config.live_reload = true
 
-  # config.default_url_options = {host: "chirpform.com", protocol: "https", trailing_slash: true}
+  # config.default_url_options = {host: "spinalcms.com", protocol: "https", trailing_slash: true}
 
   # The options hash is passed directly to the chosen library
   # config.markdown_options = {}
 
-  # config.site_name = "Chirp Form"
+  # config.site_name = "Spinal CMS"
 
   # Set meta title suffix
   # config.metadata.title_suffix = nil
   # config.metadata.title_separator = " — "
 
   # Set default meta values
-  # config.metadata.description = "Add forms to any static site. Display responses anywhere."
-  # config.metadata.author = "Chirp Form Team"
+  # config.metadata.description = "A headless CMS for static sites. Content meets status quo."
+  # config.metadata.author = "Spinal CMS Team"
 end

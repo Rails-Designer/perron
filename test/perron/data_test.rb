@@ -272,4 +272,17 @@ class Perron::Site::DataTest < ActiveSupport::TestCase
 
     assert_equal ["Custom design based on our templates", "Copywriting services", "Dedicated project manager"], data.to_a
   end
+
+  test "route helpers in data ERB stay disambiguated and follow the current locale" do
+    data = Content::Data.new("localized_links")
+
+    assert_equal "/about/", data.first.page
+    assert_equal "/blog/", data.last.blog
+
+    I18n.with_locale(:nl) do
+      localized = Content::Data.new("localized_links")
+
+      assert_equal "/nl/about/", localized.first.page
+    end
+  end
 end

@@ -45,6 +45,16 @@ module Perron
       end
     end
 
+    initializer "perron.localized_root", after: :load_config_initializers do |app|
+      next unless Perron::Locales.enabled?
+
+      app.routes.prepend do
+        get "/:locale", to: Perron::Localized::Root,
+          constraints: {locale: Perron::Locales.constraint},
+          as: :localized_root
+      end
+    end
+
     initializer "perron.inflections" do
       ActiveSupport::Inflector.inflections(:en) do |inflect|
         inflect.acronym "RSS"

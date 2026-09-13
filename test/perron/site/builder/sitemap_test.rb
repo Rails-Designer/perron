@@ -46,6 +46,32 @@ class Perron::Site::Builder::SitemapTest < ActiveSupport::TestCase
     refute_includes urls, "http://#{host}/features/"
   end
 
+  test "dedup skips only duplicate locations, not whole groups" do
+    builder = Perron::Site::Builder::Sitemap.new("output").tap do |sitemap|
+      sitemap.instance_variable_set(:@entries, {
+        "page" => {
+          en: {location: "http://x/pricing/", priority: 0.5},
+          nl: {location: "http://x/nl/pricing/", priority: 0.5}
+        },
+        "other" => {
+          en: {location: "http://x/pricing/", priority: 0.5},
+          nl: {location: "http://x/nl/other/", priority: 0.5}
+        }
+      })
+    end
+
+    emitted = []
+    builder.send(:each_deduplicated_url_entry) { |entry, group| emitted << [entry[:location], group.keys] }
+
+    locations = emitted.map(&:first)
+
+    assert_includes locations, "http://x/pricing/"
+    assert_includes locations, "http://x/nl/pricing/"
+    assert_includes locations, "http://x/nl/other/"
+    assert_equal locations.uniq, locations
+    assert_equal %i[en nl], emitted.last.last
+  end
+
   test "sitemap uses resource updated_at as lastmod when present" do
     Perron.configuration.sitemap.enabled = true
     Perron::Site::Builder::Sitemap.new(Rails.root.join("output")).generate
