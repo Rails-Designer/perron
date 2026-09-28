@@ -52,9 +52,8 @@ module Perron
             routes.with_options(Perron.configuration.default_url_options) do |url|
               with.url do
                 with.loc url.public_send(route_name.to_s.gsub("_path", "_url"))
-                with.priority Perron.configuration.sitemap.priority
-                with.changefreq Perron.configuration.sitemap.change_frequency
-                with.lastmod Time.current.iso8601
+                with.priority Perron.configuration.sitemap.priority if Perron.configuration.sitemap.emit_priority
+                with.changefreq Perron.configuration.sitemap.change_frequency if Perron.configuration.sitemap.emit_changefreq
               end
             end
           end
@@ -76,8 +75,8 @@ module Perron
 
             with.url do
               with.loc loc
-              with.priority Perron.configuration.sitemap.priority
-              with.changefreq Perron.configuration.sitemap.change_frequency
+              with.priority Perron.configuration.sitemap.priority if Perron.configuration.sitemap.emit_priority
+              with.changefreq Perron.configuration.sitemap.change_frequency if Perron.configuration.sitemap.emit_changefreq
               with.lastmod lastmod if lastmod
             end
           end
@@ -95,14 +94,15 @@ module Perron
 
           loc = resource.root? ? routes.root_url(url_options) : routes.public_send("#{route.name}_url", resource, **url_options)
 
+          return if canonical_mismatch?(resource.metadata.explicit_canonical_url, loc)
           return if added_urls.include?(loc)
           added_urls << loc
 
           routes.with_options(Perron.configuration.default_url_options) do |url|
             with.url do
               with.loc loc
-              with.priority priority
-              with.changefreq change_frequency
+              with.priority priority if Perron.configuration.sitemap.emit_priority
+              with.changefreq change_frequency if Perron.configuration.sitemap.emit_changefreq
               with.lastmod resource.metadata.updated_at&.iso8601 if resource.metadata.updated_at.present?
             end
           end
@@ -111,10 +111,23 @@ module Perron
         def last_modified_for(collection)
           return unless collection
 
-          resources = collection.send(:load_resources).select(&:buildable?)
-          dates = resources.filter_map { it.metadata.updated_at || it.metadata.publication_date }
+          modification_dates = collection.send(:load_resources).select(&:buildable?).filter_map { it.metadata.updated_at }
 
-          dates.max&.iso8601
+          modification_dates.max&.iso8601
+        end
+
+        def canonical_mismatch?(canonical, location)
+          return false unless canonical.is_a?(String) && canonical.present?
+
+          canonical_uri = URI.parse(canonical)
+          canonical_uri = URI.join(location, canonical) unless canonical_uri.host
+          page_uri = URI.parse(location)
+
+          normalize = ->(uri) { [uri.host, uri.path].map(&:to_s).map(&:downcase).join("|") }
+
+          normalize.call(canonical_uri) != normalize.call(page_uri)
+        rescue URI::InvalidURIError
+          false
         end
 
         def routes = Rails.application.routes.url_helpers

@@ -4,12 +4,12 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
   test ".all returns collection of resources" do
     posts = Content::Post.all
 
-    assert_equal 4, posts.size
+    assert_equal 7, posts.size
     assert_instance_of Content::Post, posts.first
   end
 
   test ".count returns the number of resources" do
-    assert_equal 4, Content::Post.count
+    assert_equal 7, Content::Post.count
     assert_equal 5, Content::Page.count
   end
 
@@ -37,15 +37,15 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
     post = Content::Post.third
 
     assert_instance_of Content::Post, post
-    assert_equal "inline-erb-post", post.slug
+    assert_equal "canonical-elsewhere", post.slug
   end
 
   test ".fourth returns nil when not enough resources" do
-    assert_nil Content::Post.fifth
+    assert_nil Content::Post.forty_two
   end
 
   test ".fifth returns nil when not enough resources" do
-    assert_nil Content::Post.fifth
+    assert_nil Content::Post.forty_two
   end
 
   test ".forty_two returns nil when not enough resources" do
@@ -69,7 +69,7 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
   test ".take returns all resources when n is larger than collection" do
     posts = Content::Post.take(10)
 
-    assert_equal 4, posts.size
+    assert_equal 7, posts.size
   end
 
   test ".find! returns resource by slug" do
@@ -149,7 +149,7 @@ class Perron::Resource::ClassMethodsTest < ActiveSupport::TestCase
     posts = Content::Post.offset(2)
 
     assert_instance_of Perron::Relation, posts
-    assert_equal 2, posts.size
+    assert_equal 5, posts.size
   end
 
 test ".destroy_all deletes all resource files and returns array of deleted resources" do

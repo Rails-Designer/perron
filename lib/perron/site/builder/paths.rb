@@ -91,6 +91,10 @@ module Perron
             def sitemap_change_frequency = nil
 
             def updated_at = nil
+
+            def canonical_url = nil
+
+            def explicit_canonical_url = nil
           end
         end
       end
