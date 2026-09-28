@@ -1,8 +1,10 @@
 class Content::Post < Perron::Resource
+  include Perron::Resource::Updatable
+
   CATEGORIES = {
-    ruby: { title: "Ruby", description: "Ruby articles" },
-    rails: { title: "Rails", description: "Rails articles" },
-    css: { title: "CSS", description: "CSS articles" }
+    ruby: {title: "Ruby", description: "Ruby articles"},
+    rails: {title: "Rails", description: "Rails articles"},
+    css: {title: "CSS", description: "CSS articles"}
   }
 
   configure do |config|

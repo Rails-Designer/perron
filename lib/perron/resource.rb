@@ -19,6 +19,7 @@ require "perron/resource/sourceable"
 require "perron/resource/sweeper"
 require "perron/resource/adjacency"
 require "perron/resource/table_of_content"
+require "perron/resource/updatable"
 
 module Perron
   class Resource
