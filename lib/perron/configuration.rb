@@ -47,6 +47,8 @@ module Perron
       @config.sitemap.enabled = false
       @config.sitemap.priority = 0.5
       @config.sitemap.change_frequency = :monthly
+      @config.sitemap.emit_priority = false
+      @config.sitemap.emit_changefreq = false
 
       @config.site_name = nil
       @config.site_description = nil

@@ -36,14 +36,14 @@ class Perron::RelationTest < ActiveSupport::TestCase
     slugs = @posts.pluck(:slug)
 
     assert_instance_of Array, slugs
-    assert_equal 4, slugs.size
+    assert_equal 7, slugs.size
     assert_includes slugs, "sample-post"
   end
 
   test "#pluck with multiple attributes returns array of arrays" do
     results = @posts.pluck(:slug, :title)
 
-    assert_equal 4, results.size
+    assert_equal 7, results.size
     assert_instance_of Array, results.first
     assert_equal 2, results.first.size
   end
@@ -84,7 +84,7 @@ class Perron::RelationTest < ActiveSupport::TestCase
     offset = @posts.offset(2)
 
     assert_instance_of Perron::Relation, offset
-    assert_equal 2, offset.size
+    assert_equal 5, offset.size
   end
 
   test "chains multiple methods" do
@@ -114,7 +114,7 @@ class Perron::RelationTest < ActiveSupport::TestCase
   test "#in_order_of sorts all records with filter: false" do
     result = @posts.in_order_of(:category, %w[tutorial], filter: false)
 
-    assert_equal 4, result.size
+    assert_equal 7, result.size
     assert_equal "tutorial", result.first.category
   end
 

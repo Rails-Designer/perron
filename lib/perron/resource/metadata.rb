@@ -30,6 +30,7 @@ module Perron
         to[:title] ||= @config.site_name || Rails.application.name.underscore.camelize
 
         to[:canonical_url] ||= canonical_url
+        to[:explicit_canonical_url] = @frontmatter[:canonical_url]
 
         to[:image] = absolute_url(to[:image]) if to[:image]
 

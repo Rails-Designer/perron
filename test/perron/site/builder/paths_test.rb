@@ -29,7 +29,7 @@ class Perron::Site::Builder::PathsTest < ActiveSupport::TestCase
   test "only includes buildable resources" do
     @paths_builder.get
 
-    assert_equal Content::Post.all.select(&:buildable?).count, 4
+    assert_equal Content::Post.all.select(&:buildable?).count, 7
   end
 
   test "adds nested template paths" do

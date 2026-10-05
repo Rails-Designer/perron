@@ -34,7 +34,7 @@ class Perron::PaginateHelperTest < ActiveSupport::TestCase
     paginate, items = controller.paginate(Content::Post.all)
 
     assert_instance_of Perron::Paginate, paginate
-    assert_equal 4, items.size
+    assert_equal 7, items.size
     assert_equal Content::Post, items.first.class
   end
 
@@ -46,7 +46,7 @@ class Perron::PaginateHelperTest < ActiveSupport::TestCase
     controller = TestHelpers::PaginateHelperTestController.new
     _, items = controller.paginate(Content::Post.all)
 
-    assert_equal 4, items.size
+    assert_equal 7, items.size
     assert_equal Content::Post, items.first.class
   end
 
@@ -67,14 +67,14 @@ class Perron::PaginateHelperTest < ActiveSupport::TestCase
 
   test "extracts page from params automatically" do
     Content::Post.configure do |config|
-      config.pagination.per_page = 2
+      config.pagination.per_page = 4
     end
 
     controller = TestHelpers::PaginateHelperTestController.new(page: "2")
     paginate, _items = controller.paginate(Content::Post.all)
 
     assert_equal 2, paginate.current_page
-    assert_equal 2, paginate.per_page
+    assert_equal 4, paginate.per_page
     assert_equal false, paginate.next?
   end
 

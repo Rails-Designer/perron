@@ -127,7 +127,7 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
     atom = Perron::Site::Builder::Feeds::Atom.new(collection: posts)
     output = atom.generate
 
-    assert_equal "Custom Atom: 4", output
+    assert_equal "Custom Atom: 7", output
   end
 
   test "uses custom JSON template when present" do
@@ -141,7 +141,7 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
     json = Perron::Site::Builder::Feeds::Json.new(collection: posts)
     output = json.generate
 
-    assert_equal '{"custom": true, "items": 4}', output
+    assert_equal '{"custom": true, "items": 7}', output
   end
 
   test "template has access to collection, resources, and config" do
@@ -157,7 +157,7 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
     rss = Perron::Site::Builder::Feeds::Rss.new(collection: posts)
     output = rss.generate
 
-    assert_equal "posts:4:default", output
+    assert_equal "posts:7:default", output
   end
 
   test "generates split feeds grouped by metadata field" do
@@ -176,7 +176,7 @@ class Perron::Site::Builder::FeedsTest < ActiveSupport::TestCase
     tutorial_feed = @output_path.join("feeds/posts/category/tutorial.atom")
 
     assert File.exist?(main_feed)
-    assert_equal "4", File.read(main_feed)
+    assert_equal "7", File.read(main_feed)
 
     assert File.exist?(news_feed)
     assert_equal "1", File.read(news_feed)
