@@ -15,8 +15,6 @@ module Perron
 
       @config.output = "output"
 
-      @config.output_server_strict = true
-
       @config.mode = :standalone
 
       @config.live_reload = false
@@ -67,6 +65,8 @@ module Perron
     end
 
     def mode = @config.mode.to_s.inquiry
+
+    def output_server_strict = @config.fetch(:output_server_strict) { mode.standalone? }
 
     def additional_routes
       @additional_routes || (mode.integrated? ? [] : %w[root_path])
