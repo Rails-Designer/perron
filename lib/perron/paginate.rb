@@ -2,10 +2,14 @@
 
 module Perron
   class Paginate
-    def initialize(collection, page:, per_page:, base_path: nil, page_path_template: nil, use_query_params: false)
+    def initialize(collection, page:, per_page:, base_path: "/", page_path_template: nil, use_query_params: false)
+      unless per_page.is_a?(Integer) && per_page.positive?
+        raise ArgumentError, "per_page must be a positive integer, got #{per_page.inspect}"
+      end
+
       @collection = collection
       @per_page = per_page
-      @base_path = base_path
+      @base_path = base_path || "/"
       @page_path_template = page_path_template || "/page/:page/"
       @use_query_params = use_query_params
 
