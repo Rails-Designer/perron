@@ -60,6 +60,30 @@ class Perron::Site::Resource::SeparatorTest < ActiveSupport::TestCase
     assert_equal ["alice", "bob"], separator.frontmatter.authors
   end
 
+  def test_treats_a_leading_thematic_break_as_content_not_frontmatter
+    content = <<~CONTENT
+      ---
+
+      An intro paragraph.
+
+      ---
+
+      The rest of the post.
+    CONTENT
+    separator = Perron::Resource::Separator.new(content)
+
+    assert_equal content, separator.content
+    assert_empty separator.frontmatter.to_h
+  end
+
+  def test_ignores_a_scalar_between_the_fences
+    content = "---\nJust a sentence, not a mapping\n---\nBody\n"
+    separator = Perron::Resource::Separator.new(content)
+
+    assert_equal content, separator.content
+    assert_empty separator.frontmatter.to_h
+  end
+
   def test_parses_mixed_types_in_frontmatter
     content = <<~CONTENT
       ---
