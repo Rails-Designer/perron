@@ -105,6 +105,17 @@ class Perron::Resource::MetadataTest < ActiveSupport::TestCase
     assert_equal 'Kendall', metadata.author, 'Frontmatter author should take highest precedence'
   end
 
+  test 'makes a relative frontmatter image absolute with a slash separator' do
+    metadata = Perron::Resource::Metadata.new(
+      resource: @post,
+      frontmatter: { image: 'cover.jpg' },
+      collection: @posts_collection
+    ).data
+
+    assert_equal 'http://localhost:3000/cover.jpg', metadata.image
+    assert_equal 'http://localhost:3000/cover.jpg', metadata.og_image
+  end
+
   test 'removes nil values from final data after processing' do
     metadata = Perron::Resource::Metadata.new(
       resource: @about_page,

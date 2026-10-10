@@ -9,7 +9,7 @@ module Perron
 
           next if src.blank? || absolute_url?(src)
 
-          image["src"] = base_url + src
+          image["src"] = "#{base_url}/#{src.delete_prefix("/")}"
         end
       end
 
