@@ -1,4 +1,5 @@
 require "test_helper"
+require "tmpdir"
 
 class Perron::Site::Resource::PublishableTest < ActiveSupport::TestCase
   include ActiveSupport::Testing::TimeHelpers
@@ -73,5 +74,16 @@ class Perron::Site::Resource::PublishableTest < ActiveSupport::TestCase
     public_feature = Content::Feature.new("test/dummy/app/content/features/public-feature.md")
 
     refute public_feature.draft?
+  end
+
+  test "#publication_date ignores a structurally valid but impossible date in the filename" do
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, "2024-99-99-typo.md")
+      File.write(path, "---\ntitle: Typo\n---\nBody")
+      resource = Content::Post.new(path)
+
+      assert_nil resource.publication_date
+      assert resource.published?
+    end
   end
 end
