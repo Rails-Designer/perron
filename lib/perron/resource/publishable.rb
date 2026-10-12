@@ -54,7 +54,15 @@ module Perron
         return @date_from_filename if defined?(@date_from_filename)
 
         match = File.basename(file_path).match(DATE_REGEX)
-        @date_from_filename = match ? Date.new(match[:year].to_i, match[:month].to_i, match[:day].to_i).in_time_zone : nil
+
+        @date_from_filename =
+          if match
+            begin
+              Date.new(match[:year].to_i, match[:month].to_i, match[:day].to_i).in_time_zone
+            rescue Date::Error
+              nil
+            end
+          end
       end
     end
   end
