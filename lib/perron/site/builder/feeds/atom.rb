@@ -32,7 +32,7 @@ module Perron
           def resources
             (@resources || @collection.resources)
               .reject { it.metadata.feed == false }
-              .sort_by { it.metadata.published_at || it.metadata.updated_at || Time.current }
+              .sort_by { it.published_at || it.metadata.updated_at || Time.current }
               .reverse
               .take(feed_configuration.max_items)
           end

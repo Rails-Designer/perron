@@ -33,6 +33,22 @@ class Perron::Site::Builder::Feeds::AtomTest < ActiveSupport::TestCase
     end
   end
 
+  test "orders by publication date, whether it comes from the filename or the frontmatter" do
+    directory = Rails.root.join("app/content/posts")
+    filename_dated = directory.join("2020-01-01-filename-dated.md")
+    frontmatter_dated = directory.join("frontmatter-dated.md")
+    File.write(filename_dated, "---\ntitle: Filename dated\n---\n\nOld.\n")
+    File.write(frontmatter_dated, "---\ntitle: Frontmatter dated\npublished_at: 2025-12-01\n---\n\nNew.\n")
+
+    resources = [filename_dated, frontmatter_dated].map { Content::Post.new(it.to_s) }
+    builder = Perron::Site::Builder::Feeds::Atom.new(collection: @posts, resources: resources)
+    atom = Nokogiri::XML(builder.generate).remove_namespaces!
+
+    assert_equal ["Frontmatter dated", "Filename dated"], atom.xpath("//entry/title").map(&:text)
+  ensure
+    FileUtils.rm_f([filename_dated, frontmatter_dated])
+  end
+
   test "respects max_items configuration" do
     @posts.configuration.feeds.atom.stub(:max_items, 1) do
       atom = Nokogiri::XML(@builder.generate).remove_namespaces!
