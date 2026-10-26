@@ -95,4 +95,4 @@ RAILS_ENV=production bin/rails perron:build
 This creates HTML files in the `/output/` directory, ready to deploy to any static hosting platform.
 
 > [!tip]
-> Browse the [Library](/library/category/snippet/) for deployment templates to platforms like Netlify, [Seal Static](https://sealstatic.com) and statichost.eu.
+> Browse the [Library](/library/category/snippet/) for deployment templates to platforms like Netlify, S3 and statichost.eu.
