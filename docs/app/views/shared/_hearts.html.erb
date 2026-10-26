@@ -1,0 +1,3 @@
+<span class="hearts [--heart-count:8]" aria-hidden="true">
+  <%= safe_join(%w[❤️ 🧡 💛 💚 🩵 💙 💜 🩷].map.with_index { |heart, index| tag.span(heart, style: "--number:#{index}") }) %>
+</span>

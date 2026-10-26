@@ -1,0 +1,11 @@
+<article class="mt-4 mx-2 mt:mt-6 lg:mt-5">
+  <%= render "shared/page_heading", content: "Documentation" %>
+
+  <p class="mt-2 max-w-prose text-lg text-gray-800">
+    Perron is a static site generator for Ruby on Rails. <b class="font-semibold">Build your static sites with Rails. Deploy them anywhere.</b>
+  </p>
+
+  <ul class="grid grid-cols-6 gap-x-8 gap-y-4 max-w-4xl mt-8">
+    <%= render Content::Data::Articles::QuickLinks.all %>
+  </ul>
+</article>

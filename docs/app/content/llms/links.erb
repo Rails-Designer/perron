@@ -1,0 +1,12 @@
+---
+slug: llms.txt
+---
+
+# Perron
+
+## Docs
+
+- [Root](<%= root_url %>)
+<% Content::Article.all.by_section.each do |resource| %>
+- [<%= resource.title %>](<%= markdown_articles_url resource, trailing_slash: false %>)
+<% end %>

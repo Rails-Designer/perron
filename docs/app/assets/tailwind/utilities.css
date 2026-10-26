@@ -1,0 +1,11 @@
+@utility hearts {
+  --duration: 2s;
+
+  @apply inline-grid *:col-start-1 *:row-start-1;
+
+  & > span {
+    opacity: 0;
+    animation: fades calc(var(--heart-count) * var(--duration)) ease-in-out infinite;
+    animation-delay: calc(var(--duration) * var(--number));
+  }
+}

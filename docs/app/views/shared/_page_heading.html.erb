@@ -1,0 +1,10 @@
+<%# locals: (content:, breadcrumbs: [], actions: []) %>
+<hgroup class="grid gap-y-1 max-w-prose">
+  <ul class="flex items-center gap-x-2 [&_li:not(:last-child)]:after:content-['/'] [&_li:not(:last-child)]:after:ml-1.5 [&_li:not(:last-child)]:after:text-gray-400">
+    <%= safe_join breadcrumbs.map { tag.li link_to(it[:label], it[:href], class: "text-xs text-gray-600 hover:text-gray-800 sm:text-sm") } %>
+  </ul>
+
+  <h1 class="grid gap-2.5 items-center text-2xl font-semibold text-gray-800 tracking-tight sm:text-3xl">
+    <%= content %> <%= tag.ul safe_join(actions.map { tag.li(it) }), class: "flex items-center gap-x-4" if actions.any? %>
+  </h1>
+</hgroup>

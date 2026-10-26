@@ -1,0 +1,22 @@
+<%# locals: (resource: nil, tail_css: "font-semibold text-gray-800") %>
+<div class="sticky top-10 px-2 flex items-center justify-between gap-x-2 w-full py-3 bg-white border-b border-gray-100 z-1 lg:hidden">
+  <button data-action="toggleAttribute#open" data-target="nav" class="flex items-center gap-x-2.5 text-sm text-gray-700 truncate">
+    <%= sprite_icon "list", class: "shrink-0 size-4 text-gray-800" %>
+
+    <%= tag.ul class: "flex items-center gap-x-1" do %>
+      <%= tag.li @resource.article_section.name, class: "text-gray-600" %>
+
+      <%= sprite_icon "caret-right", class: "shrink-0 size-4 text-gray-500" %>
+
+      <%= tag.li @resource.title, class: tail_css %>
+    <% end if @resource.present? %>
+
+    <%= tag.p "Documentation", class: tail_css if @resource.blank? %>
+  </button>
+
+  <%= tag.button data: { action: "toggleAttribute#hidden", target: "toc" }, class: "flex items-center shrink-0 gap-x-2 px-3 py-1 text-xs/3 text-gray-800 font-medium bg-gray-50 ring ring-offset-0 ring-gray-200 rounded-md transition active:scale-98" do %>
+    <%= icon "list-dashes", class: "size-3 text-xs text-gray-600" %>
+
+    <%= tag.span "On this page", class: "hidden sm:block" %>
+  <% end if @resource&.table_of_content&.any? && @resource.is_a?(Content::Article) %>
+</div>

@@ -1,0 +1,69 @@
+---
+title: Static Site Generator for Ruby on Rails
+description: Perron is a static site generator for Ruby on Rails. Build your static sites with Rails. Deploy them anywhere.
+buttons:
+  - label: Documentation
+    href: /docs/
+    icon: book-open
+  - label: Library
+    href: /library/
+    icon: cube
+---
+
+<div class="top-0 left-0 w-full md:sticky">
+  <section class="px-2 py-12 text-center md:py-20 lg:py-48">
+    <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 text-balance md:[text-shadow:0_60px_180px_rgba(0,0,0,0.5)] sm:text-4xl lg:text-6xl">
+      Static Site Generator for Ruby on Rails
+    </h1>
+
+    <p class="mt-1 text-xl font-extralight text-gray-800 sm:text-3xl lg:text-4xl md:mt-4">
+      Build with Rails. Deploy static sites. <%= render "shared/hearts" %>
+    </p>
+
+    <div class="flex items-center justify-center gap-x-8 mt-8 md:mt-12">
+      <% @resource.metadata.buttons.each do |button| %>
+        <%= link_to safe_join([sprite_icon(button.icon, variant: :regular, aria: {hidden: true}, class: "size-3.5"), button.label]), button.href, class: "flex items-center gap-x-1.5 px-4 py-0.5 text-sm tracking-tight font-normal rounded-lg transition hover:scale-103 md:text-base md:px-5 md:py-1.5 odd:bg-orange-500 odd:text-white even:bg-gray-200 even:text-gray-800" %>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-1 gap-8 px-2 pt-12 md:gap-12 sm:gap-6 lg:gap-16 sm:grid-cols-2 lg:grid-cols-3 md:overflow-x-clip">
+    <%= render Content::Data::CodePreviews.all %>
+  </section>
+</div>
+
+
+<article
+  class="
+    content
+    relative w-full max-w-3xl mt-12 mx-auto px-2 py-16
+    bg-white border border-gray-100
+    shadow-xl rounded-md
+    md:px-8 lg:px-16 lg:py-28 lg:-rotate-1
+    before:content-[''] before:hidden md:before:block before:absolute before:inset-0 before:rotate-3 before:-z-10 before:bg-white before:border before:border-gray-100 before:rounded-md before:shadow-md
+  "
+>
+  <%= markdownify do %>
+    Hey! 👋
+
+    **Another Static Site Generator (SSG)? Launched in 2025?** Yes! For years I've built static sites using Ruby-based SSGs and occasionally tried JavaScript alternatives. But there's always been a frustrating disconnect when switching between building Rails apps and creating static sites. You can't reuse your views, helpers, partials or any of the frontend code you've already built. Countless parts of your Rails workflow simply aren't transferable to static site generators (even Ruby-based ones!).
+
+    **Perron** (Dutch/French; *a platform at a railway station from where passengers can board or disembark trains*) bridges this gap elegantly. Rather than being a standalone SSG, Perron is packaged as a gem that runs within your Rails app. This approach gives you:
+
+    * all the Rails features you know and love: layouts, views, partials, helpers and all the gems you already use in your app
+    * purpose-built tools for static content: content collections, markdown processing, frontmatter parsing and built-in search
+    * SEO essentials (meta tags, sitemap.xml) and syndication feeds (RSS, Atom or JSON)
+    * smart features like related content recommendations (using TF-IDF algorithm) and programmatic content (for pSEO) using data sources or APIs
+    * flexible data handling through YML, JSON or CSV files
+
+    Perron offers two operating modes to fit your needs:
+    * **Standalone**: generate a complete static site for deployment to services like Netlify, Seal Static, statichost.eu, etc.
+    * **Integrated**: add static pages directly to your existing Rails application
+
+    With Perron's convention-over-configuration approach, you can organize content in familiar Rails patterns. Create collections with generators, set up routes naturally and leverage ERB embedding in your markdown when needed. The [library](/library/) has a growing collection of components, snippets and site templates to get started (and keep moving) quickly.
+
+    Perron is already powering [multiple sites](/showcase/) ([this site's source can be found here](https://github.com/Rails-Designer/perron/docs)). I'd love to see you give Perron a try for your next site. Need a CMS to easily update your Perron site? [Check out Spinal CMS](https://spinalcms.com/).
+
+    [Check it out (and ⭐ it) on GitHub](https://github.com/Rails-Designer/perron). ❤️
+  <% end %>
+</article>

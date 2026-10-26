@@ -1,0 +1,10 @@
+<%# locals: (quick_link:) %>
+<li class="col-span-6 sm:col-span-3">
+  <%= link_to quick_link.href, class: "group/link block h-full px-2 py-3 bg-radial-[at_25%_25%] from-gray-100 to-white to-75% border border-white/70 ring ring-offset-0 ring-gray-200/80 rounded-lg transition hover:ring-gray-300 md:px-3 md:py-4" do %>
+    <%= sprite_icon quick_link.icon, variant: :duotone, aria: {hidden: true}, class: "size-6 p-1 text-gray-600 fill-gray-500 bg-white shadow-sm ring ring-gray-300/60 rounded-md transition group-hover/link:shadow-md" %>
+
+    <%= tag.h3 quick_link.title, class: "mt-2 text-sm font-semibold tracking-tight text-gray-900 sm:text-base" %>
+
+    <%= tag.p quick_link.description, class: "mt-0.5 text-sm text-gray-700 sm:text-base sm:text-gray-600" %>
+  <% end %>
+</li>

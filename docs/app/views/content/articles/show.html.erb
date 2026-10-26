@@ -1,0 +1,23 @@
+<article class="my-4 px-2 sm:my-4 lg:mb-7">
+  <%= render "shared/page_heading", content: @resource.title, breadcrumbs: [{label: @resource.article_section.name, href: @resource.article_section.resources.first}], actions: [link_to(safe_join([sprite_icon("markdown-logo", rel: :nofollow, class: "size-4"), "View .md"]), markdown_articles_path(@resource, trailing_slash: false), class: "flex items-center gap-x-2 px-2 py-0.25 text-sm tracking-tight font-medium text-gray-900 rounded-sm transition hover:bg-gray-200"), tag.button(safe_join([sprite_icon("markdown-logo", class: "size-4"), "Copy .md"]), data: {action: "copy", target: "markdown"}, class: "flex items-center gap-x-2 px-2 py-0.25 text-sm tracking-tight font-medium text-gray-900 rounded-sm transition hover:bg-gray-200")] %>
+
+  <textarea hidden id="markdown"><%= @resource.content %></textarea>
+
+  <div class="grid grid-cols-12 gap-4">
+    <div class="col-span-12 mt-4 pb-12 content max-w-prose lg:col-span-9">
+      <%= markdownify @resource.content, process: [LabelProcessor, NofollowProcessor, StyledBlockquoteProcessor, CopyableCodeProcessor] %>
+    </div>
+
+    <table-of-content items="<%= @resource.table_of_content(levels: %w[h2 h3]).to_json %>" id="toc" active-classes="bg-white lg:bg-gray-100" open class="top-0 col-span-3 lg:flex lg:sticky">
+      <template type="title">
+        <p class="hidden items-center gap-x-2 text-xs text-gray-600 font-medium lg:flex">
+          <%= sprite_icon "list-dashes", class: "size-3 text-xs text-gray-600" %>
+
+          On this page
+        </p>
+      </template>
+    </table-of-content>
+  </div>
+
+  <%= render "content/resources/adjacency" %>
+</article>

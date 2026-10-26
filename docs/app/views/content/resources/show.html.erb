@@ -1,0 +1,13 @@
+<article class="my-4 px-2 sm:my-4 lg:mb-7">
+  <%= render "shared/page_heading", content: @resource.name, breadcrumbs: [{label: "Library", href: resources_url}, {label: @resource.type.humanize, href: category_url(@resource.type)}] %>
+
+  <%= render "content/resources/template", resource: @resource %>
+
+  <%= render "image_gallery" %>
+
+  <div class="content max-w-prose my-6 text-lg text-gray-800">
+    <%= markdownify @resource.content, process: [NofollowProcessor, StyledBlockquoteProcessor] %>
+  </div>
+</article>
+
+<%= render "image_dialog" %>

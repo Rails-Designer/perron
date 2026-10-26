@@ -1,0 +1,6 @@
+<%# locals: (resource:, highlight: resource.metadata.highlight) %>
+<li>
+  <%= link_to resource, class: class_names("group/resource relative block rounded-md", {"hover:bg-gray-50": highlight.blank?, "border bg-gradient-to-b from-white to-amber-50 border-amber-200 hover:to-amber-100 hover:border-amber-300": highlight.present?}) do %>
+    <%= tag.h3 safe_join([resource.name, (sprite_icon("star", variant: :duotone, class: "size-4 text-amber-500 fill-amber-300") if highlight.present?)]), class: class_names("flex items-center gap-x-1 px-3 py-2 text-base font-medium text-gray-900", {"text-gray-800": highlight.blank?, "text-amber-950": highlight.present?}) %>
+  <% end %>
+</li>

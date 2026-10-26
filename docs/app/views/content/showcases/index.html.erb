@@ -1,0 +1,25 @@
+<main class="max-w-8xl mx-auto px-2 py-4 lg:px-4 lg:py-12">
+  <%= render "shared/page_heading", content: "Made with Perron" %>
+
+  <p class="mt-2 text-base text-gray-800 lg:text-lg">
+    SaaS pages that convert. Business sites with character. Engaging documentation. All of these are built with Perron.
+  </p>
+
+  <ul class="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-8 lg:gap-10">
+    <% @resources.each do |resource| %>
+      <li>
+        <%= link_to resource.url, class: "grid gap-y-3 p-2 transition rounded-xl hover:bg-gray-50" do %>
+          <scrollable-screenshot class="block w-full max-w-[64rem] aspect-video rounded-lg ring ring-gray-100 overflow-hidden" style="--scroll-duration:7s;">
+            <%= image_tag resource.image, class: "w-full" %>
+          </scrollable-screenshot>
+
+          <div class="px-1">
+            <h4 class="text-sm font-medium text-gray-800"><%= resource.title %></h4>
+
+            <p class="text-sm text-gray-500"><%= resource.description %></p>
+          </div>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</main>

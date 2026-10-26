@@ -1,0 +1,9 @@
+@layer base {
+  a:not([class]) {
+    @apply underline;
+
+    &:hover {
+      @apply no-underline;
+    }
+  }
+}

@@ -1,0 +1,21 @@
+<article class="mt-4 px-2 mt:mt-6 lg:mt-5">
+  <%= render "shared/page_heading", content: "Library" %>
+
+  <p class="mt-2 max-w-prose text-lg text-gray-800">
+    A growing collection of snippets, templates and UI components for your Perron-powered site.
+  </p>
+
+  <ul class="grid grid-cols-6 gap-x-8 gap-y-4 max-w-4xl mt-8">
+    <% Content::Resource::TYPES.each do |key, value| %>
+      <li class="col-span-6 md:col-span-2">
+        <%= link_to category_path(key), class: "group/link block h-full px-2 py-3 bg-radial-[at_25%_25%] from-gray-100 to-white to-75% border border-white/70 ring ring-offset-0 ring-gray-200 rounded-lg transition hover:ring-gray-300 md:px-3 md:py-4" do %>
+          <%= sprite_icon Content::Resource::ICONS[key], variant: :duotone, aria: {hidden: true}, class: "size-6 p-1 text-gray-600 fill-gray-500 bg-white shadow-sm ring ring-gray-300/60 rounded-md transition group-hover/link:shadow-md" %>
+
+          <%= tag.h3 value, class: "mt-2 text-sm font-semibold tracking-tight text-gray-900 sm:text-base" %>
+
+          <%= tag.p Content::Resource::DESCRIPTIONS[key], class: "mt-0.5 text-sm text-gray-700 sm:text-base sm:text-gray-600" %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</article>

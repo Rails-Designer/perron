@@ -1,0 +1,9 @@
+@theme {
+  @keyframes fades {
+    0% { opacity: 0; }
+    6.25% { opacity: 1; }
+    12.5% { opacity: 1; }
+    18.75% { opacity: 0; }
+    100% { opacity: 0; }
+  }
+}

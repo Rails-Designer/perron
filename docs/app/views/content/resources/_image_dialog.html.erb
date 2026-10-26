@@ -1,0 +1,19 @@
+<%= tag.dialog id: "dialog", closedby: "any", data: { slideshow_number: "1" }, class: "relative flex-col items-center gap-y-4 max-w-content mx-auto p-2 rounded-b-lg shadow-xl ring ring-offset ring-gray-300/50 open:flex" do %>
+  <div class="relative w-full max-w-3xl mx-auto overflow-hidden rounded-lg">
+    <div class="flex size-full transition-transform duration-500 ease-in-out" style="transform: translateX(calc(var(--slide-offset, 0%) * -1))">
+      <%= safe_join @resource.images.map { |image| tag.div(class: "size-full flex-shrink-0") { image_tag image, loading: :lazy, class: "w-full max-w-4xl object-fit rounded-lg border border-gray-200" } } %>
+    </div>
+  </div>
+
+  <%= tag.div class: "absolute bottom-4 flex justify-center items-center gap-x-3" do %>
+    <% @resource.images.each_with_index do |_, index| %>
+      <%= tag.button type: "button", data: { action: "addDataAttribute#slideshowNumber=#{index + 1}", target: "dialog" }, class: "block size-3 bg-gray-500/50 border border-gray-500/50 ring-2 ring-offset-0 ring-white/90 rounded-full transition cursor-pointer hover:bg-gray-600" %>
+    <% end %>
+  <% end unless @resource.images.one? %>
+
+  <style>
+    <% @resource.images.map.with_index do |_, index| %>
+      #dialog[data-slideshow-number="<%= index + 1 %>"] { --slide-offset: <%= index * 100 %>%; }
+    <% end %>
+  </style>
+<% end if @resource.images.any? %>

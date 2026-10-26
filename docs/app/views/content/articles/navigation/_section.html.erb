@@ -1,0 +1,12 @@
+<%# locals: (section:, resources: section.resources) %>
+<li class="mt-3">
+  <%= tag.p section.name, class: "px-(--nav-vertical-spacing) font-medium text-gray-800" %>
+
+  <ul class="grid gap-y-1 mt-2">
+    <% resources.each do |article| %>
+      <%= tag.li id: current_page?(article) ? "current-item" : nil do %>
+        <%= link_to article.metadata.navigation_label || article.title, article, class: class_names("block px-(--nav-vertical-spacing) py-1.5 font-normal text-gray-800/80 rounded-lg transition hover:bg-gradient-to-br from-red-200/50 to-orange-200/50", {"bg-gradient-to-br from-red-200/50 to-orange-200/50 cursor-default": current_page?(article)}) %>
+      <% end %>
+    <% end %>
+  </ul>
+</li>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>name</key>
+    <string>Perron Orange Monotone</string>
+    <key>author</key>
+    <string>Rails Designer</string>
+    <key>uuid</key>
+    <string>A4299D9B-1DE5-4BC4-87F6-A757E71B1597</string>
+
+    <key>settings</key>
+    <array>
+      <dict>
+        <key>settings</key>
+        <dict>
+          <key>background</key>
+          <string>#020617</string>
+          <key>foreground</key>
+          <string>#fed7aa</string>
+          <key>caret</key>
+          <string>#f97316</string>
+          <key>selection</key>
+          <string>#431407</string>
+          <key>selectionForeground</key>
+          <string>#ffedd5</string>
+          <key>lineHighlight</key>
+          <string>#1c1917</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>Comment</string>
+        <key>scope</key>
+        <string>comment</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#78716c</string>
+          <key>fontStyle</key>
+          <string>italic</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>Keyword</string>
+        <key>scope</key>
+        <string>keyword, storage.type, storage.modifier</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#fb923c</string>
+          <key>fontStyle</key>
+          <string>bold</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>String</string>
+        <key>scope</key>
+        <string>string</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#fdba74</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>Number</string>
+        <key>scope</key>
+        <string>constant.numeric</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#ea580c</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>Function</string>
+        <key>scope</key>
+        <string>entity.name.function, support.function</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#fed7aa</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>Class</string>
+        <key>scope</key>
+        <string>entity.name.class, entity.name.type</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#f97316</string>
+          <key>fontStyle</key>
+          <string>bold</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>Variable</string>
+        <key>scope</key>
+        <string>variable</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#fed7aa</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>Operator</string>
+        <key>scope</key>
+        <string>keyword.operator</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#a8a29e</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>Punctuation</string>
+        <key>scope</key>
+        <string>punctuation</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#a3a3a3</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>Constant</string>
+        <key>scope</key>
+        <string>constant</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#fca5a5</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>Tag</string>
+        <key>scope</key>
+        <string>entity.name.tag</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#fb923c</string>
+        </dict>
+      </dict>
+
+      <dict>
+        <key>name</key>
+        <string>Attribute</string>
+        <key>scope</key>
+        <string>entity.other.attribute-name</string>
+        <key>settings</key>
+        <dict>
+          <key>foreground</key>
+          <string>#fdba74</string>
+        </dict>
+      </dict>
+    </array>
+  </dict>
+</plist>

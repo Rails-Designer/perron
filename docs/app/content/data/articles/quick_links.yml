@@ -1,0 +1,16 @@
+- title: Library
+  description: Snippets, templates and UI components to get started with your new site
+  href: <%= resources_path %>
+  icon: cube
+- title: Quick-start guide
+  description: Learn how to quickly set up your new Perron-powered site
+  href: <%= article_path("quickstart") %>
+  icon: book-open
+- title: Deploy to production
+  description: Put your new site for the world to see
+  href: <%= article_path("deploy") %>
+  icon: "book-open"
+- title: CMS
+  description: Create, update and schedule your content
+  href: "https://spinalcms.com/"
+  icon: "pencil-circle"

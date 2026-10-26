@@ -1,0 +1,11 @@
+<div role="img" class="max-h-60 font-mono bg-gray-950 border border-gray-700 rounded-lg shadow-xl overflow-auto overscroll-contain sm:odd:-rotate-2 sm:even:rotate-2">
+  <div class="sticky top-0 left-0 flex items-center gap-x-1.5 p-2 bg-gray-950">
+    <div class="flex gap-x-1 bg-gray-250 [&_span]:block [&_span]:size-2 [&_span]:rounded-full">
+      <%= safe_join(%w[bg-red-500 bg-yellow-500 bg-green-500].map { tag.span class: it }) %>
+    </div>
+
+    <%= link_to code_preview.path, view_on_github_url(code_preview.path), class: "whitespace-nowrap text-xs font-semibold text-gray-400 transition hover:text-gray-200" %>
+  </div>
+
+  <%= tag.div markdownify(code_preview.content), class: "p-2 text-sm border-t border-gray-700/70 [&_code]:[text-shadow:0px_0px_5px_oklch(from_currentColor_l_c_h/.9)]" %>
+</div>

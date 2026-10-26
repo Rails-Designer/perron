@@ -1,0 +1,13 @@
+<head>
+  <%= meta_tags %>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <%= yield :head %>
+
+  <%= render "shared/favicons" %>
+  <script defer src="https://cdn.jsdelivr.net/npm/attractivejs@0.12.0"></script>
+
+  <%= stylesheet_link_tag :app %>
+  <%= javascript_importmap_tags %>
+</head>

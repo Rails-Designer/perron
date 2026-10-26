@@ -1,0 +1,28 @@
+<%# locals: (link_css: "flex flex-col my-1 px-3 py-1.5 border border-gray-100 rounded-md transition group/link hover:bg-gray-100 odd:justify-end", label_css: "block text-xs font-light text-gray-800", text_css: "flex items-center gap-x-1 text-sm font-normal text-gray-900") %>
+<nav aria-label="Pagination" class="max-w-prose">
+  <ul class="grid grid-cols-6 gap-4 w-full">
+    <%= tag.li class: "col-span-3" do %>
+      <%= link_to @resource.previous, rel: "prev", class: link_css do %>
+        <%= tag.span "Previous", class: label_css %>
+
+        <%= tag.strong class: text_css do %>
+          <%= sprite_icon "arrow-left", class: "size-4 transition ease-in-out group-hover/link:-translate-x-0.5", aria: { hidden: true } %>
+
+          <%= @resource.previous.title %>
+        <% end %>
+      <% end %>
+    <% end if @resource.previous %>
+
+    <%= tag.li class: "only:col-start-4 col-span-3" do %>
+      <%= link_to @resource.next, rel: "next", class: class_names(link_css, "items-end") do %>
+        <%= tag.span "Next", class: label_css %>
+
+        <%= tag.strong class: text_css do %>
+          <%= @resource.next.title %>
+
+          <%= sprite_icon "arrow-right", class: "size-4 transition ease-in-out group-hover/link:translate-x-0.5", aria: { hidden: true } %>
+        <% end %>
+      <% end %>
+    <% end if @resource.next %>
+  </ul>
+</nav>

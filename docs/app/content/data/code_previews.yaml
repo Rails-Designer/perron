@@ -1,0 +1,17 @@
+- path: config/initializers/perron.rb
+  content: |
+    ```ruby
+<%= File.read("config/initializers/perron.rb").indent(4) %>
+    ```
+
+- path: app/views/layouts/content/docs.html.erb
+  content: |
+    ```ruby
+<%= File.read("app/views/layouts/content/docs.html.erb").indent(4) %>
+    ```
+
+- path: app/models/content/article.rb
+  content: |
+    ```ruby
+<%= File.read("app/models/content/article.rb").indent(4) %>
+    ```

@@ -1,0 +1,16 @@
+<%# locals: (resource:) %>
+<div class="group max-w-2xl relative mt-4 font-mono text-sm font-normal text-blue-800 border border-blue-200 rounded-lg md:mt-6">
+  <input type="hidden" id="sourceCode" value="<%== resource.command || "rails app:template LOCATION='#{resource_template_url(resource, trailing_slash: false)}'" %>">
+  <button data-action="copy" data-target="sourceCode" data-copy-delay="7500" class="inline-flex items-center gap-x-1 m-1 px-2.5 py-0.5 text-sm font-normal tracking-tight text-blue-950 bg-white ring ring-blue-300 rounded-md shadow-sm shadow-blue-200 transition hover:ring-blue-400 active:scale-98 active:shadow-none" aria-label="Copy template command to clipboard">
+    <%= sprite_icon "clipboard", class: "size-3 block text-blue-600 group-has-[input#sourceCode[data-copy-success=true]]:hidden" %>
+
+    <%= sprite_icon "clipboard-text", class: "size-3 hidden text-blue-800 group-has-[input#sourceCode[data-copy-success=true]]:block" %>
+
+    Copy command
+  </button>
+  to run <button data-action="toggleAttribute#open" data-target="source" aria-label="View template source" class="underline hover:no-underline">this template</button> in your site's root directory
+
+  <span class="-z-10 absolute inset-0 block bg-[size:11px_11px] bg-[position:-1px_-1px] bg-[linear-gradient(to_right,#dbeafe,transparent_1px),linear-gradient(to_bottom,#dbeafe,transparent_1px)]"></span>
+
+  <%= render "content/resources/source_template", resource: @resource %>
+</div>

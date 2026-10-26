@@ -1,0 +1,3 @@
+<%= tag.div class: "grid grid-cols-3 max-w-2xl gap-6 mt-6" do %>
+  <%= safe_join @resource.images.map.with_index(1) { tag.button image_tag(_1, loading: :lazy, class: "ring ring-offset-2 ring-gray-200 rounded-md transition hover:ring-gray-400"), data: {action: "addDataAttribute#slideshowNumber=#{_2} dialog#openModal", target: "dialog"} } %>
+<% end if @resource.images.any? %>

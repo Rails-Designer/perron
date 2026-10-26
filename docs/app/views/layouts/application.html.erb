@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <%= render "shared/head" %>
+
+  <body class="selection:bg-gray-300 selection:text-gray-800 antialiased scroll-smooth [--nav-width:18rem]">
+    <%= icons_sprite %>
+    <%= render "layouts/content/navigation" %>
+
+    <%= yield %>
+  </body>
+</html>

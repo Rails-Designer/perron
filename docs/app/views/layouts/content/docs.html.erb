@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <% content_for :head do %>
+    <link rel="alternate" type="text/markdown" href="<%= markdown_articles_url(@resource, trailing_slash: false) %>">
+  <% end if @resource %>
+  <%= render "shared/head" %>
+
+  <body class="selection:bg-gray-300 selection:text-gray-800 antialiased scroll-smooth [--nav-width:18rem]">
+    <%= icons_sprite %>
+    <%= render "shared/skip_link" %>
+    <%= render "layouts/content/navigation" %>
+
+    <main id="main" class="flex flex-row gap-12 w-full [--nav-width:18rem]">
+      <%= render partial: "layouts/content/docs/sidebar_navigation", locals: { top_level_items: [{label: "Library", href: resources_path, icon: "cube", current_page?: current_page?(controller: "resources")}, {label: "Docs", href: articles_path, icon: "book-open", current_page?: current_page?(controller: "articles", action: "index")}], sections: Content::Article.sections } %>
+
+     <div class="relative grow flex-col w-full mx-auto lg:ml-(--nav-width) lg:px-6">
+       <%= render partial: "layouts/content/docs/sidebar_navigation/toggle_button", locals: { resource: @resource } %>
+
+        <%= yield %>
+      </div>
+    </main>
+  </body>
+</html>

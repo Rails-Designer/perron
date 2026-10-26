@@ -1,0 +1,79 @@
+@layer components {
+  .content {
+    @apply [&_*:not(h1,h2,h3,h4,h5,h6)+*:not(pre,code,li,blockquote>p,svg,div[data-slot='code']),blockquote+pre]:mt-5;
+
+    @apply [&_h2]:font-semibold [&_h2]:text-2xl [&_h2]:text-gray-800;
+    @apply [&_h3]:font-medium [&_h3]:text-xl [&_h3]:text-gray-800;
+    @apply [&_h4]:font-medium [&_h4]:text-lg [&_h4]:text-gray-800;
+
+    @apply [&>p,&_li]:text-lg [&>p]:text-gray-800;
+    @apply [&_ul,&_ol]:mt-2 [&_ul]:list-disc [&_ul,&_ol]:list-outside [&_ul]:ml-4.5 [&_ol]:ml-5;
+    @apply [&_ol]:list-decimal;
+
+    @apply [&_img]:p-0.5 [&_img]:border [&_img]:border-gray-200 [&_img]:rounded;
+
+    @apply [&_pre]:mt-1.25 [&_pre]:px-1.5 [&_pre]:py-2 [&_pre]:sm:px-3 [&_pre]:sm:py-4 [&_pre]:rounded-md [&_pre]:overflow-auto;
+    @apply [&_code]:p-0.5 [&_code]:text-[0.8em] [&_code]:font-medium [&_code]:bg-gray-200/70 [&_code]:rounded-sm;
+    @apply [&_pre>code]:text-base [&_pre>code]:font-normal [&_pre>code]:bg-transparent [&_pre>code]:[text-shadow:0px_0px_5px_oklch(from_currentColor_l_c_h/.9)];
+
+    @apply [&_strong]:font-semibold;
+
+    @apply [&_table]:w-full [&_table]:text-left [&_table]:text-sm;
+    @apply [&_thead]:border-b [&_thead]:border-gray-200;
+    @apply [&_th]:px-2 [&_th]:py-1.5 [&_th]:font-semibold [&_th]:text-gray-800;
+    @apply [&_tbody_tr]:border-b [&_tbody_tr]:border-gray-100;
+    @apply [&_tbody_tr:last-child]:border-0;
+    @apply [&_td]:px-2 [&_td]:py-1.5 [&_td]:align-top [&_td]:text-sm [&_td]:sm:text-base [&_td]:text-gray-800;
+
+    @apply marker:text-orange-500;
+
+    :is(h2, h3, h4, h5, h6) {
+      @apply relative flex items-center gap-x-1;
+      justify-content: start;
+
+      .anchor {
+        @apply scroll-mt-24 md:scroll-mt-12;
+
+        &::before {
+          content: "#";
+          display: inline-block;
+          width: 1rem; height: 1rem;
+          font-size: .75em;
+          font-weight: 400;
+          color: var(--color-gray-500);
+          opacity: 0;
+        }
+
+        &:focus-visible {
+          outline: 0;
+        }
+      }
+
+      @media (hover: hover) and (min-width: 1024px) {
+        margin-left: -1.25rem;
+
+        &:hover .anchor::before {
+          opacity: 1;
+        }
+      }
+
+      @media (hover: hover) and (max-width: 1023px) {
+        flex-direction: row-reverse;
+
+        &:hover .anchor::before {
+          opacity: 1;
+        }
+      }
+
+      @media (hover: none) {
+        flex-direction: row-reverse;
+
+        .anchor::before {
+          position: relative;
+          color: var(--color-gray-600);
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
