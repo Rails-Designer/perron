@@ -69,3 +69,5 @@ docker-compose.override.yml
 debug.log
 
 pkg/
+
+docs/config/master.key
