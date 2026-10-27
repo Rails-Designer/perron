@@ -4,7 +4,7 @@ Gem::Specification.new do |spec|
   spec.name = "perron"
   spec.version = Perron::VERSION
   spec.authors = ["Rails Designer Developers"]
-  spec.email = "devs@railsdeigner.com"
+  spec.email = "devs@railsdesigner.com"
 
   spec.summary = "Rails-based static site generator"
   spec.description = "Perron is a Rails-based static site generator that follows Rails conventions. It allows you to create content collections with markdown or ERB, configure SEO metadata, and build production-ready static sites while leveraging your existing Rails knowledge with familiar patterns and minimal configuration."
