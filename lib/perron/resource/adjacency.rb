@@ -17,7 +17,7 @@ module Perron
               group_value = resource.public_send(grouping_method)
 
               group_order = if grouping_order
-                grouping_order.index(group_value.to_s) || grouping_order.index(group_value.to_sym) || Float::INFINITY
+                grouping_order.index(group_value.to_s) || grouping_order.index(group_value.to_s.to_sym) || Float::INFINITY
               else
                 group_value.to_s
               end
@@ -35,7 +35,7 @@ module Perron
               group_value = resource.public_send(grouping_method)
 
               group_order = if grouping_order
-                grouping_order.index(group_value.to_s) || grouping_order.index(group_value.to_sym) || Float::INFINITY
+                grouping_order.index(group_value.to_s) || grouping_order.index(group_value.to_s.to_sym) || Float::INFINITY
               else
                 group_value.to_s
               end
