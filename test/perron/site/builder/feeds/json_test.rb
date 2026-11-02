@@ -24,6 +24,22 @@ class Perron::Site::Builder::Feeds::JsonTest < ActiveSupport::TestCase
     end
   end
 
+  test "orders by publication date, whether it comes from the filename or the frontmatter" do
+    directory = Rails.root.join("app/content/posts")
+    filename_dated = directory.join("2020-01-01-filename-dated.md")
+    frontmatter_dated = directory.join("frontmatter-dated.md")
+    File.write(filename_dated, "---\ntitle: Filename dated\n---\n\nOld.\n")
+    File.write(frontmatter_dated, "---\ntitle: Frontmatter dated\npublished_at: 2025-12-01\n---\n\nNew.\n")
+
+    resources = [filename_dated, frontmatter_dated].map { Content::Post.new(it.to_s) }
+    builder = Perron::Site::Builder::Feeds::Json.new(collection: @collection, resources: resources)
+    json = JSON.parse(builder.generate)
+
+    assert_equal ["Frontmatter dated", "Filename dated"], json["items"].map { it["title"] }
+  ensure
+    FileUtils.rm_f([filename_dated, frontmatter_dated])
+  end
+
   test "configured feed name and description" do
     @collection.configuration.feeds.json.stub(:title, "Custom JSON title") do
       json = JSON.parse(@builder.generate)
