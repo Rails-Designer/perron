@@ -87,4 +87,31 @@ class Perron::Resource::AdjacencyTest < ActiveSupport::TestCase
 
     assert_nil configuration.previous
   end
+
+  test "ordered grouping: a resource without the grouping field sorts last instead of raising" do
+    resource_class = Class.new do
+      include Perron::Resource::Adjacency
+
+      attr_reader :id, :section, :position
+
+      def initialize(id, section, position)
+        @id = id
+        @section = section
+        @position = position
+      end
+
+      def self.all
+        @all ||= [new("first", "intro", 1), new("second", "guide", 1), new("ungrouped", nil, 1)]
+      end
+
+      adjacent_by :position, within: {section: %w[intro guide]}
+    end
+
+    first, second, ungrouped = resource_class.all
+
+    assert_equal second.id, first.next.id
+    assert_equal ungrouped.id, second.next.id
+    assert_nil ungrouped.next
+    assert_equal second.id, ungrouped.previous.id
+  end
 end
