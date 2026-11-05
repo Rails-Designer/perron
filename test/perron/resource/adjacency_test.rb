@@ -55,11 +55,11 @@ class Perron::Resource::AdjacencyTest < ActiveSupport::TestCase
     assert_equal advanced.id, changelog.previous.id
   end
 
-  test "flat: next returns the following resource" do
+  test "flat: next returns the following resource by position" do
     installation = Content::Doc.find!("installation")
-    quickstart = Content::Doc.find!("quickstart")
+    configuration = Content::Doc.find!("configuration")
 
-    assert_equal quickstart.id, installation.next.id
+    assert_equal configuration.id, installation.next.id
   end
 
   test "flat: next returns nil for the last resource" do
@@ -68,11 +68,12 @@ class Perron::Resource::AdjacencyTest < ActiveSupport::TestCase
     assert_nil quickstart.next
   end
 
-  test "flat: previous returns previous in natural order" do
+  test "flat: previous returns the preceding resource by position" do
     installation = Content::Doc.find!("installation")
     configuration = Content::Doc.find!("configuration")
 
-    assert_equal configuration.id, installation.previous.id
+    assert_equal installation.id, configuration.previous.id
+    assert_nil installation.previous
   end
 
   test "alphabetical: groups by section and orders sections alphabetically" do
@@ -113,5 +114,32 @@ class Perron::Resource::AdjacencyTest < ActiveSupport::TestCase
     assert_equal ungrouped.id, second.next.id
     assert_nil ungrouped.next
     assert_equal second.id, ungrouped.previous.id
+  end
+
+  test "without within: orders by the position method instead of the collection order" do
+    resource_class = Class.new do
+      include Perron::Resource::Adjacency
+
+      attr_reader :id, :position
+
+      def initialize(id, position)
+        @id = id
+        @position = position
+      end
+
+      def self.all
+        @all ||= [new("third", 3), new("first", 1), new("second", 2)]
+      end
+
+      adjacent_by :position
+    end
+
+    third, first, second = resource_class.all
+
+    assert_equal second.id, first.next.id
+    assert_equal third.id, second.next.id
+    assert_nil third.next
+    assert_equal first.id, second.previous.id
+    assert_nil first.previous
   end
 end
