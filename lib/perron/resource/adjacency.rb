@@ -7,13 +7,13 @@ module Perron
 
       class_methods do
         def adjacent_by(position_method, within: {})
-          return unless within.present?
-
-          grouping_method = within.is_a?(Hash) ? within.keys.first : within
+          grouping_method = within.is_a?(Hash) ? within.keys.first : within.presence
           grouping_order = within.is_a?(Hash) ? within.values.first : nil
 
           define_method(:next) do
             resources = self.class.all.sort_by do |resource|
+              next resource.public_send(position_method) unless grouping_method
+
               group_value = resource.public_send(grouping_method)
 
               group_order = if grouping_order
@@ -32,6 +32,8 @@ module Perron
 
           define_method(:previous) do
             resources = self.class.all.sort_by do |resource|
+              next resource.public_send(position_method) unless grouping_method
+
               group_value = resource.public_send(grouping_method)
 
               group_order = if grouping_order
