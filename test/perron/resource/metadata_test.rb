@@ -158,4 +158,25 @@ class Perron::Resource::MetadataTest < ActiveSupport::TestCase
 
     assert_equal 'Dummy App', metadata.title, 'Title should fall back to the configured site_name'
   end
+
+  test 'parses a string updated_at from frontmatter into a time' do
+    metadata = Perron::Resource::Metadata.new(
+      resource: @post,
+      frontmatter: { updated_at: '2023-05-15' },
+      collection: @posts_collection
+    ).data
+
+    assert_kind_of Time, metadata.updated_at
+    assert_equal '2023-05-15', metadata.updated_at.to_date.iso8601
+  end
+
+  test 'drops an unparseable updated_at from frontmatter' do
+    metadata = Perron::Resource::Metadata.new(
+      resource: @post,
+      frontmatter: { updated_at: 'not a date' },
+      collection: @posts_collection
+    ).data
+
+    assert_nil metadata.updated_at
+  end
 end
