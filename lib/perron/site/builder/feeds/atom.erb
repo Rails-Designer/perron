@@ -20,7 +20,7 @@
     <title><%= resource.metadata.title %></title>
     <link href="<%= url_for_resource.call(resource) %>" rel="alternate" type="text/html"/>
     <published><%= resource.published_at&.iso8601 %></published>
-    <updated><%= (resource.metadata.updated_at || resource.published_at)&.iso8601 %></updated>
+    <updated><%= (resource.metadata.updated_at || resource.published_at)&.in_time_zone&.iso8601 %></updated>
 
     <% entry_author = author.call(resource); if entry_author %>
       <author>
