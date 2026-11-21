@@ -6,7 +6,7 @@ module Perron
       extend ActiveSupport::Concern
 
       def estimated_reading_time(wpm: DEFAULT_WORDS_PER_MINUTE, format: DEFAULT_FORMAT)
-        word_count = content.scan(/\b[a-zA-Z]+\b/).size
+        word_count = content.scan(/[\p{L}\p{N}]+(?:['’][\p{L}]+)?/).size
         total_minutes = [(word_count.to_f / wpm).ceil, 1].max
 
         hours = total_minutes / 60
