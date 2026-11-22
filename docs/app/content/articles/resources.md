@@ -160,7 +160,7 @@ post = Content::Post.find("my-first-post")
 post.editors # => Array of Content::Data::Editor instances where id matches editor_id
 ```
 
-When `{association_name}_ids` is present in the frontmatter, Perron uses those IDs to find the associated records. If not present, it falls back to foreign key matching (e.g., looking for `post_id` in the data records).
+When `{singular_association_name}_ids` (e.g. `editor_ids`, the plural `editors_ids` also works) is present in the frontmatter, Perron uses those IDs to find the associated records. If not present, it falls back to foreign key matching (e.g., looking for `post_id` in the data records).
 
 
 ## Adjacency (next/previous)

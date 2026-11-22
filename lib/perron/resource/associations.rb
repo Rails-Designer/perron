@@ -22,10 +22,10 @@ module Perron
           define_method(association_name) do
             cache_has_many_association(association_name) do
               associated_class = association_class_for(association_name, singularize: true, **options)
-              ids_key = "#{association_name}_ids"
+              ids = metadata["#{association_name.to_s.singularize}_ids"] || metadata["#{association_name}_ids"]
 
-              metadata[ids_key] ?
-                records_for_ids(associated_class, metadata[ids_key]) :
+              ids ?
+                records_for_ids(associated_class, ids) :
                 records_for_foreign_key(associated_class, association_name, **options)
             end
           end
@@ -64,9 +64,17 @@ module Perron
       end
 
       def records_for_ids(associated_class, ids)
-        ids = Array(ids)
+        ids = Array(ids).map(&:to_s)
 
-        Perron::Relation.new(associated_class.all.select { ids.include?(it[:id]) || ids.include?(it["id"]) })
+        Perron::Relation.new(associated_class.all.select { ids.include?(id_for(it)) })
+      end
+
+      def id_for(record)
+        if record.is_a?(Perron::Resource)
+          (record.metadata[:id] || record.slug).to_s
+        else
+          (record[:id] || record["id"]).to_s
+        end
       end
 
       def records_for_foreign_key(associated_class, association_name, **options)
