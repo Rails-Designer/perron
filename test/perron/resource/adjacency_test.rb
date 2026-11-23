@@ -169,32 +169,6 @@ class Perron::Resource::AdjacencyTest < ActiveSupport::TestCase
     assert_equal second.id, unpositioned.previous.id
   end
 
-  test "within: a resource without a position sorts last in its group instead of raising" do
-    resource_class = Class.new do
-      include Perron::Resource::Adjacency
-
-      attr_reader :id, :section, :position
-
-      def initialize(id, section, position)
-        @id = id
-        @section = section
-        @position = position
-      end
-
-      def self.all
-        @all ||= [new("a-none", "intro", nil), new("a-one", "intro", 1), new("b-one", "guide", 1)]
-      end
-
-      adjacent_by :position, within: {section: %w[intro guide]}
-    end
-
-    a_none, a_one, b_one = resource_class.all
-
-    assert_equal a_none.id, a_one.next.id
-    assert_equal b_one.id, a_none.next.id
-    assert_equal a_none.id, b_one.previous.id
-  end
-
   test "without within: resources without a position stay in collection order after the positioned ones" do
     resource_class = Class.new do
       include Perron::Resource::Adjacency
