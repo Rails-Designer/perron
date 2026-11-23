@@ -50,8 +50,15 @@ module Perron
         to[:twitter_card] ||= "summary_large_image"
         to[:og_url] = canonical_url
         to[:article_published_time] = @resource.published_at
+        to[:updated_at] = parse_time(to[:updated_at]) if to[:updated_at].is_a?(String)
 
         to.compact
+      end
+
+      def parse_time(value)
+        Time.zone.parse(value)
+      rescue ArgumentError
+        nil
       end
 
       def canonical_url
