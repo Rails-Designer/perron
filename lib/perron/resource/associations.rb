@@ -22,10 +22,10 @@ module Perron
           define_method(association_name) do
             cache_has_many_association(association_name) do
               associated_class = association_class_for(association_name, singularize: true, **options)
-              ids_key = "#{association_name}_ids"
+              ids = metadata["#{association_name.to_s.singularize}_ids"] || metadata["#{association_name}_ids"]
 
-              metadata[ids_key] ?
-                records_for_ids(associated_class, metadata[ids_key]) :
+              ids ?
+                records_for_ids(associated_class, ids) :
                 records_for_foreign_key(associated_class, association_name, **options)
             end
           end

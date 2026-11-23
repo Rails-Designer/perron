@@ -74,4 +74,27 @@ class Perron::Resource::AssociationsTest < ActiveSupport::TestCase
 
     assert_kind_of Perron::Relation, posts
   end
+
+  test "has_many reads singular ids from the frontmatter" do
+    post = post_with_frontmatter("editor_ids: [author-1, author-2]")
+
+    assert_equal ["Cam", "Kendall"], post.editors.map(&:name)
+  end
+
+  test "has_many still reads plural ids from the frontmatter" do
+    post = post_with_frontmatter("editors_ids: [author-2]")
+
+    assert_equal ["Kendall"], post.editors.map(&:name)
+  end
+
+  private
+
+  def post_with_frontmatter(line)
+    Dir.mktmpdir do |directory|
+      path = File.join(directory, "2025-01-01-with-editors.md")
+      File.write(path, "---\ntitle: With editors\n#{line}\n---\n\nBody\n")
+
+      Content::Post.new(path).tap { it.editors }
+    end
+  end
 end
