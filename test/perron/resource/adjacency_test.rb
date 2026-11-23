@@ -142,4 +142,97 @@ class Perron::Resource::AdjacencyTest < ActiveSupport::TestCase
     assert_equal first.id, second.previous.id
     assert_nil first.previous
   end
+
+  test "without within: a resource without a position sorts last instead of raising" do
+    resource_class = Class.new do
+      include Perron::Resource::Adjacency
+
+      attr_reader :id, :position
+
+      def initialize(id, position)
+        @id = id
+        @position = position
+      end
+
+      def self.all
+        @all ||= [new("unpositioned", nil), new("second", 2), new("first", 1)]
+      end
+
+      adjacent_by :position
+    end
+
+    unpositioned, second, first = resource_class.all
+
+    assert_equal second.id, first.next.id
+    assert_equal unpositioned.id, second.next.id
+    assert_nil unpositioned.next
+    assert_equal second.id, unpositioned.previous.id
+  end
+
+  test "without within: resources without a position stay in collection order after the positioned ones" do
+    resource_class = Class.new do
+      include Perron::Resource::Adjacency
+
+      attr_reader :id, :position
+
+      def initialize(id, position)
+        @id = id
+        @position = position
+      end
+
+      def self.all
+        @all ||= [new(1, 30), new(2, nil), new(3, 10), new(4, nil), new(5, 30)]
+      end
+
+      adjacent_by :position
+    end
+
+    first, second, third, fourth, tied = resource_class.all
+
+    assert_equal third.id, first.previous.id
+    assert_nil third.previous
+    assert_equal first.id, third.next.id
+    assert_equal tied.id, first.next.id
+    assert_equal second.id, tied.next.id
+    assert_equal fourth.id, second.next.id
+    assert_nil fourth.next
+    assert_equal second.id, fourth.previous.id
+  end
+
+  test "within: resources without a position stay in collection order at the end of their group" do
+    resource_class = Class.new do
+      include Perron::Resource::Adjacency
+
+      attr_reader :id, :section, :position
+
+      def initialize(id, section, position)
+        @id = id
+        @section = section
+        @position = position
+      end
+
+      def self.all
+        @all ||= [
+          new("intro-none-a", "intro", nil),
+          new("intro-one", "intro", 1),
+          new("intro-none-b", "intro", nil),
+          new("guide-none", "guide", nil),
+          new("guide-one", "guide", 1)
+        ]
+      end
+
+      adjacent_by :position, within: {section: %w[intro guide]}
+    end
+
+    intro_none_a, intro_one, intro_none_b, guide_none, guide_one = resource_class.all
+
+    assert_equal intro_none_a.id, intro_one.next.id
+    assert_equal intro_none_b.id, intro_none_a.next.id
+    assert_equal guide_one.id, intro_none_b.next.id
+    assert_equal guide_none.id, guide_one.next.id
+    assert_nil guide_none.next
+    assert_equal intro_none_a.id, intro_none_b.previous.id
+    assert_equal intro_one.id, intro_none_a.previous.id
+    assert_nil intro_one.previous
+  end
 end
