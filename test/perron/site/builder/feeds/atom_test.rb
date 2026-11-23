@@ -49,6 +49,16 @@ class Perron::Site::Builder::Feeds::AtomTest < ActiveSupport::TestCase
     FileUtils.rm_f([filename_dated, frontmatter_dated])
   end
 
+  test "entry updated is a full date-time when updated_at is a date-only value" do
+    @posts.configuration.feeds.atom.stub(:max_items, 10) do
+      atom = Nokogiri::XML(@builder.generate).remove_namespaces!
+
+      entry = atom.xpath("//entry").find { it.at_xpath("title").text == "Sample Post" }
+
+      assert_match(/\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})\z/, entry.at_xpath("updated").text)
+    end
+  end
+
   test "respects max_items configuration" do
     @posts.configuration.feeds.atom.stub(:max_items, 1) do
       atom = Nokogiri::XML(@builder.generate).remove_namespaces!
