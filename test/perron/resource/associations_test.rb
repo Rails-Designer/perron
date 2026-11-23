@@ -87,20 +87,14 @@ class Perron::Resource::AssociationsTest < ActiveSupport::TestCase
     assert_equal ["Kendall"], post.editors.map(&:name)
   end
 
-  test "has_many resolves ids against Resource records by slug" do
-    post = post_with_frontmatter("reviewer_ids: [rails-designer]", :reviewers)
-
-    assert_equal ["rails-designer"], post.reviewers.map(&:slug)
-  end
-
   private
 
-  def post_with_frontmatter(line, association = :editors)
+  def post_with_frontmatter(line)
     Dir.mktmpdir do |directory|
       path = File.join(directory, "2025-01-01-with-editors.md")
       File.write(path, "---\ntitle: With editors\n#{line}\n---\n\nBody\n")
 
-      Content::Post.new(path).tap { it.public_send(association) }
+      Content::Post.new(path).tap { it.editors }
     end
   end
 end

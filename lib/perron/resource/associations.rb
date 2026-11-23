@@ -64,17 +64,9 @@ module Perron
       end
 
       def records_for_ids(associated_class, ids)
-        ids = Array(ids).map(&:to_s)
+        ids = Array(ids)
 
-        Perron::Relation.new(associated_class.all.select { ids.include?(id_for(it)) })
-      end
-
-      def id_for(record)
-        if record.is_a?(Perron::Resource)
-          (record.metadata[:id] || record.slug).to_s
-        else
-          (record[:id] || record["id"]).to_s
-        end
+        Perron::Relation.new(associated_class.all.select { ids.include?(it[:id]) || ids.include?(it["id"]) })
       end
 
       def records_for_foreign_key(associated_class, association_name, **options)

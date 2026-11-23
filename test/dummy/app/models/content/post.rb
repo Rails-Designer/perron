@@ -30,7 +30,6 @@ class Content::Post < Perron::Resource
   belongs_to :author
   belongs_to :editor, class_name: "Content::Data::Editors"
   has_many :editors, class_name: "Content::Data::Editors"
-  has_many :reviewers, class_name: "Content::Author"
 
   delegate :title, :category, to: :metadata
 
