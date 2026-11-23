@@ -57,4 +57,37 @@ class Perron::Resource::ReadingTimeTest < ActiveSupport::TestCase
   test "#reading_time is an alias for estimated_reading_time" do
     assert_equal @post_resource.estimated_reading_time, @post_resource.reading_time
   end
+
+  test "#estimated_reading_time counts words in non-Latin scripts" do
+    russian = ("слово " * 400).strip
+    @post_resource.stub(:content, russian) do
+      assert_equal 2, @post_resource.estimated_reading_time(wpm: 200, format: nil)
+    end
+  end
+
+  test "#estimated_reading_time counts accented and apostrophe words as one" do
+    @post_resource.stub(:content, "café naïve don't " * 100) do
+      assert_equal 2, @post_resource.estimated_reading_time(wpm: 200, format: nil)
+    end
+  end
+
+  test "#estimated_reading_time keeps combining marks inside words" do
+    samples = {
+      hindi: "नमस्ते दुनिया ",
+      arabic: "مَرْحَبًا بِكَ ",
+      thai: "สวัสดี ครับ "
+    }
+
+    samples.each do |script, text|
+      @post_resource.stub(:content, text * 200) do
+        assert_equal 2, @post_resource.estimated_reading_time(wpm: 200, format: nil), script
+      end
+    end
+  end
+
+  test "#estimated_reading_time counts each CJK character as a word" do
+    @post_resource.stub(:content, "你好世界。" * 100 + "こんにちは " * 100) do
+      assert_equal 5, @post_resource.estimated_reading_time(wpm: 200, format: nil)
+    end
+  end
 end
