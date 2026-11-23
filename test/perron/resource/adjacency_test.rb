@@ -181,18 +181,19 @@ class Perron::Resource::AdjacencyTest < ActiveSupport::TestCase
       end
 
       def self.all
-        @all ||= [new(1, 30), new(2, nil), new(3, 10), new(4, nil)]
+        @all ||= [new(1, 30), new(2, nil), new(3, 10), new(4, nil), new(5, 30)]
       end
 
       adjacent_by :position
     end
 
-    first, second, third, fourth = resource_class.all
+    first, second, third, fourth, tied = resource_class.all
 
     assert_equal third.id, first.previous.id
     assert_nil third.previous
     assert_equal first.id, third.next.id
-    assert_equal second.id, first.next.id
+    assert_equal tied.id, first.next.id
+    assert_equal second.id, tied.next.id
     assert_equal fourth.id, second.next.id
     assert_nil fourth.next
     assert_equal second.id, fourth.previous.id

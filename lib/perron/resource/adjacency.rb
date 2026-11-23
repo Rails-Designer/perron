@@ -13,7 +13,7 @@ module Perron
           sort_by_position = ->(resources) do
             resources.sort_by.with_index do |resource, index|
               position = resource.public_send(position_method)
-              position_key = position.nil? ? [1, index] : [0, position]
+              position_key = position.nil? ? [1, index] : [0, position, index]
 
               if grouping_method
                 group_value = resource.public_send(grouping_method)
