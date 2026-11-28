@@ -131,6 +131,40 @@ class Perron::Site::Builder::SitemapTest < ActiveSupport::TestCase
     assert_empty sitemap.xpath("//url[loc[text()='http://#{host}/version.json']]/lastmod")
   end
 
+  test "excludes preview resources so their secret links stay private" do
+    Perron.configuration.sitemap.enabled = true
+    Content::Feature.configuration.sitemap.enabled = true
+
+    Perron::Site::Builder::Sitemap.new(Rails.root.join("output")).generate
+    sitemap = Nokogiri::XML(File.read("test/dummy/output/sitemap.xml")).tap(&:remove_namespaces!)
+    urls = sitemap.xpath("//url/loc").map(&:text)
+    host = Perron.configuration.default_url_options[:host]
+
+    assert_includes urls, "http://#{host}/features/public-feature/"
+    assert_empty urls.grep(/beta-feature|custom-preview-feature|scheduled-feature/)
+  ensure
+    Content::Feature.configuration.sitemap.enabled = false
+  end
+
+  test "last_modified_for ignores preview resources" do
+    builder = Perron::Site::Builder::Sitemap.new("output")
+
+    resource = Struct.new(:preview?, :updated_at) do
+      def buildable? = true
+
+      def metadata = self
+    end
+
+    published = resource.new(false, Time.utc(2024, 1, 1))
+    preview = resource.new(true, Time.utc(2025, 1, 1))
+
+    collection = Class.new do
+      define_method(:load_resources) { [published, preview] }
+    end.new
+
+    assert_equal Time.utc(2024, 1, 1).iso8601, builder.send(:last_modified_for, collection)
+  end
+
   test "last_modified_for returns nil when no resource has updated_at" do
     builder = Perron::Site::Builder::Sitemap.new("output")
 
