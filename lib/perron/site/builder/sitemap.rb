@@ -31,6 +31,7 @@ module Perron
                   else
                     resources_for(route).reject(&:root?).each do |resource|
                       next if resource.metadata.sitemap == false
+                      next if preview?(resource)
 
                       add_show_url(route, resource, with: builder, added_urls: added_urls)
                     end
@@ -111,10 +112,12 @@ module Perron
         def last_modified_for(collection)
           return unless collection
 
-          modification_dates = collection.send(:load_resources).select(&:buildable?).filter_map { it.metadata.updated_at }
+          modification_dates = collection.send(:load_resources).select(&:buildable?).reject { preview?(it) }.filter_map { it.metadata.updated_at }
 
           modification_dates.max&.iso8601
         end
+
+        def preview?(resource) = resource.respond_to?(:preview?) && resource.preview?
 
         def canonical_mismatch?(canonical, location)
           return false unless canonical.is_a?(String) && canonical.present?
